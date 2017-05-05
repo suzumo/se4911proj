@@ -31,18 +31,15 @@ main = do
     let Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
     let theta = generateTheta 401 -- TODO figure out how to get w into this 401 position
     -- let (f1, df1) = lrCostFunction (use theta) xs (use ys) (0.1 :: Exp Float)
-    t <- fmincgIO (use theta) xs (use ys) (0.1 :: Exp Float) (read i::Int)
+    -- do it for i = 1:num_labels
+    let y1 = A.map (\e -> (e A.== (1.0 :: Exp Float)) ? (1.0 :: Exp Float, 0.0 :: Exp Float)) (use ys)
+    t1 <- fmincgIO (use theta) xs y1 (0.1 :: Exp Float) (read i::Int)
     -- print $ run $ lift (f1, df1)
-    print $ run (lift t)
+    print $ run (lift t1)
 
 -- Robs
 sigmoid :: Exp Float -> Exp Float
 sigmoid z = 1.0 / (1.0 + exp(-z))
-
--- http://stackoverflow.com/questions/9748474/reading-from-input-files-in-haskell
-readWords :: [String] -> [Float]
-readWords [] = []
-readWords (x:xs) = [read x :: Float] P.++ readWords xs
 
 --parseFile :: String -> Int -> Int -> IO (Array (Int, Int) Int)
 --parseFile filename rows cols = do
@@ -60,7 +57,8 @@ loadSampleA :: IO (A.Array DIM2 Float)
 loadSampleA = do
     content <- readFile "trainsample100.txt"
     let strarr = words content
-    let dbarr = readWords strarr
+    print (P.take 100 strarr)
+    let dbarr = P.map read strarr
     let arr = A.fromList (Z:.100:.400) dbarr :: A.Array DIM2 Float
     return arr
 
@@ -69,7 +67,7 @@ loadSample :: IO (Acc (Array DIM2 Float))
 loadSample = do
     content <- readFile "trainsample100.txt"
     let strarr = words content
-    let dbarr = readWords strarr
+    let dbarr = P.map read strarr
     let ones = fill (constant (Z:.100:.1)) 1 :: Acc (Array DIM2 Float)
     let arr = use (A.fromList (Z:.100:.400) dbarr :: A.Array DIM2 Float)
     let carr = ones A.++ arr -- this should create matrix Z:.100:.401
@@ -80,7 +78,7 @@ loadLabelA :: IO (Vector Float)
 loadLabelA = do
     content <- readFile "trainlabel100.txt"
     let strarr = words content
-    let dbarr = readWords strarr
+    let dbarr = P.map read strarr
     let arr = A.fromList (Z:.100) dbarr :: Vector Float
     return arr
 
@@ -102,15 +100,15 @@ lrCostFunction theta xs ys lambda = (unit jreg, grad)  -- lift :: (Acc (Scalar F
     temp :: Acc (Vector Float) -- theta with theta[0] = 0
     temp = (enumFromN (constant (Z:.1)) 0) A.++ (A.tail theta)
 
-    -- THIS IS WRRRROOONNG it produces 100x1 not 401x1 -- TODO FIX
     -- grad = (1/m) * (xs' * (h .- y) + lambda * theta)
     grad :: Acc (Vector Float)
     grad = A.map (\x -> x / A.fromIntegral m) 
          $ A.zipWith (+) (multScalerVector lambda theta) $ fold (+) 0 (A.zipWith (*) (transpose xs) hy)
 
     -- turn (h .- y) into a matrix for grad
+    -- multiply vector (h.-y) into a matrix of height w
     hy :: Acc (Matrix Float)
-    hy = A.replicate (lift (Z :. All :. w)) (A.zipWith A.subtract af ys)
+    hy = A.replicate (lift (Z :. w :. All)) (A.zipWith A.subtract hyp ys)
 
     m :: Exp Int
     m = A.length ys
@@ -128,13 +126,14 @@ lrCostFunction theta xs ys lambda = (unit jreg, grad)  -- lift :: (Acc (Scalar F
     jreg = the reg + the j
 
     -- error accumulation?
+    -- j = (1/m) * sum(-y.*(log(hypothesis)) - (1-y).*log(1-hypothesis))
     j :: Acc (Scalar Float)
     j = A.map (\x -> x / A.fromIntegral m)
       $ A.sum
-      $ A.zipWith3 (\x y t -> -y * log (sigmoid (t * x)) - (1 - y) * log (1 - sigmoid (t * x))) xs yy tt
+      $ A.zipWith (\h y -> -y * (log h) - (1 - y) * log (1 - h)) hyp ys
 
     reg :: Acc (Scalar Float) -- regularisation constant (lambda/(2*m)*sum(temp.^2))
-    reg = A.map (\x -> x / A.fromIntegral (2*m)) (unit $ lambda * (the (A.sum (A.zipWith (*) temp temp))))
+    reg = A.map (\x -> lambda * x / A.fromIntegral (2*m)) (A.sum (A.zipWith (*) temp temp))
 
     -- replicate column vector y into a matrix; where the column is replicated
     -- 'w' times across to form the matrix:
@@ -156,8 +155,9 @@ lrCostFunction theta xs ys lambda = (unit jreg, grad)  -- lift :: (Acc (Scalar F
     tt = A.replicate (lift (Z :. h :. All)) theta
 
     -- multiply matrix X with vector theta to get new vector theta
-    af :: Acc (Vector Float)
-    af = A.map (sigmoid) (fold (+) 0 (A.zipWith (*) xs tt))
+    -- hypothesis = sigmoid (X * theta)
+    hyp :: Acc (Vector Float) -- h = X * theta
+    hyp = A.map (sigmoid) (fold (+) 0 (A.zipWith (*) xs tt))
 
 
 -- initial_theta = zeros(n + 1, 1);
@@ -174,22 +174,21 @@ fmincgIO
     -> Exp Float                        -- lambda (learning rate)
     -> Int                              -- number of repetitions?
     -> IO (Acc (Scalar Float), Acc (Vector Float)) -- final j, final_theta
-fmincgIO theta0 xs ys lambda i = do
-    let (f1, df1) = lrCostFunction theta0 xs ys lambda
+fmincgIO theta0 xs yc lambda i = do
+    let (f1, df1) = lrCostFunction theta0 xs yc lambda
     let s = negateVector df1
     let d1 = negateScalar (the $ A.sum (A.zipWith (*) df1 df1))
     let z1 = 1/(1-d1) -- red = 1
     let theta1 = A.zipWith (+) theta0 (multScalerVector z1 s) -- X = X + z1*s
-    let (f2, df2) = lrCostFunction theta1 xs ys lambda -- [f2 df2] = eval(argstr)
+    let (f2, df2) = lrCostFunction theta1 xs yc lambda -- [f2 df2] = eval(argstr)
     let d2 = the (A.sum $ A.zipWith (A.*) df2 s)-- d2 = df2' * s
     -- f3 = f1; d3 = d1; z3 = -z1;
-    let (theta2, d2', f2', z1', z2, z3) = innerWhile theta1 s d1 d2 d1 (the f1) (the f2) (the f1) z1 z1 xs ys lambda
-    let (theta3, d2'', d3, f2'', f3, z1'', z2', z3', df2') = outerWhile theta2 s d1 (the d2') d1 (the f1) (the f2') (the f1) z1' z2 z3 xs ys lambda z1 -- limit = z1
+    let (theta3, d2'', d3, f2'', f3, z1'', z2', z3', df2') = outerWhile theta1 s d1 d2 d1 (the f1) (the f2) (the f1) z1 (negateScalar z1) xs yc lambda z1 -- limit = z1
     let (s_, d1_, d2_, f1_, z1_, df1_, df2_) = handleSuccess theta3 s d1 (the d2'') d3 (the f1) (the f2'') f3 z1'' z2' z3' xs df1 df2' lambda z1 -- limit = z1
     -- recursion??
     if i P.== 0
         then return (unit f1_, df2_)
-        else (fmincgIO df2_ xs ys lambda (i-1))
+        else (fmincgIO df2_ xs yc lambda (i-1))
 
 -- fmincg(f, X, options, P1, P2, P3, P4, P5) = [X, fX, i]
 -- Minimize a continuous differentialble multivariate function
@@ -256,10 +255,15 @@ quadraticFit :: Exp Float -> Exp Float -> Exp Float -> Exp Float -> Exp Float
 quadraticFit d3 f2 f3 z3 = z3 - (0.5*d3*z3*z3)/(d3*z3 + f2 - f3)
 
 
+
+
+
 innerWhile :: Acc (Vector Float) -> Acc (Vector Float) -> Exp Float -> Exp Float -> Exp Float -> Exp Float
- -> Exp Float -> Exp Float -> Exp Float -> Exp Float -> Acc (Matrix Float) -> Acc (Vector Float) -> Exp Float 
+ -> Exp Float -> Exp Float -> Exp Float -> Exp Float -> Acc (Matrix Float) -> Acc (Vector Float) -> Exp Float -> Int  
  -> (Acc (Vector Float), Acc (Scalar Float), Acc (Scalar Float), Exp Float, Exp Float, Exp Float)
-innerWhile theta s d1 d2 d3 f1 f2 f3 z1 z3 xs ys lambda = (theta', d2', f2', z1', z2, z3')
+innerWhile theta s d1 d2 d3 f1 f2 f3 z1 z3 xs ys lambda 0 = undefined
+innerWhile theta s d1 d2 d3 f1 f2 f3 z1 z3 xs ys lambda n = (theta', d2', f2', z1', z2, z3')
+
     where
         condition = (f2 A.> (f1 + z1 * 0.01 * d1)) A.|| (d2 A.> -0.5 * d1)
     -- if condition == True, then loop, otherwise return/break innerWhile loop
@@ -284,9 +288,9 @@ innerWhile theta s d1 d2 d3 f1 f2 f3 z1 z3 xs ys lambda = (theta', d2', f2', z1'
 
 
 outerWhile :: Acc (Vector Float) -> Acc (Vector Float) -> Exp Float -> Exp Float -> Exp Float -> Exp Float
- -> Exp Float -> Exp Float -> Exp Float -> Exp Float -> Exp Float -> Acc (Matrix Float) -> Acc (Vector Float) -> Exp Float -> Exp Float 
+ -> Exp Float -> Exp Float -> Exp Float -> Exp Float -> Acc (Matrix Float) -> Acc (Vector Float) -> Exp Float -> Exp Float 
  -> (Acc (Vector Float), Acc(Scalar Float), Exp Float, Acc(Scalar Float), Exp Float, Exp Float, Exp Float, Exp Float, Acc (Vector Float))
-outerWhile theta s d1 d2 d3 f1 f2 f3 z1 z2 z3 xs ys lambda limit = (theta', d2', d3', f2', f3', z1', z2', z3', df2')
+outerWhile theta s d1 d2 d3 f1 f2 f3 z1 z3 xs ys lambda limit = (theta', d2', d3', f2', f3', z1', z2', z3', df2')
     where
         -- innerWhile here
         (a, b, z2') = cubicExtrapolate d2 d3 f2 f3 z3
