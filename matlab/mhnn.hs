@@ -265,7 +265,7 @@ innerWhile theta s d1 d2 d3 f1 f2 f3 z1 z3 xs ys lambda 0 = undefined
 innerWhile theta s d1 d2 d3 f1 f2 f3 z1 z3 xs ys lambda n = (theta', d2', f2', z1', z2, z3')
 
     where
-        condition = (f2 A.> (f1 + z1 * 0.01 * d1)) A.|| (d2 A.> -0.5 * d1)
+        condition = (f2 A.> (f1 + z1 * 0.01 * d1)) A.|| ((d2 A.> -0.5 * d1) A.&& lift (n P.> 0))
     -- if condition == True, then loop, otherwise return/break innerWhile loop
         -- try to use A.awhile to implement this loop
         -- (?) for scalar conditional
