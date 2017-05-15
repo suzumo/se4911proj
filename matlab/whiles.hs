@@ -1,6 +1,6 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE OverloadedLists #-}
--- {-# LANGUAGE RebindableSyntax #-}
+{-# LANGUAGE RebindableSyntax #-}
 
 -- random numbers: https://github.com/tmcdonell/mwc-random-accelerate
 --
@@ -72,8 +72,9 @@ fmincg theta xs ys c lambda =
         d10 = A.map negate $ A.sum (A.zipWith (*) s0 s0)        
         z10 = unit ((1::Exp Float)/(1 - (the d10))) -- z10 is acc(scal)?
         fX0 = fill (constant (Z :. 0)) (0 :: Exp Float) -- need empty array
+
         -- cs :: Acc (Vector Float) 
-        -- cs = fill (constant (Z :. (lift m :: Int)) c -- don't know how to 'unlift' c from its Exp wrapper...??
+        -- cs = fill (shape ys) c -- don't know how to 'unlift' c from its Exp wrapper...??
 
         -- set up initial values
         theta0 = A.zipWith (+) theta (A.map ((the z10) A.*) s0)
@@ -87,9 +88,9 @@ fmincg theta xs ys c lambda =
         limit0 = unit ((-1) :: Exp Float)
         
         -- call loops now
-        (theta', d2', d3', f2', f3', z1', z2', z3') = outerLoop theta0 s0 d10 d20 d30 f10 f20 f30 z10 z20 z30 xs ys lambda limit0 m0
+        (theta', d2', d3', f2', f3', z1', z2', z3') = outerLoop theta0 s0 d10 d20 d30 f10 f20 f30 z10 z20 z30 xs ys lambda m0
         (theta_, fX_) = handleSuccess theta' d10 f10 f2' z1' df10 df20 fX0
-        -- issue: must get df2 out of loops as it changes values for handleSuccess
+        -- issue: must get df2 out of loops as it changes values for handleSuccess -> non issue as loop only goes through once and df2 is discarded?
     in
     (theta_, fX_)
 
@@ -141,7 +142,7 @@ outerLoop ::
     -> Acc (Matrix Float) -- xs
     -> Acc (Vector Float) -- ys
     -> Exp Float          -- lambda
-    -> Acc (Scalar Float) -- limit
+    -- -> Acc (Scalar Float) -- limit
     -> Acc (Scalar Int)   -- M (max 50)
     -> (  Acc (Vector Float) -- new theta
         -- , Acc (Vector Float) -- df2 -- FIX THIS
@@ -152,47 +153,49 @@ outerLoop ::
         , Acc (Scalar Float) -- z1
         , Acc (Scalar Float) -- z2
         , Acc (Scalar Float) ) -- z3
-outerLoop theta0 s d10 d20 d30 f10 f20 f30 z10 z20 z30 xs ys lambda limit0 m0 = 
+outerLoop theta0 s d10 d20 d30 f10 f20 f30 z10 z20 z30 xs ys lambda m0 = 
 -- because d3 = d1
 -- s = -df1
 -- limit = z1
     let
         -- innerWhile initially once
-        initial :: Acc (Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
+        initial :: Acc (Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int, Scalar Float)
         initial =
-          let (theta1, d21, f21, z11, z21, z31, m1) = innerLoop s xs ys lambda d10 f10 d20 f20 f30 z10 z20 z30 m0 theta0
+            let 
+                (theta1, d21, f21, z11, z21, z31, m1, limit1) = innerLoop s xs ys lambda d10 f10 d20 f20 f30 z10 z20 z30 m0 theta0 limit0
+                limit0 = unit (-1 :: Exp Float)
           in
-          lift (theta1, d10, d21, d30, f10, f21, f30, z11, z21, z31, m1)
+          lift (theta1, d10, d21, d30, f10, f21, f30, z11, z21, z31, m1, limit1)
 
         -- loop condition
-        cond :: Acc (Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
+        cond :: Acc (Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int, Scalar Float)
              -> Acc (Scalar Bool)
         cond args =
-          let _theta :: Acc (Vector Float)
-              _d3, _f3, _z2, _z3 :: Acc (Scalar Float)
-              (_theta,d1,d2,_d3,f1,f2,_f3,z1,_z2,_z3,m) = unlift args
+          let _theta:: Acc (Vector Float)
+              _d3, _f3, _z2, _z3, _limit :: Acc (Scalar Float)
+              (_theta, d1, d2, _d3, f1, f2, _f3, z1, _z2, _z3, m, _limit) = unlift args
           in
           A.zipWith6 outerLoopCondition f1 f2 z1 d1 d2 m        
 
         -- loop body (continue while 'cond' evaluates to True)
-        body :: Acc (Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
-             -> Acc (Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
+        body :: Acc (Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int, Scalar Float)
+             -> Acc (Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int, Scalar Float)
         body args =
           let
               z2' :: Acc (Scalar Float) -- TLM: unused??
-              (theta', d1', d2', d3', f1', f2', f3', z1', z2', z3', m') = unlift args
-              m_                                                        = A.map (A.subtract 1) m'
-              (theta'', df2_, d2'', d3_, f2'', f3_, z1'', z2'', z3'')   = outerWhileFunction theta' s (the d2') (the d3') (the f2') (the f3') (the z1') (the z3') xs ys lambda
-              (theta_, d2_, f2_, z1_, z2_, z3_, m__)                    = innerLoop s xs ys lambda d1' f1' d2'' f2'' f3_ z1'' z2'' z3'' m_ theta''
+              (theta', d1', d2', d3', f1', f2', f3', z1', z2', z3', m', limit') = unlift args
+              m_                                                                = A.map (A.subtract 1) m'
+              (theta'', df2_, d2'', d3_, f2'', f3_, z1'', z2'', z3'')           = outerWhileFunction theta' s (the d2') (the d3') (the f2') (the f3') (the z1') (the z3') xs ys lambda (the limit')
+              (theta_, d2_, f2_, z1_, z2_, z3_, m__, limit_)                    = innerLoop s xs ys lambda d1' f1' d2'' f2'' f3_ z1'' z2'' z3'' m_ theta'' limit'
           in
-          lift (theta_, d1', d2_, d3_, f1', f2_, f3_, z1_, z2_, z3_, m__)
+          lift (theta_, d1', d2_, d3_, f1', f2_, f3_, z1_, z2_, z3_, m__, limit_)
 
         -- return just the interesting results of the loop.
         -- extra type signatures necessary for things we don't care about due to
         -- use of 'unlift'
-        _d1', _f1' :: Acc (Scalar Float)
+        _d1', _f1', _limit' :: Acc (Scalar Float)
         _m' :: Acc (Scalar Int)
-        (theta', _d1', d2', d3', _f1', f2', f3', z1', z2', z3', _m') = unlift $ awhile cond body initial
+        (theta', _d1', d2', d3', _f1', f2', f3', z1', z2', z3', _m', _limit') = unlift $ awhile cond body initial
     in
     (theta', d2', d3', f2', f3', z1', z2', z3')
 
@@ -212,30 +215,32 @@ innerLoop ::
     -> Acc (Scalar Float) -- z3
     -> Acc (Scalar Int) -- M (max loop count at 50)
     -> Acc (Vector Float) -- theta
+    -> Acc (Scalar Float) -- limit
     -> (  Acc (Vector Float) -- new theta
         , Acc (Scalar Float) -- new d2
         , Acc (Scalar Float) -- new f2
         , Acc (Scalar Float) -- new z1
         , Acc (Scalar Float) -- new z2
         , Acc (Scalar Float) -- new z3
-        , Acc (Scalar Int) ) -- new m
-innerLoop s xs ys lambda d1 f1 d2 f2 f3 z1 z2 z3 m theta =
+        , Acc (Scalar Int)   -- new m
+        , Acc (Scalar Float) ) -- new limit
+innerLoop s xs ys lambda d1 f1 d2 f2 f3 z1 z2 z3 m theta limit =
     let
-        old = lift (theta, d2, f2, f3, z1, z2, z3, m) 
+        old = lift (theta, d2, f2, f3, z1, z2, z3, m, limit)
         new = awhile
                 (\args -> A.zipWith6 innerLoopCondition f1 (args^._3) (args^._4) d1 (args^._2) (args^._8))
                 (\args ->
                     let 
-                        (theta', d2', f2', f3', z1', z2', z3', m') = unlift args :: (Acc (Vector Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Int))
+                        (theta', d2', f2', f3', z1', z2', z3', m', limit') = unlift args :: (Acc (Vector Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Int), Acc (Scalar Float))
                         m_ = A.map (A.subtract 1) m'
-                        (theta_, df2_, d2_, f2_, z1_, z2_, z3_) =  innerWhileFunction theta' s (the d1) (the d2') (the d1) (the f1) (the f2') (the f3') (the z1') (the z2) (the z3') xs ys lambda
+                        (theta_, df2_, d2_, f2_, z1_, z2_, z3_, limit_) =  innerWhileFunction theta' s (the d1) (the d2') (the d1) (the f1) (the f2') (the f3') (the z1') (the z2) (the z3') xs ys lambda
                     in 
-                    lift (theta_, d2_, f2_, f3', z1_, z2_, z3_, m_) )
+                    lift (theta_, d2_, f2_, f3', z1_, z2_, z3_, m_, limit_) )
                     -- :: Acc (Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int))
                     -- don't need this anymore because function is complete! (no more scaffolding '')b
                 old
     in
-    (new^._1, new^._2, new^._3, new^._5, new^._6, new^._7, new^._8)
+    (new^._1, new^._2, new^._3, new^._5, new^._6, new^._7, new^._8, new^._9)
 
 
 outerWhileFunction :: 
@@ -250,6 +255,7 @@ outerWhileFunction ::
     -> Acc (Matrix Float) -- xs
     -> Acc (Vector Float) -- ys
     -> Exp Float          -- lambda
+    -> Exp Float          -- limit
     -> (  Acc (Vector Float) -- new theta
         , Acc (Vector Float) -- df21
         , Acc (Scalar Float) -- d2
@@ -259,25 +265,9 @@ outerWhileFunction ::
         , Acc (Scalar Float) -- z1
         , Acc (Scalar Float) -- z2
         , Acc (Scalar Float) ) -- z3
-outerWhileFunction theta0 s d20 d30 f20 f30 z10 z30 xs ys lambda = 
+outerWhileFunction theta0 s d20 d30 f20 f30 z10 z30 xs ys lambda limit = 
     let 
-        (a, b, z21) = cubicExtrapolate d20 d30 f20 f30 z30
-
-    -- do this later -___-;    
-    -- if ~isreal(z2) | isnan(z2) | isinf(z2) | z2 < 0   % num prob or wrong sign?
-    --     if limit < -0.5                               % if we have no upper limit
-    --         z2 = z1 * (EXT-1);                 % the extrapolate the maximum amount
-    --     else
-    --         z2 = (limit-z1)/2;                                   % otherwise bisect
-    -- elseif (limit > -0.5) & (z2+z1 > limit)          % extraplation beyond max?
-    --   z2 = (limit-z1)/2;                                               % bisect
-    -- elseif (limit < -0.5) & (z2+z1 > z1*EXT)       % extrapolation beyond limit
-    --   z2 = z1*(EXT-1.0);                           % set to extrapolation limit
-    -- elseif z2 < -z3*INT
-    --   z2 = -z3*INT;
-    -- elseif (limit > -0.5) & (z2 < (limit-z1)*(1.0-INT))   % too close to limit?
-    --   z2 = (limit-z1)*(1.0-INT);
-    -- end
+        z21 = cubicExtrapolate d20 d30 f20 f30 z10 z30 limit
         f31 = f20 -- f3 = f2
         d31 = d20 -- d3 = d2 
         z31 = z21 -- z3 = -z2
@@ -310,9 +300,11 @@ innerWhileFunction ::
         , Acc (Scalar Float) -- f2
         , Acc (Scalar Float) -- z1
         , Acc (Scalar Float) -- z2
-        , Acc (Scalar Float) ) -- z3
+        , Acc (Scalar Float) -- z3
+        , Acc (Scalar Float) ) -- limit
 innerWhileFunction theta0 s d10 d20 d30 f10 f20 f30 z10 z20 z30 xs ys lambda = 
     let 
+        limit = z10
         z21  = (f20 A.> f10) 
             ? ( quadraticFit d30 f20 f30 z30, cubicFit d20 d30 f20 f30 z30 )
         z22 = (z21 A./= z21) -- if isNaN (z2) | isInf (z2)
@@ -324,7 +316,7 @@ innerWhileFunction theta0 s d10 d20 d30 f10 f20 f30 z10 z20 z30 xs ys lambda =
         d21 = A.sum (A.zipWith (*) df21 s) -- d2 = df2'*s;
         z31 = A.subtract z30 z23; -- z3 = z3-z2;
     in
-    (theta1, df21, d21, f21, unit z11, unit z23, unit z31)
+    (theta1, df21, d21, f21, unit z11, unit z23, unit z31, unit limit)
     
 
 -- (f2 A.> (f1 + z1 * 0.01 * d1)) A.|| (d2 A.> -0.5 * d1)
@@ -445,12 +437,40 @@ cubicExtrapolate ::
     -> Exp Float      -- d3
     -> Exp Float      -- f2
     -> Exp Float      -- f3
+    -> Exp Float      -- z1
+    -> Exp Float      -- z3
+    -> Exp Float      -- limit
     -> Exp Float      -- z2
-    -> ( Exp Float    -- A
-       , Exp Float    -- B
-       , Exp Float )  -- new z2
-cubicExtrapolate d2 d3 f2 f3 z3 = (a, b, z2)
+cubicExtrapolate d2 d3 f2 f3 z1 z3 limit =
+    if det A.< 0 A.|| A.isNaN z2 A.|| A.isInfinite z2 A.|| z2 A.< 0
+    then if limit A.< 0.5
+        then z1 * (3 - 1)
+        else (limit - z1)/2
+    else if (limit A.> 0.5) A.&& (z2 + z1) A.> limit
+        then (limit - z1)/2
+    else if (limit A.< 0.5) A.&& (z2 + z1) A.> z1 * 3
+        then z1 * 2 -- (EXT-1.0)
+    else if (z2 A.< -z3 * 0.1)
+        then -z2 * 0.1
+    else if (limit A.> -0.5) A.&& (z2 A.< (limit-z1)*0.9) -- (limit-z1)*(1.0-INT)
+        then (limit - z1)*(0.9) -- (1.0 - INT)
+    else
+        z2
     where 
-        a  = 6*(f2 - f3)/z3 + 3*(d2 + d3)
-        b  = 3*(f3 - f2) - z3*(d3 + 2*d2)
-        z2 = (-d2*z3*z3)/(b + P.sqrt (b*b - a*d2*z3*z3))
+        a   = 6*(f2 - f3)/z3 + 3*(d2 + d3)
+        b   = 3*(f3 - f2) - z3*(d3 + 2*d2)
+        det = b*b - a*d2*z3*z3
+        z2  = -d2 * z3 * z3 / (b + sqrt det)
+    -- if ~isreal(z2) | isnan(z2) | isinf(z2) | z2 < 0   % num prob or wrong sign?
+    --     if limit < -0.5                               % if we have no upper limit
+    --         z2 = z1 * (EXT-1);                 % the extrapolate the maximum amount
+    --     else
+    --         z2 = (limit-z1)/2;                                   % otherwise bisect
+
+        -- z2  = (b A.< 0) -- if ~isreal(z2)
+        --     ? ( z2' , z2'' ) 
+        -- z2' = (limit A.< -0.5)
+        --     ? ( z1 * (3.0 - 1.0), (limit - z1)/2 )
+        -- z2_ = (-d2*z3*z3)/(b + P.sqrt (b*b - a*d2*z3*z3))
+        -- z2'' = (A.isNaN z2_ A.|| A.isInfinite z2_ A.|| z2_ A.< 0)
+        --      ? ( z2', z2_ )
