@@ -362,51 +362,76 @@ quadraticFit :: Exp Float -> Exp Float -> Exp Float -> Exp Float -> Exp Float
 quadraticFit d3 f2 f3 z3 = z3 - (0.5*d3*z3*z3)/(d3*z3 + f2 - f3)
 
 
-lrCostFunction :: 
-       Acc (Vector Float)      -- theta (weight vector)
-    -> Acc (Matrix Float)      -- X (data matrix)
-    -> Acc (Vector Float)      -- y (labels)
-    -> Exp Float               -- lambda (learning rate)
-    -> ( Acc (Scalar Float)    -- J (cost)
-       , Acc (Vector Float) )  -- gradients
-lrCostFunction theta xs ys lambda = 
-    let
-        temp :: Acc (Vector Float) -- theta with theta[0] = 0
-        temp = (enumFromN (constant (Z:.1)) 0) A.++ (A.tail theta)
+-- lrCostFunction(theta, X, y, lambda) = [J, grad]
+lrCostFunction
+    :: Acc (Vector Float)               -- theta (weight vector)
+    -> Acc (Matrix Float)               -- X (data matrix)
+    -> Acc (Vector Float)               -- y (labels)
+    -> Exp Float                        -- lambda (learning rate)
+    -> (Acc (Scalar Float), Acc (Vector Float))
+lrCostFunction theta xs ys lambda = (unit jreg, grad)  -- lift :: (Acc (Scalar Float), Acc (Vector Float)) -> Acc (Scalar Float, Matrix Float)
+  where
+    temp :: Acc (Vector Float) -- theta with theta[0] = 0
+    temp = (enumFromN (constant (Z:.1)) 0) A.++ (A.tail theta)
 
-        grad :: Acc (Vector Float)
-        grad = A.map (\x -> x / A.fromIntegral m) 
-             $ A.zipWith (+) (multScalerVector lambda theta) $ fold (+) 0 (A.zipWith (*) (transpose xs) hy)
+    -- grad = (1/m) * (xs' * (h .- y) + lambda * theta)
+    grad :: Acc (Vector Float)
+    grad = A.map (\x -> x / A.fromIntegral m) 
+         $ A.zipWith (+) (multScalerVector lambda theta) $ fold (+) 0 (A.zipWith (*) (transpose xs) hy)
 
-        hy :: Acc (Matrix Float)
-        hy = A.replicate (lift (Z :. w :. All)) (A.zipWith A.subtract hyp ys)
+    -- turn (h .- y) into a matrix for grad
+    -- multiply vector (h.-y) into a matrix of height w
+    hy :: Acc (Matrix Float)
+    hy = A.replicate (lift (Z :. w :. All)) (A.zipWith A.subtract hyp ys)
 
-        m :: Exp Int
-        m = A.length ys
+    m :: Exp Int
+    m = A.length ys
 
-        Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
+    -- n :: Exp Int
+    -- n = A.length xs
 
-        jreg :: Exp Float
-        jreg = the reg + the j
+    Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
 
-        j :: Acc (Scalar Float)
-        j = A.map (\x -> x / A.fromIntegral m)
-          $ A.sum
-          $ A.zipWith (\h y -> -y * (log h) - (1 - y) * log (1 - h)) hyp ys
+    -- learning rate
+    -- lambda :: Exp Float
+    -- lambda = (0.1 :: Exp Float)
 
-        reg :: Acc (Scalar Float) -- regularisation constant (lambda/(2*m)*sum(temp.^2))
-        reg = A.map (\x -> lambda * x / A.fromIntegral (2*m)) (A.sum (A.zipWith (*) temp temp))
+    jreg :: Exp Float
+    jreg = the reg + the j
 
-        yy :: Acc (Matrix Float)
-        yy  = A.replicate (lift (Z :. All :. w)) ys
+    -- error accumulation?
+    -- j = (1/m) * sum(-y.*(log(hypothesis)) - (1-y).*log(1-hypothesis))
+    j :: Acc (Scalar Float)
+    j = A.map (\x -> x / A.fromIntegral m)
+      $ A.sum
+      $ A.zipWith (\h y -> -y * (log h) - (1 - y) * log (1 - h)) hyp ys
 
-        tt :: Acc (Matrix Float)
-        tt = A.replicate (lift (Z :. h :. All)) theta
+    reg :: Acc (Scalar Float) -- regularisation constant (lambda/(2*m)*sum(temp.^2))
+    reg = A.map (\x -> lambda * x / A.fromIntegral (2*m)) (A.sum (A.zipWith (*) temp temp))
 
-        hyp :: Acc (Vector Float) -- h = X * theta
-        hyp = A.map (sigmoid) (fold (+) 0 (A.zipWith (*) xs tt))
-    in
-    (unit jreg, grad)
+    -- replicate column vector y into a matrix; where the column is replicated
+    -- 'w' times across to form the matrix:
+    --
+    --   y1        y1 y1 y1 ...
+    --   y2   ->   y2 y2 y2 ...
+    --   ...             ...
+    --
+    yy :: Acc (Matrix Float)
+    yy  = A.replicate (lift (Z :. All :. w)) ys
+
+    -- same but replicate so that every row is the same, and is 'h' rows high
+    --
+    --   t1 t2 t3  ->  t1 t2 t3 ...
+    --                 t1 t2 t3 ...
+    --                    ...
+    --
+    tt :: Acc (Matrix Float)
+    tt = A.replicate (lift (Z :. h :. All)) theta
+
+    -- multiply matrix X with vector theta to get new vector theta
+    -- hypothesis = sigmoid (X * theta)
+    hyp :: Acc (Vector Float) -- h = X * theta
+    hyp = A.map (sigmoid) (fold (+) 0 (A.zipWith (*) xs tt))
 
 
 multScalerVector :: Exp Float -> Acc (Vector Float) -> Acc (Vector Float)
