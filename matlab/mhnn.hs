@@ -33,9 +33,9 @@ main = do
     -- let (f1, df1) = lrCostFunction (use theta) xs (use ys) (0.1 :: Exp Float)
     -- do it for i = 1:num_labels
     let y1 = A.map (\e -> (e A.== (1.0 :: Exp Float)) ? (1.0 :: Exp Float, 0.0 :: Exp Float)) (use ys)
-    t1 <- fmincgIO (use theta) xs y1 (0.1 :: Exp Float) (read i::Int)
+    -- t1 <- fmincgIO (use theta) xs y1 (0.1 :: Exp Float) (read i::Int)
     -- print $ run $ lift (f1, df1)
-    print $ run (lift t1)
+    print $ run (lift y1)
 
 -- Robs
 sigmoid :: Exp Float -> Exp Float
@@ -167,28 +167,28 @@ lrCostFunction theta xs ys lambda = (unit jreg, grad)  -- lift :: (Acc (Scalar F
 --     all_theta(c,:) = theta;
 -- end
 -- i.e. fmincgIO receives lrCostFunction, theta, as arguments
-fmincgIO
-    :: Acc (Vector Float)               -- theta (weight vector)
-    -> Acc (Matrix Float)               -- X (data matrix)
-    -> Acc (Vector Float)               -- y (labels)
-    -> Exp Float                        -- lambda (learning rate)
-    -> Int                              -- number of repetitions?
-    -> IO (Acc (Scalar Float), Acc (Vector Float)) -- final j, final_theta
-fmincgIO theta0 xs yc lambda i = do
-    let (f1, df1) = lrCostFunction theta0 xs yc lambda
-    let s = negateVector df1
-    let d1 = negateScalar (the $ A.sum (A.zipWith (*) df1 df1))
-    let z1 = 1/(1-d1) -- red = 1
-    let theta1 = A.zipWith (+) theta0 (multScalerVector z1 s) -- X = X + z1*s
-    let (f2, df2) = lrCostFunction theta1 xs yc lambda -- [f2 df2] = eval(argstr)
-    let d2 = the (A.sum $ A.zipWith (A.*) df2 s)-- d2 = df2' * s
-    -- f3 = f1; d3 = d1; z3 = -z1;
-    let (theta3, d2'', d3, f2'', f3, z1'', z2', z3', df2') = outerWhile theta1 s d1 d2 d1 (the f1) (the f2) (the f1) z1 (negateScalar z1) xs yc lambda z1 -- limit = z1
-    let (s_, d1_, d2_, f1_, z1_, df1_, df2_) = handleSuccess theta3 s d1 (the d2'') d3 (the f1) (the f2'') f3 z1'' z2' z3' xs df1 df2' lambda z1 -- limit = z1
-    -- recursion??
-    if i P.== 0
-        then return (unit f1_, df2_)
-        else (fmincgIO df2_ xs yc lambda (i-1))
+-- fmincgIO
+--     :: Acc (Vector Float)               -- theta (weight vector)
+--     -> Acc (Matrix Float)               -- X (data matrix)
+--     -> Acc (Vector Float)               -- y (labels)
+--     -> Exp Float                        -- lambda (learning rate)
+--     -> Int                              -- number of repetitions?
+--     -> IO (Acc (Scalar Float), Acc (Vector Float)) -- final j, final_theta
+-- fmincgIO theta0 xs yc lambda i = do
+--     let (f1, df1) = lrCostFunction theta0 xs yc lambda
+--     let s = A.map negate df1
+--     let d1 = A.map negate (the $ A.sum (A.zipWith (*) df1 df1))
+--     let z1 = 1/(1-d1) -- red = 1
+--     let theta1 = A.zipWith (+) theta0 (multScalerVector z1 s) -- X = X + z1*s
+--     let (f2, df2) = lrCostFunction theta1 xs yc lambda -- [f2 df2] = eval(argstr)
+--     let d2 = the (A.sum $ A.zipWith (A.*) df2 s)-- d2 = df2' * s
+--     -- f3 = f1; d3 = d1; z3 = -z1;
+--     let (theta3, d2'', d3, f2'', f3, z1'', z2', z3', df2') = outerWhile theta1 s d1 d2 d1 (the f1) (the f2) (the f1) z1 (-z1) xs yc lambda z1 -- limit = z1
+--     let (s_, d1_, d2_, f1_, z1_, df1_, df2_) = handleSuccess theta3 s d1 (the d2'') d3 (the f1) (the f2'') f3 z1'' z2' z3' xs df1 df2' lambda z1 -- limit = z1
+--     -- recursion??
+--     if i P.== 0
+--         then return (unit f1_, df2_)
+--         else (fmincgIO df2_ xs yc lambda (i-1))
 
 -- fmincg(f, X, options, P1, P2, P3, P4, P5) = [X, fX, i]
 -- Minimize a continuous differentialble multivariate function
@@ -253,9 +253,6 @@ cubicFit d2 d3 f2 f3 z3 = z2
 
 quadraticFit :: Exp Float -> Exp Float -> Exp Float -> Exp Float -> Exp Float
 quadraticFit d3 f2 f3 z3 = z3 - (0.5*d3*z3*z3)/(d3*z3 + f2 - f3)
-
-
-
 
 
 innerWhile :: Acc (Vector Float) -> Acc (Vector Float) -> Exp Float -> Exp Float -> Exp Float -> Exp Float
@@ -356,9 +353,9 @@ multScalerVector f v = A.zipWith (*) f' v
         Z :. h = unlift (shape v) :: Z :. Exp Int
 
 
-negateVector :: Acc (Vector Float) -> Acc (Vector Float)
-negateVector f = A.map (A.* (-1 :: Exp Float)) f
+-- negateVector :: Acc (Vector Float) -> Acc (Vector Float)
+-- negateVector f = A.map (A.* (-1 :: Exp Float)) f
 
 
-negateScalar :: Exp Float -> Exp Float
-negateScalar s = (*) (-1 :: Exp Float) s
+-- negateScalar :: Exp Float -> Exp Float
+-- negateScalar s = (*) (-1 :: Exp Float) s
