@@ -104,6 +104,10 @@ generateTheta n = A.use $ A.fromList (Z :. n) (P.replicate n 0)
 --    randomArray (uniformR (0,1)) (Z :. n)
 
 
+yEqCFloatVec :: Acc (Vector Float) -> Exp Float -> Acc (Vector Float)
+yEqCFloatVec ys c = A.map (A.fromIntegral . boolToInt . (c A.==)) ys
+
+
 -- TODO?
 all_theta :: 
        Acc (Matrix Float)               -- X (data matrix)
@@ -166,7 +170,7 @@ nnCostFunction theta1 theta2 n xs y lambda =
         d3 = A.zipWith (-) a3 ys
         d2 = A.zipWith (*) 
              (mmult (transpose theta2) d3)
-             ((fill (constant (Z :. 5000 :. 1)) 1 :: Acc (Matrix Float)) A.++ (sigmoidGradient z2))
+             ((fill (constant (Z :. 5000 :. 1)) 1 :: Acc (Matrix Float)) A.++ (A.map sigmoidGradient z2))
 
         theta2grad = A.map (\x -> x/A.fromIntegral h) 
                    $ mmult d3 (transpose a2)
@@ -196,13 +200,14 @@ nnCostFunction theta1 theta2 n xs y lambda =
         
         grads = flatten theta1grad_ A.++ flatten theta2grad_
 
-        -- g = exp(-z) ./ ((1.0 + exp(-z)) .^ 2)
-        -- sigmoidGradient can also take in a Vector...
-        sigmoidGradient :: Acc (Matrix Float) -> Acc (Matrix Float)
-        sigmoidGradient a = A.map (\x -> exp(-x) / (1.0 + exp(-x))P.^2) a
-
     in
     (j, grads)
+
+
+-- g = exp(-z) ./ ((1.0 + exp(-z)) .^ 2)
+-- sigmoidGradient can also take in a Vector...
+sigmoidGradient :: Exp Float -> Exp Float
+sigmoidGradient z = (sigmoid z) * (1 - sigmoid z)
 
 
 -- fmincg(f, X, options, P1, P2, P3, P4, P5) = [X, fX, i]
@@ -670,6 +675,13 @@ sigmoid :: Exp Float -> Exp Float
 sigmoid z = 1.0 / (1.0 + exp(-z))
 
 
+quadraticFit :: Exp Float -> Exp Float -> Exp Float -> Exp Float -> Exp Float
+quadraticFit d3 f2 f3 z3 = det A.== 0
+                         ? ( z3/2 , z3 - (0.5*d3*z3*z3)/det)
+    where 
+        det = (d3*z3 + f2 - f3)
+
+
 cubicFit :: Exp Float -> Exp Float -> Exp Float -> Exp Float -> Exp Float -> Exp Float
 cubicFit d2 d3 f2 f3 z3 = (det A.< 0 A.|| divisor A.== 0) 
                         ? ( z3/2 , (P.sqrt det - b)/a )
@@ -678,17 +690,6 @@ cubicFit d2 d3 f2 f3 z3 = (det A.< 0 A.|| divisor A.== 0)
         a = 6*(f2 - f3)/divisor
         b = 3*(f3 - f2) - z3*(d3 + 2*d2)
         det = b*b - a*d2*z3*z3
-
-
-quadraticFit :: Exp Float -> Exp Float -> Exp Float -> Exp Float -> Exp Float
-quadraticFit d3 f2 f3 z3 = det A.== 0
-                         ? ( z3/2 , z3 - (0.5*d3*z3*z3)/det)
-    where 
-        det = (d3*z3 + f2 - f3)
-
-
-yEqCFloatVec :: Acc (Vector Float) -> Exp Float -> Acc (Vector Float)
-yEqCFloatVec ys c = A.map (A.fromIntegral . boolToInt . (c A.==)) ys
 
 
 cubicExtrapolate :: 
@@ -731,3 +732,18 @@ infixl 6 .-
 infixl 7 .*
 (.*) :: Exp Float -> Acc (Vector Float) -> Acc (Vector Float)
 (.*) x = A.map (x*)
+
+
+-- negateVector :: Acc (Vector Float) -> Acc (Vector Float)
+-- negateVector f = A.map negate f
+
+
+-- negateScalar :: Acc (Scalar Float) -> Acc (Scalar Float)
+-- negateScalar s = A.map negate s
+
+
+-- multScalerVector :: Exp Float -> Acc (Vector Float) -> Acc (Vector Float)
+-- multScalerVector f v = A.zipWith (*) f' v
+--     where
+--         f' = A.replicate (lift (Any :. h)) (unit f)
+--         Z :. h = unlift (shape v) :: Z :. Exp Int
