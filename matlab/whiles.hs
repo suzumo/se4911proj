@@ -362,9 +362,99 @@ quadraticFit :: Exp Float -> Exp Float -> Exp Float -> Exp Float -> Exp Float
 quadraticFit d3 f2 f3 z3 = z3 - (0.5*d3*z3*z3)/(d3*z3 + f2 - f3)
 
 
+nnCostFunction ::
+       Acc (Matrix Float)               -- input theta matrix (25x401) -input_num 400
+    -> Acc (Matrix Float)               -- hidden theta matrix (10x26) -hidden_num 25
+    -> Exp Int                          -- num of labels
+    -> Acc (Matrix Float)               -- X (data matrix) in the form [1 X] (5000x401)
+    -> Acc (Vector Float)               -- y (labels)
+    -> Exp Float                        -- lambda
+    -> ( Acc (Scalar Float)             -- J (cost)
+       , Acc (Vector Float) )           -- final theta
+nnCostFunction theta1 theta2 n xs y lambda = 
+    let
+        Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
+
+        toYs :: Acc (Vector Float) -> Acc (Matrix Float)
+        toYs y = undefined
+        -- make vector y into matrix Y
+
+        ys :: Acc (Matrix Float)
+        ys = toYs y
+
+        -- feedforward
+        a3 :: Acc (Matrix Float)
+        a1 = xs -- (5000x401)
+        z2 = mmult a1 (A.transpose theta1) -- (5000x401) x (401x25) = (5000 x 25) 
+        a2 = (fill (constant (Z :. 5000 :. 1)) 1 :: Acc (Matrix Float)) A.++ 
+             A.map sigmoid z2 -- (5000x26) -- this should be h...
+        z3 = mmult a2 (A.transpose theta2) -- (5000x26) x (26x10) = (5000x10)
+        a3 = A.map sigmoid z3 -- (5000x10)
+
+        -- calculate cost J
+        j :: Acc (Scalar Float)
+        j = A.zipWith (+) regCost 
+          $ A.sum 
+          $ A.map (\x -> x / A.fromIntegral h)
+          $ A.sum
+          $ A.zipWith (-) fstMat sndMat
+          where
+            fstMat  = A.zipWith (*) (A.map negate ys) (A.map log a3)
+            sndMat  = A.zipWith (\y a -> -y * (log a) - (1-y)*log(1-a)) ys a3
+            regCost = A.sum
+                    $ A.map (\x -> x * lambda/(2*(A.fromIntegral h)))
+                      (A.zipWith (+) j1 j2)
+            j1      = foldAll (+) 0 (A.zipWith (*) ttheta1 ttheta1)
+            j2      = foldAll (+) 0 (A.zipWith (*) ttheta2 ttheta2)
+
+        ttheta1 = A.tail theta1
+        ttheta2 = A.tail theta2
+
+        -- backpropagate to get gradients
+        d3 = A.zipWith (-) a3 ys
+        d2 = A.zipWith (*) 
+             (mmult (transpose theta2) d3)
+             ((fill (constant (Z :. 5000 :. 1)) 1 :: Acc (Matrix Float)) A.++ (sigmoidGradient z2))
+
+        theta2grad = A.map (\x -> x/A.fromIntegral h) 
+                   $ mmult d3 (transpose a2)
+        theta1grad = A.map (\x -> x/A.fromIntegral h) 
+                   $ transpose
+                   $ mmult (transpose a1) (A.tail (transpose d2))
+
+        -- add gradient regularisation
+        theta1grad_ = A.zipWith (+) theta1grad 
+                    $ A.map (\x -> lambda * x/A.fromIntegral h)
+                      ((fill (constant (Z :. 25 :. 1)) 1 :: Acc (Matrix Float)) A.++ (A.tail theta1))
+                      where
+                        s = A.size theta1 -- height of array MUST FIX THIS!!!
+        
+        theta2grad_ = A.zipWith (+) theta2grad 
+                    $ A.map (\x -> lambda * x/A.fromIntegral h)
+                      ((fill (constant (Z :. 10 :. 1)) 1 :: Acc (Matrix Float)) A.++ (A.tail theta2))
+                      where
+                        s = A.size theta2 -- height of array MUST FIX THIS!!!
+
+                   -- d2(2:end, :)
+
+                   -- d2 = (100x50) -> d2 = 99x50
+                   -- d2' = (50x100) -> transpose (tail (transpose d2) (50x99)) (99x50) * (transpose a1 (50x500)) (99x500)
+
+                   -- tranpose (transpose a1 (500x50) * tail (transpose d2) (50x99))
+        
+        grads = flatten theta1grad_ A.++ flatten theta2grad_
+
+        -- g = exp(-z) ./ ((1.0 + exp(-z)) .^ 2)
+        -- sigmoidGradient can also take in a Vector...
+        sigmoidGradient :: Acc (Matrix Float) -> Acc (Matrix Float)
+        sigmoidGradient a = A.map (\x -> exp(-x) / (1.0 + exp(-x))P.^2) a
+
+    in
+    (j, grads)
+
 -- lrCostFunction(theta, X, y, lambda) = [J, grad]
-lrCostFunction
-    :: Acc (Vector Float)               -- theta (weight vector)
+lrCostFunction ::
+       Acc (Vector Float)               -- theta (weight vector)
     -> Acc (Matrix Float)               -- X (data matrix)
     -> Acc (Vector Float)               -- y (labels)
     -> Exp Float                        -- lambda (learning rate)
