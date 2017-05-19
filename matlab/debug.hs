@@ -1,10 +1,21 @@
+-- debug checkResult
+xs <- loadxs
+ys <- loadys
+theta <- caltheta
+run $ checkResult xs ys theta
+
+
+
+
+
 y <- loadY1
 lambda = (0.1 :: Exp Float)
 ys = A.use y
 theta = generateTheta 401
 xs <- loadSample
 fX = fill (constant (Z :. (0::Int))) (0 :: Exp Float)
-(f1, df1) = lrCostFunction theta xs ys lambda
+costFunction = lrCostFunction xs ys lambda
+(f1, df1) = unlift $ costFunction theta
 s = A.map negate df1
 d1 = A.map negate $ A.sum (A.zipWith (*) s s)        
 z1 = unit ((1::Exp Float)/(1 - (the d1)))
