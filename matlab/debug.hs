@@ -1,13 +1,55 @@
+-- debug nn
+n = 10 :: Int
+xs <- loadxs "trainsample100.txt" 100 400 -- 100x401
+ys <- loadys "mmult d3 theta2trainlabel100.txt" 100 -- 1x100
+ymat = matrixfy ys -- 100x10
+theta1 <- loadt1
+theta2 <- loadt2
+-- theta1 <- gentheta2 400 25 -- 25x401
+-- theta2 <- gentheta2 25 n   -- 10x26
+lambda = 3 :: Exp Float
+
+-- nnCostFunction
+-- X = 100x401
+-- m = 100
+-- a1 = ones(1:100) ++ 401x100
+a1 = xs -- 100x401 <> 401 x 100
+z2 = mmult theta1 (transpose a1) -- 25x401 X 401x100 <> 25x401 X 401x100 = 25x100
+a2 = (fill (lift (Z :.(constant 100):. constant  1)) 1 :: Acc (Matrix Float)) A.++ (A.transpose $ A.map sigmoid z2) -- 100x26
+z3 = mmult a2 (A.transpose theta2) -- 100x10
+a3 = A.map sigmoid z3 -- 100x10
+
+ttheta1 = A.tail theta1 -- 25x400
+ttheta2 = A.tail theta2 -- 10x25
+
+j1 = foldAll (+) 0 (A.zipWith (*) ttheta1 ttheta1)
+j2 = foldAll (+) 0 (A.zipWith (*) ttheta2 ttheta2)
+regCost = A.map (\x -> x * lambda/(2*(A.fromIntegral (100::Exp Int)))) (A.zipWith (+) j1 j2)
+
+j = A.zipWith (+) regCost $ A.map (\x -> x / A.fromIntegral (100::Exp Int)) $ A.foldAll (+) 0 $ A.zipWith (\y a -> -y * (log a) - (1-y)*log(1-a)) ymat a3
+
+
+d3 = A.zipWith (-) a3 ymat -- 100x10
+d2 = A.zipWith (*) (mmult d3 theta2) ((fill (lift (Z :. constant 100 :. constant 1)) 1 :: Acc (Matrix Float)) A.++ (A.transpose $ A.map sigmoidGradient z2)) -- 100x26 .+ 100x26
+
+-- 10x100 X 100x26
+theta2grad = A.map (\x -> x/(A.fromIntegral (100::Exp Int))) $ mmult (transpose d3) a2 -- 10x100 X 100x26 = 10X26
+theta1grad = A.map (\x -> x/(A.fromIntegral (100::Exp Int))) $ mmult (transpose (A.tail d2)) a1 -- 25x100 X 100X401 = 25x401
+
+theta1grad_ = A.zipWith (+) theta1grad $ A.map (\x -> lambda * x/A.fromIntegral (100::Exp Int)) (fill (constant (Z :. 25 :. 1)) 0 :: Acc (Matrix Float)) A.++ ttheta1 -- should be 25x401
+theta2grad_ = A.zipWith (+) theta2grad $ A.map (\x -> lambda * x/A.fromIntegral (100::Exp Int)) (fill (constant (Z :. 10 :. 1)) 0 :: Acc (Matrix Float)) A.++ ttheta2 -- should be 10x26
+
+
+thetas = nnCostFunction theta1 theta2 (constant n) xs ys lambda
+
+
 -- debug checkResult
 xs <- loadxs
 ys <- loadys
 theta <- caltheta
 run $ checkResult xs ys theta
 
-
-
-
-
+-- debug lr
 y <- loadY1
 lambda = (0.1 :: Exp Float)
 ys = A.use y

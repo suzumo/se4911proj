@@ -24,8 +24,8 @@ type Matrix a = Array DIM2 a
 
 
 caltheta = do
-    xs <- loadxs
-    ys <- loadys
+    xs <- loadxs "trainsample100.txt" 100 400
+    ys <- loadys "trainlabel100.txt" 100
     let theta = gentheta xs
     let lambda = 0.1 :: Exp Float
     let n = 10 :: Exp Int
@@ -35,14 +35,29 @@ caltheta = do
 
 test1 :: IO (Vector Float)
 test1 = do
-    xs <- loadxs
-    ys <- loadys
+    xs <- loadxs "trainsample100.txt" 100 400
+    ys <- loadys "trainlabel100.txt" 100
     let theta = gentheta xs 
     let lambda = (0.1 :: Exp Float)
     let yc = yEqCFloatVec ys (1.0 :: Exp Float)
     let (newTheta, j) = fmincg (\t -> lift $ lrCostFunction t xs yc lambda) theta
-
     return $ run (lift j)
+
+
+-- test2 :: Int -> Int -> Int -> IO (Scalar Float)
+-- test2 nSamples fstLayer sndLayer = do
+--     xs <- loadxs "trainsample100.txt" nSamples fstLayer
+--     ys <- loadys "trainlabel100.txt" nSamples
+--     theta1 <- gentheta2 fstLayer sndLayer
+--     theta2 <- gentheta2 sndLayer 10 
+--     thetas = flatten theta1 A.++ flatten theta2 
+--     let lambda = (1.0 :: Exp Float)
+--     let n = 10 :: Exp Int
+--     let (j, thetas) = fmincg (\t -> nnCostFunction t fstLayer sndLayer n xs ys lambda) thetas
+--     -- let (j, thetas) = fmincg (\t -> lift nnCostFunction theta1 theta2 n xs ys lambda)
+
+--     return $ run j
+
 
 
 --parseFile :: String -> Int -> Int -> IO (Array (Int, Int) Int)
@@ -51,31 +66,51 @@ test1 = do
 --    return $ listArray ((1,1), (rows, cols)) matrix
 
 
-loadyc1 :: IO (Vector Float)
-loadyc1 = do
-    ys <- loadys
-    let c = (1.0 :: Exp Float)
+loadyc :: Float -> IO (Vector Float)
+loadyc val = do
+    ys <- loadys "trainlabel100.txt" 100
+    let c = constant val
     let yc = (yEqCFloatVec ys c)
     return $ run (lift yc)
 
 
-loadxs :: IO (Acc (Matrix Float))
-loadxs = do
-    content <- readFile "trainsample100.txt"
+loadxs :: String -> Int -> Int -> IO (Acc (Matrix Float))
+loadxs filename m n = do
+    content <- readFile filename  -- "trainsample100.txt"
     let strarr = words content
     let dbarr = P.map read strarr
-    let ones = fill (constant (Z:.100:.1)) 1 :: Acc (Array DIM2 Float)
-    let arr = A.use (A.fromList (Z:.100:.400) dbarr)
+    let ones = fill (constant (Z:.m:.1)) 1 :: Acc (Array DIM2 Float)
+    let arr = A.use (A.fromList (Z:.m:.n) dbarr)
     let carr = ones A.++ arr -- this should create matrix Z:.100:.401
     return carr
 
 
-loadys :: IO (Acc (Vector Float))
-loadys = do
-    content <- readFile "trainlabel100.txt"
+loadys :: String -> Int -> IO (Acc (Vector Float))
+loadys filename m = do
+    content <- readFile "trainlabel100.txt" -- filename
     let strarr = words content
     let dbarr = P.map read strarr
-    let arr = A.use $ A.fromList (Z:.100) dbarr
+    let arr = A.use $ A.fromList (Z:.m) dbarr
+    return arr
+
+
+loadt1 :: IO (Acc (Matrix Float))
+loadt1 = do
+    content <- readFile "theta1.txt" -- filename
+    let strarr = words content
+    let dbarr = P.map read strarr
+    -- let ones = fill (constant (Z:.25:.1)) 1 :: Acc (Array DIM2 Float)
+    let arr = A.use $ A.fromList (Z:.25:.401) dbarr
+    return arr
+
+
+loadt2 :: IO (Acc (Matrix Float))
+loadt2 = do
+    content <- readFile "theta2.txt" -- filename
+    let strarr = words content
+    let dbarr = P.map read strarr
+    -- let ones = fill (constant (Z:.25:.1)) 1 :: Acc (Array DIM2 Float)
+    let arr = A.use $ A.fromList (Z:.10:.26) dbarr
     return arr
 
 
@@ -85,12 +120,14 @@ gentheta xs = lift $ A.fill (index1 w) 0
         Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
 
 
-gentheta2 :: Acc (Matrix Float) -> IO (Acc (Vector Float))
-gentheta2 w = do
-    xs <- withSystemRandom $ \gen -> randomArray (uniformR (0,1)) (Z:.401) -- (constant Z:.4)
+gentheta2 :: Int -> Int -> IO (Acc (Matrix Float))
+gentheta2 sizeIn sizeOut = do
+    let n = (sizeIn + 1)* sizeOut
+    let epsilon = 0.12 :: Exp Float
+    xs <- withSystemRandom $ \gen -> randomArray (uniformR (0,1)) (Z:.sizeOut:.(sizeIn + 1)) -- (constant Z:.4)
     -- let Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
-    return $ A.use xs
-    
+    return $ A.map (\x -> x*2*epsilon - epsilon) (A.use xs)
+
 
 yEqCFloatVec :: Acc (Vector Float) -> Exp Float -> Acc (Vector Float)
 yEqCFloatVec ys c = A.map (A.fromIntegral . boolToInt . (c A.==)) ys
@@ -185,7 +222,20 @@ checkResult xs ys thetas =
     in
     pa
 
--- to complete
+
+-- make vector ys into matrix ys for neural network
+matrixfy :: Acc (Vector Float) -> Acc (Matrix Float)
+matrixfy ys = 
+    let
+        n = 10 :: Exp Int
+        zeroMat = A.fill (index2 (A.length ys) n) 0
+        onesVec  = A.fill (index1 (A.length ys)) 1.0 :: Acc (Vector Float)
+    in
+    -- update the theta matrix with the newly computed values for this row
+    A.permute const zeroMat (\m -> index2 (unindex1 m) (A.round (ys A.!! (unindex1 m)) -1)) onesVec
+
+
+
 nnCostFunction ::
        Acc (Matrix Float)               -- input theta matrix (25x401) -input_num 400
     -> Acc (Matrix Float)               -- hidden theta matrix (10x26) -hidden_num 25
@@ -193,86 +243,72 @@ nnCostFunction ::
     -> Acc (Matrix Float)               -- X (data matrix) in the form [1 X] (5000x401)
     -> Acc (Vector Float)               -- y (labels)
     -> Exp Float                        -- lambda
-    -> ( Acc (Scalar Float)             -- J (cost)
-       , Acc (Vector Float) )           -- theta1+theta2 vector
+    -> ( Acc (Scalar Float)             -- J (cost):t
+       , Acc (Matrix Float, Matrix Float) ) -- theta1+theta2 vector
+    -- -> Acc (Matrix Float, Matrix Float) -- theta1+theta2 vector
 nnCostFunction theta1 theta2 n xs y lambda = 
     let
         Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
 
         -- make vector y into matrix Y
-        -- ys is all 0, except when ys[i][y[i]] = 1
-        ys :: Acc (Matrix Float)
-        ys = 
-            let
-                zeroMat = A.fill (index2 (A.length y) n) 0
-                onesVec  = A.fill (index1 (A.length y)) 1.0 :: Acc (Vector Float)
-            in
-            -- update the theta matrix with the newly computed values for this row
-            A.permute const zeroMat (\n -> index2 (unindex1 n) (A.round (y A.!! (unindex1 n)))) onesVec
+        ys = matrixfy y
 
         -- feedforward
         a3 :: Acc (Matrix Float)
-        a1 = xs -- (5000x401)
-        z2 = mmult a1 (A.transpose theta1) -- (5000x401) x (401x25) = (5000 x 25) 
-        a2 = (fill (lift (Z :. h :. constant  1)) 1 :: Acc (Matrix Float)) A.++ 
-             A.map sigmoid z2 -- (5000x26) -- this should be h...
-        z3 = mmult a2 (A.transpose theta2) -- (5000x26) x (26x10) = (5000x10)
-        a3 = A.map sigmoid z3 -- (5000x10)
+        a1 = xs -- (100x401)
+        z2 = mmult theta1 (transpose a1) -- 25x401 X 401x100 = 25x100 
+        a2 = (fill (lift (Z :. h :. constant  1)) 1 :: Acc (Matrix Float)) 
+           A.++ (A.transpose $ A.map sigmoid z2) -- (100x26)
+        z3 = mmult a2 (A.transpose theta2) -- (100x26) x (26x10) = (100x10)
+        a3 = A.map sigmoid z3 -- (100x10)
 
         -- calculate cost J
         j :: Acc (Scalar Float)
         j = A.zipWith (+) regCost 
-          $ A.sum 
           $ A.map (\x -> x / A.fromIntegral h)
-          $ A.sum
-          $ A.zipWith (-) fstMat sndMat
+          $ A.foldAll (+) 0
+          $ A.zipWith (\y a -> -y * (log a) - (1-y)*log(1-a)) ys a3
           where
-            fstMat  = A.zipWith (*) (A.map negate ys) (A.map log a3)
-            sndMat  = A.zipWith (\y a -> -y * (log a) - (1-y)*log(1-a)) ys a3
-            regCost = A.sum
-                    $ A.map (\x -> x * lambda/(2*(A.fromIntegral h)))
+            regCost = A.map (\x -> x * lambda/(2*(A.fromIntegral h)))
                       (A.zipWith (+) j1 j2)
             j1      = foldAll (+) 0 (A.zipWith (*) ttheta1 ttheta1)
             j2      = foldAll (+) 0 (A.zipWith (*) ttheta2 ttheta2)
 
-        ttheta1 = A.tail theta1
-        ttheta2 = A.tail theta2
+        ttheta1 = A.tail theta1 -- 25x400
+        ttheta2 = A.tail theta2 -- 10x25
 
         -- backpropagate to get gradients
-        d3 = A.zipWith (-) a3 ys
+        d3 = A.zipWith (-) a3 ys -- 100x10
         d2 = A.zipWith (*) 
-             (mmult (transpose theta2) d3)
-             ((fill (lift (Z :. h :. constant  1)) 1 :: Acc (Matrix Float)) A.++ (A.map sigmoidGradient z2))
+             (mmult d3 theta2)
+                    ((fill (lift (Z :. h :. constant  1)) 1 :: Acc (Matrix Float)) 
+                     A.++ (A.transpose $ A.map sigmoidGradient z2)) -- 100x26 .+ 100x26
 
         theta2grad = A.map (\x -> x/A.fromIntegral h) 
-                   $ mmult d3 (transpose a2)
+                   $ mmult (transpose d3) a2 -- 10x100 X 100x26 = 10x26
         theta1grad = A.map (\x -> x/A.fromIntegral h) 
-                   $ transpose
-                   $ mmult (transpose a1) (A.tail (transpose d2))
+                   $ mmult (transpose (A.tail d2)) a1 -- 25x100 X 100X401 = 25x401
 
         -- add gradient regularisation
         theta1grad_ = A.zipWith (+) theta1grad 
                     $ A.map (\x -> lambda * x/A.fromIntegral h)
-                      ((fill (constant (Z :. 25 :. 1)) 1 :: Acc (Matrix Float)) A.++ (A.tail theta1))
+                      ((fill (lift (Z :. w1 :. constant 1)) 0 :: Acc (Matrix Float))
+                       A.++ ttheta1) -- 25x401
                       where
-                        s = A.size theta1 -- height of array MUST FIX THIS!!!
+                        Z :. h1 :. w1 = unlift (shape theta1) :: Z :. Exp Int :. Exp Int 
         
         theta2grad_ = A.zipWith (+) theta2grad 
                     $ A.map (\x -> lambda * x/A.fromIntegral h)
-                      ((fill (constant (Z :. 10 :. 1)) 1 :: Acc (Matrix Float)) A.++ (A.tail theta2))
+                      ((fill (lift (Z :. w2 :. constant 1)) 0 :: Acc (Matrix Float))
+                       A.++ ttheta2) -- 10x26
                       where
-                        s = A.size theta2 -- height of array MUST FIX THIS!!!
-
-                   -- d2(2:end, :)
-                   -- d2 = (100x50) -> d2 = 99x50
-                   -- d2' = (50x100) -> transpose (tail (transpose d2) (50x99)) (99x50) * (transpose a1 (50x500)) (99x500)
-
-                   -- tranpose (transpose a1 (500x50) * tail (transpose d2) (50x99))
+                        Z :. h2 :. w2 = unlift (shape theta2) :: Z :. Exp Int :. Exp Int 
         
-        grads = flatten theta1grad_ A.++ flatten theta2grad_
+        -- grads = flatten theta1grad_ A.++ flatten theta2grad_
 
     in
-    (j, grads)
+    (j, lift (theta1grad_, theta2grad_))
+    -- lift (theta1grad_, theta2grad_)
 
 
 -- fmincg(f, X, options, P1, P2, P3, P4, P5) = [X, fX, i]
@@ -328,7 +364,7 @@ outerMostLoop costFunction theta0 s0 d10 f10 z10 df10 fX0 =
                 length :: Acc (Scalar Int)
                 (theta, fX, s, df1, f1, d1, z1, length) = unlift args
             in
-            unit ((the length) A.< (20 :: Exp Int)) -- SET LOOP HERE -- should repeat til length < 50
+            unit ((the length) A.< (10 :: Exp Int)) -- SET LOOP HERE -- should repeat til length < 50
     
         body :: Acc (Vector Float, Vector Float, Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
             -> Acc (Vector Float, Vector Float, Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
