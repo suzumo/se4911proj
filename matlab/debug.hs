@@ -1,13 +1,20 @@
 -- debug nn
 n = 10 :: Int
 xs <- loadxs "trainsample100.txt" 100 400 -- 100x401
-ys <- loadys "mmult d3 theta2trainlabel100.txt" 100 -- 1x100
+ys <- loadys "trainlabel100.txt" 100 -- 1x100
 ymat = matrixfy ys -- 100x10
 theta1 <- loadt1
 theta2 <- loadt2
 -- theta1 <- gentheta2 400 25 -- 25x401
 -- theta2 <- gentheta2 25 n   -- 10x26
-lambda = 3 :: Exp Float
+lambda = 1 :: Exp Float
+l1 = 400 :: Exp Int
+l2 = 25 :: Exp Int
+ts = (flatten theta1) A.++ (flatten theta2)
+
+result = nnCostFunction ts l1 l2 (constant n) xs ys lambda
+
+
 
 -- nnCostFunction
 -- X = 100x401
@@ -38,9 +45,6 @@ theta1grad = A.map (\x -> x/(A.fromIntegral (100::Exp Int))) $ mmult (transpose 
 
 theta1grad_ = A.zipWith (+) theta1grad $ A.map (\x -> lambda * x/A.fromIntegral (100::Exp Int)) (fill (constant (Z :. 25 :. 1)) 0 :: Acc (Matrix Float)) A.++ ttheta1 -- should be 25x401
 theta2grad_ = A.zipWith (+) theta2grad $ A.map (\x -> lambda * x/A.fromIntegral (100::Exp Int)) (fill (constant (Z :. 10 :. 1)) 0 :: Acc (Matrix Float)) A.++ ttheta2 -- should be 10x26
-
-
-thetas = nnCostFunction theta1 theta2 (constant n) xs ys lambda
 
 
 -- debug checkResult

@@ -44,19 +44,22 @@ test1 = do
     return $ run (lift j)
 
 
--- test2 :: Int -> Int -> Int -> IO (Scalar Float)
--- test2 nSamples fstLayer sndLayer = do
---     xs <- loadxs "trainsample100.txt" nSamples fstLayer
---     ys <- loadys "trainlabel100.txt" nSamples
---     theta1 <- gentheta2 fstLayer sndLayer
---     theta2 <- gentheta2 sndLayer 10 
---     thetas = flatten theta1 A.++ flatten theta2 
---     let lambda = (1.0 :: Exp Float)
---     let n = 10 :: Exp Int
---     let (j, thetas) = fmincg (\t -> nnCostFunction t fstLayer sndLayer n xs ys lambda) thetas
---     -- let (j, thetas) = fmincg (\t -> lift nnCostFunction theta1 theta2 n xs ys lambda)
+test2 :: Int -> Int -> Int -> IO (Vector Float)
+test2 fstLayer sndLayer nSamples = do
+    xs <- loadxs "trainsample100.txt" nSamples fstLayer
+    ys <- loadys "trainlabel100.txt" nSamples
+    theta1 <- loadt1 --gentheta2 fstLayer sndLayer 25x401
+    theta2 <- loadt2 --gentheta2 sndLayer 10 10x26
+    let ts = flatten theta1 A.++ flatten theta2 
+    let lambda = (1.0 :: Exp Float)
+    let n = 10 :: Exp Int
+    let l1 = constant fstLayer
+    let l2 = constant sndLayer
 
---     return $ run j
+    let (thetas, j) = fmincg (\t -> nnCostFunction t l1 l2 n xs ys lambda) ts
+    -- let (j, thetas) = unlift $ nnCostFunction thetas l1 l2 n xs ys lambda
+
+    return $ run (lift j)
 
 
 
@@ -237,18 +240,22 @@ matrixfy ys =
 
 
 nnCostFunction ::
-       Acc (Matrix Float)               -- input theta matrix (25x401) -input_num 400
-    -> Acc (Matrix Float)               -- hidden theta matrix (10x26) -hidden_num 25
+       Acc (Vector Float)               -- input flattened thetas vector 
+    -> Exp Int                          -- input layer num
+    -> Exp Int                          -- hidden layer num
     -> Exp Int                          -- num of labels
     -> Acc (Matrix Float)               -- X (data matrix) in the form [1 X] (5000x401)
     -> Acc (Vector Float)               -- y (labels)
     -> Exp Float                        -- lambda
-    -> ( Acc (Scalar Float)             -- J (cost):t
-       , Acc (Matrix Float, Matrix Float) ) -- theta1+theta2 vector
+    -> Acc (Scalar Float, Vector Float ) -- j, theta1+theta2 vector
     -- -> Acc (Matrix Float, Matrix Float) -- theta1+theta2 vector
-nnCostFunction theta1 theta2 n xs y lambda = 
+nnCostFunction ts l1 l2 n xs y lambda = 
     let
         Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
+
+        -- unroll theta1
+        theta1 = reshape (index2 l2 (l1+1)) $ A.take (l2*(l1+1)) ts
+        theta2 = reshape (index2  n (l2+1)) $ A.drop (l2*(l1+1)) ts
 
         -- make vector y into matrix Y
         ys = matrixfy y
@@ -304,10 +311,10 @@ nnCostFunction theta1 theta2 n xs y lambda =
                       where
                         Z :. h2 :. w2 = unlift (shape theta2) :: Z :. Exp Int :. Exp Int 
         
-        -- grads = flatten theta1grad_ A.++ flatten theta2grad_
+        grads = flatten theta1grad_ A.++ flatten theta2grad_
 
     in
-    (j, lift (theta1grad_, theta2grad_))
+    lift (j, grads)
     -- lift (theta1grad_, theta2grad_)
 
 
@@ -320,7 +327,7 @@ fmincg ::
     -- -> Acc (Vector Float)               -- y (labels)
     -- -> Exp Float                        -- c (certain identification class)
     -- -> Exp Float                        -- lambda (learning rate)s
-    -> (Acc (Vector Float), Acc (Vector Float)) -- j, theta for c 
+    -> (Acc (Vector Float), Acc (Vector Float)) -- theta, j 
 fmincg costFunction theta = 
     let
         fX = fill (constant (Z :. (0::Int))) (0 :: Exp Float)
@@ -345,8 +352,8 @@ outerMostLoop ::
     -> Acc (Vector Float) -- df1
     -> Acc (Vector Float) -- fX0
     -- -> Exp Float          -- lambda
-    -> ( Acc (Vector Float)
-       , Acc (Vector Float)) -- j, theta for c
+    -> ( Acc (Vector Float)  -- theta
+       , Acc (Vector Float)) -- j
 outerMostLoop costFunction theta0 s0 d10 f10 z10 df10 fX0 =
     let
         length0 :: Acc (Scalar Int)
