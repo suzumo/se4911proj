@@ -45,18 +45,18 @@ test1 = do
 
 
 test2 :: Int -> Int -> Int -> IO (Vector Float)
-test2 fstLayer sndLayer nSamples = do
-    xs <- loadxs "trainsample100.txt" nSamples fstLayer
-    ys <- loadys "trainlabel100.txt" nSamples
-    theta1 <- loadt1 --gentheta2 fstLayer sndLayer 25x401
-    theta2 <- loadt2 --gentheta2 sndLayer 10 10x26
-    let ts = flatten theta1 A.++ flatten theta2 
+test2 inputl hiddenl ss = do
     let lambda = (1.0 :: Exp Float)
-    let n = 10 :: Exp Int
-    let l1 = constant fstLayer
-    let l2 = constant sndLayer
+    let n = 10
+    let l1 = constant inputl
+    let l2 = constant hiddenl
+    xs <- loadxs "trainsample100.txt" ss inputl
+    ys <- loadys "trainlabel100.txt" ss
+    theta1 <- gentheta2 inputl hiddenl -- 25x401
+    theta2 <- gentheta2 hiddenl n -- 10x26
+    let ts = flatten theta1 A.++ flatten theta2 
 
-    let (thetas, j) = fmincg (\t -> nnCostFunction t l1 l2 n xs ys lambda) ts
+    let (thetas, j) = fmincg (\t -> nnCostFunction t l1 l2 (constant n) xs ys lambda) ts
     -- let (j, thetas) = unlift $ nnCostFunction thetas l1 l2 n xs ys lambda
 
     return $ run (lift j)
@@ -371,7 +371,7 @@ outerMostLoop costFunction theta0 s0 d10 f10 z10 df10 fX0 =
                 length :: Acc (Scalar Int)
                 (theta, fX, s, df1, f1, d1, z1, length) = unlift args
             in
-            unit ((the length) A.< (10 :: Exp Int)) -- SET LOOP HERE -- should repeat til length < 50
+            unit ((the length) A.< (5 :: Exp Int)) -- SET LOOP HERE -- should repeat til length < 50
     
         body :: Acc (Vector Float, Vector Float, Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
             -> Acc (Vector Float, Vector Float, Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
