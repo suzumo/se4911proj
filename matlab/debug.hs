@@ -1,19 +1,23 @@
 -- debug nn
 n = 10 :: Int
-xs <- loadxs "trainsample100.txt" 100 400 -- 100x401
-ys <- loadys "trainlabel100.txt" 100 -- 1x100
+l1 = 400 :: Int
+l2 = 25 :: Int
+ssize = 200 :: Int
+xs <- loadxs "data1000.txt" ssize l1 -- 100x401
+ys <- loadys "label1000.txt" ssize -- 1x100
 ymat = matrixfy ys -- 100x10
-theta1 <- loadt1
-theta2 <- loadt2
--- theta1 <- gentheta2 400 25 -- 25x401
--- theta2 <- gentheta2 25 n   -- 10x26
+theta1 <- gentheta2 l1 l2 -- 25x401
+theta2 <- gentheta2 l2 n   -- 10x26
 lambda = 1 :: Exp Float
-l1 = 400 :: Exp Int
-l2 = 25 :: Exp Int
 ts = (flatten theta1) A.++ (flatten theta2)
 
-result = nnCostFunction ts l1 l2 (constant n) xs ys lambda
+let (thetas, j) = fmincg (\t -> nnCostFunction t (constant l1) (constant l2) (constant n) xs ys lambda) ts
 
+let theta11 = reshape (index2 (constant l2) (constant (l1+1))) $ A.take ((constant l2)*(constant (l1+1))) thetas
+let theta22 = reshape (index2  (constant n) (constant (l2+1))) $ A.drop (constant (l2)*(constant (l1+1))) thetas
+
+let pred = predict theta11 theta22 xs
+let result = checkResult2 pred ys
 
 
 -- nnCostFunction
