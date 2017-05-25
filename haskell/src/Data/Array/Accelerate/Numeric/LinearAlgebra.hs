@@ -1,9 +1,7 @@
-{-# LANGUAGE FlexibleContexts    #-}
-{-# LANGUAGE GADTs               #-}
-{-# LANGUAGE NoImplicitPrelude   #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeFamilies        #-}
-{-# LANGUAGE TypeOperators       #-}
+{-# LANGUAGE CPP               #-}
+{-# LANGUAGE FlexibleContexts  #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE TypeOperators     #-}
 
 module Data.Array.Accelerate.Numeric.LinearAlgebra (
 
@@ -15,26 +13,12 @@ module Data.Array.Accelerate.Numeric.LinearAlgebra (
 
 ) where
 
-import Data.Array.Accelerate                              as A
+import Data.Array.Accelerate
+import Data.Array.Accelerate.Numeric.LinearAlgebra.Type
 
-
--- | Matrix representation
---
-type Matrix a = Array DIM2 a
-
-
-data NumericR a where
-  NumericRfloat   :: NumericR Float
-  NumericRdouble  :: NumericR Double
-
-class (Elt a, Num a) => Numeric a where
-  numericR :: {- dummy -} a -> NumericR a
-
-instance Numeric Float where
-  numericR _ = NumericRfloat
-
-instance Numeric Double where
-  numericR _ = NumericRdouble
+#ifdef ACCELERATE_LLVM_NATIVE_BACKEND
+import qualified Data.Array.Accelerate.Numeric.LinearAlgebra.LLVM.Native  as CPU
+#endif
 
 
 -- | Dense matrix product
@@ -63,14 +47,18 @@ instance Numeric Double where
 --
 infixr 8 <>
 (<>) :: Numeric e => Acc (Matrix e) -> Acc (Matrix e) -> Acc (Matrix e)
-(<>) = mmult
+(<>) xs ys =
+#ifdef ACCELERATE_LLVM_NATIVE_BACKEND
+  foreignAcc CPU.mXm
+#endif
+  (uncurry mXm) $ lift (xs,ys)
 
 
 -- General dense matrix-matrix multiply written in pure Accelerate. This is not
 -- efficient due to the memory access patterns.
 --
-mmult :: Num e => Acc (Matrix e) -> Acc (Matrix e) -> Acc (Matrix e)
-mmult arr brr
+mXm :: Num e => Acc (Matrix e) -> Acc (Matrix e) -> Acc (Matrix e)
+mXm arr brr
   = fold (+) 0
   $ zipWith (*) arrRepl brrRepl
   where

@@ -48,7 +48,7 @@ cabal-version:        >=1.10
 --
 Flag llvm-cpu
   Description:          Enable the LLVM backend for multicore CPUs
-  Default:              False
+  Default:              True
 
 Flag llvm-ptx
   Description:          Enable the LLVM PTX backend for NVIDIA GPUs
@@ -65,6 +65,7 @@ executable mhnn-accelerate
   -- Modules included in this executable, other than Main.
   other-modules:
       Data.Array.Accelerate.Numeric.LinearAlgebra
+      Data.Array.Accelerate.Numeric.LinearAlgebra.Type
 
   -- Other library packages from which modules are imported.
   build-depends:
@@ -77,6 +78,9 @@ executable mhnn-accelerate
         accelerate-llvm-native      == 1.0.*
       , accelerate-io               == 1.0.*
       , hmatrix                     >= 0.18
+
+    other-modules:
+      Data.Array.Accelerate.Numeric.LinearAlgebra.LLVM.Native
 
   if flag(llvm-ptx)
     CPP-options:        -DACCELERATE_LLVM_PTX_BACKEND
