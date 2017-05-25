@@ -247,7 +247,7 @@ nnCostFunction ::
     -> Acc (Matrix Float)               -- X (data matrix) in the form [1 X] (5000x401)
     -> Acc (Vector Float)               -- y (labels)
     -> Exp Float                        -- lambda
-    -> Acc (Scalar Float, Vector Float ) -- j, theta1+theta2 vector
+    -> Acc (Scalar Float, Vector Float) -- j, theta1+theta2 vector
     -- -> Acc (Matrix Float, Matrix Float) -- theta1+theta2 vector
 nnCostFunction ts l1 l2 n xs y lambda = 
     let
@@ -864,3 +864,4 @@ infixl 7 .*
 --     where
 --         f' = A.replicate (lift (Any :. h)) (unit f)
 --         Z :. h = unlift (shape v) :: Z :. Exp Int
+
