@@ -23,12 +23,12 @@ import Data.Array.Accelerate.Numeric.LinearAlgebra
 
 main = do
     -- train the neural network with 100 randomized training samples
-    thetas <- train "data1000.txt" "label1000.txt" 400 25 10 400
+    thetas <- train "../data/data1000.txt" "../data/label1000.txt" 400 25 10 400
     -- get weights
     let (theta1, theta2) = unlift thetas :: (Acc (Matrix Float), Acc (Matrix Float))
     -- load full data set to test the calculations
-    xs <- loadxs "data1000.txt" 1000 400
-    ys <- loadys "label1000.txt" 1000
+    xs <- loadxs "../data/data1000.txt" 1000 400
+    ys <- loadys "../data/label1000.txt" 1000
     let pred = predict theta1 theta2 xs
     let result = testAccuracy pred ys
     print $ run result
