@@ -209,21 +209,21 @@ predict theta1 theta2 xs =
     in
     getYs
 
-checkResult :: 
+checkResult ::
        Acc (Matrix Float)
     -> Acc (Vector Float)
-    -> Matrix Float
+    -> Acc (Matrix Float)
     -> Acc (Scalar Int)
-checkResult xs ys thetas = 
+checkResult xs ys thetas =
     let
-        pa = A.sum 
-          $ A.map boolToInt
-          $ A.zipWith (A.==) pLabels (A.map (A.round) ys)
+        pa = A.sum
+           $ A.map boolToInt
+           $ A.zipWith (A.==) pLabels (A.map (A.round) ys)
 
         pLabels = A.map ((+1) . A.indexHead . A.fst)
                 $ A.fold1 (\x y -> A.snd x A.> A.snd y ? (x , y))
-                $ A.indexed 
-                $ xs <> transpose (A.use thetas)
+                $ A.indexed
+                $ xs <> transpose thetas
     in
     pa
 
@@ -373,7 +373,7 @@ outerMostLoop costFunction theta0 s0 d10 f10 z10 df10 fX0 =
                 length :: Acc (Scalar Int)
                 (theta, fX, s, df1, f1, d1, z1, length) = unlift args
             in
-            unit ((the length) A.< (5 :: Exp Int)) -- SET LOOP HERE -- should repeat til length < 50
+            unit ((the length) A.< (50 :: Exp Int)) -- SET LOOP HERE -- should repeat til length < 50
     
         body :: Acc (Vector Float, Vector Float, Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
             -> Acc (Vector Float, Vector Float, Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
