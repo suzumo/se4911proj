@@ -10,7 +10,8 @@ module Main where
 import Prelude                                    as P
 import Debug.Trace
 import Data.Array.Accelerate                      as A
-import Data.Array.Accelerate.LLVM.Native          as I
+import Data.Array.Accelerate.LLVM.Native          as CPU
+-- import Data.Array.Accelerate.LLVM.PTX             as PTX
 import Data.Array.Accelerate.System.Random.MWC
 import Data.Array.Accelerate.Control.Lens
 import Data.Array.Accelerate.Debug
