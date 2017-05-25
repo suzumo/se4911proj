@@ -1,4 +1,4 @@
-thetas <- train "data1000.txt" "label1000.txt" 400 25 10 300
+thetas <- train "data1000.txt" "label1000.txt" 400 25 10 250
 let (theta1, theta2) = unlift thetas :: (Acc (Matrix Float), Acc (Matrix Float))
 
 xs <- loadxs "data1000.txt" 1000 400

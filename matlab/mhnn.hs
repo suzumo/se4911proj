@@ -62,44 +62,6 @@ train xsFile ysFile inputl hiddenl ss sampleNum = do
     return $ lift (theta1, theta2)
 
 
-loadxs :: String -> Int -> Int -> IO (Acc (Matrix Float))
-loadxs filename m n = do
-    content <- readFile filename 
-    let strarr = words content
-    let dbarr = P.map read strarr
-    let ones = fill (constant (Z:.m:.1)) 1 :: Acc (Array DIM2 Float)
-    let arr = A.use (A.fromList (Z:.m:.n) dbarr)
-    let carr = ones A.++ arr 
-    return carr
-
-
-loadys :: String -> Int -> IO (Acc (Vector Float))
-loadys filename m = do
-    content <- readFile filename
-    let strarr = words content
-    let dbarr = P.map read strarr
-    let arr = A.use $ A.fromList (Z:.m) dbarr
-    return arr
-
-
-gentheta :: Acc (Matrix Float) -> Acc (Vector Float)
-gentheta xs = lift $ A.fill (index1 w) 0
-    where
-        Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
-
-
-gentheta2 :: Int -> Int -> IO (Acc (Matrix Float))
-gentheta2 sizeIn sizeOut = do
-    let n = (sizeIn + 1)* sizeOut
-    let epsilon = 0.12 :: Exp Float
-    xs <- withSystemRandom $ \gen -> randomArray (uniformR (0,1)) (Z:.sizeOut:.(sizeIn + 1))
-    return $ A.map (\x -> x*2*epsilon - epsilon) (A.use xs)
-
-
-yEqCFloatVec :: Acc (Vector Float) -> Exp Float -> Acc (Vector Float)
-yEqCFloatVec ys c = A.map (A.fromIntegral . boolToInt . (c A.==)) ys
-
-
 predict ::
        Acc (Matrix Float)               -- input theta matrix
     -> Acc (Matrix Float)               -- hidden theta matrix
@@ -138,6 +100,44 @@ testAccuracy predict labels =
            $ A.zipWith (A.==) (A.map (A.round) labels) predict
     in
     pa
+
+
+loadxs :: String -> Int -> Int -> IO (Acc (Matrix Float))
+loadxs filename m n = do
+    content <- readFile filename 
+    let strarr = words content
+    let dbarr = P.map read strarr
+    let ones = fill (constant (Z:.m:.1)) 1 :: Acc (Array DIM2 Float)
+    let arr = A.use (A.fromList (Z:.m:.n) dbarr)
+    let carr = ones A.++ arr 
+    return carr
+
+
+loadys :: String -> Int -> IO (Acc (Vector Float))
+loadys filename m = do
+    content <- readFile filename
+    let strarr = words content
+    let dbarr = P.map read strarr
+    let arr = A.use $ A.fromList (Z:.m) dbarr
+    return arr
+
+
+gentheta :: Acc (Matrix Float) -> Acc (Vector Float)
+gentheta xs = lift $ A.fill (index1 w) 0
+    where
+        Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
+
+
+gentheta2 :: Int -> Int -> IO (Acc (Matrix Float))
+gentheta2 sizeIn sizeOut = do
+    let n = (sizeIn + 1)* sizeOut
+    let epsilon = 0.12 :: Exp Float
+    xs <- withSystemRandom $ \gen -> randomArray (uniformR (0,1)) (Z:.sizeOut:.(sizeIn + 1))
+    return $ A.map (\x -> x*2*epsilon - epsilon) (A.use xs)
+
+
+yEqCFloatVec :: Acc (Vector Float) -> Exp Float -> Acc (Vector Float)
+yEqCFloatVec ys c = A.map (A.fromIntegral . boolToInt . (c A.==)) ys
 
 
 -- make vector ys into matrix ys for neural network
