@@ -19,50 +19,74 @@ version:             0.1.0.0
 -- description:
 
 -- The license under which the package is released.
-license:             BSD3
+license:              BSD3
 
 -- The file containing the license text.
-license-file:        LICENSE
+license-file:         LICENSE
 
 -- The package author(s).
-author:              Christina Jeong
+author:               Christina Jeong
 
 -- An email address to which users can send suggestions, bug reports, and
 -- patches.
-maintainer:          j.jeong@unsw.edu.au
+maintainer:           j.jeong@unsw.edu.au
 
 -- A copyright notice.
 -- copyright:
 
--- category:
-
-build-type:          Simple
+build-type:           Simple
 
 -- Extra files to be distributed with the package, such as examples or a
 -- README.
-extra-source-files:  ChangeLog.md
+extra-source-files:   ChangeLog.md
 
 -- Constraint on the version of Cabal needed to build this package.
-cabal-version:       >=1.10
+cabal-version:        >=1.10
+
+
+-- Flags that control which Accelerate backends are linked against
+--
+Flag llvm-cpu
+  Description:          Enable the LLVM backend for multicore CPUs
+  Default:              False
+
+Flag llvm-ptx
+  Description:          Enable the LLVM PTX backend for NVIDIA GPUs
+  Default:              False
 
 
 executable mhnn-accelerate
+  -- Directories containing source files.
+  hs-source-dirs:       src
+
   -- .hs or .lhs file containing the Main module.
-  main-is:             Main.hs
+  main-is:              Main.hs
 
   -- Modules included in this executable, other than Main.
-  -- other-modules:
-
-  -- LANGUAGE extensions used by modules in this package.
-  other-extensions:    FlexibleContexts, ScopedTypeVariables, TypeFamilies, TypeOperators
+  other-modules:
+      Data.Array.Accelerate.Numeric.LinearAlgebra
 
   -- Other library packages from which modules are imported.
-  build-depends:       base >=4.9 && <4.10
+  build-depends:
+        base                        >= 4.8 && < 4.10
+      , accelerate                  == 1.0.*
 
-  -- Directories containing source files.
-  hs-source-dirs:      src
+  if flag(llvm-cpu)
+    CPP-options:        -DACCELERATE_LLVM_NATIVE_BACKEND
+    build-depends:
+        accelerate-llvm-native      == 1.0.*
+      , accelerate-io               == 1.0.*
+      , hmatrix                     >= 0.18
+
+  if flag(llvm-ptx)
+    CPP-options:        -DACCELERATE_LLVM_PTX_BACKEND
+    build-depends:
+        accelerate-llvm-ptx         == 1.0.*
+      , accelerate-io               == 1.0.*
+      , cuda                        >= 0.7.5
 
   -- Base language which the package is written in.
-  default-language:    Haskell2010
+  default-language:     Haskell2010
 
 -- vim: nospell
+
