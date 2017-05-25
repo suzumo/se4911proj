@@ -4,42 +4,7 @@
 resolver: lts-8.0
 
 packages:
-# - '.'
-
-- location:
-    git:    https://github.com/AccelerateHS/accelerate.git
-    commit: 1.0.0.0
-    # commit: c82198a7ba1de9ba1e09fc5ff7ec3fab1b90f40a
-  # extra-dep: true
-
-# - location:
-#     git:    https://github.com/AccelerateHS/accelerate-llvm.git
-#     commit: 0c63d95f75744365c4e867d40bc3382eec9f07d3
-#   extra-dep: true
-#   subdirs:
-#     - 'accelerate-llvm'
-#     - 'accelerate-llvm-native'
-#     - 'accelerate-llvm-ptx'
-
-# - location:
-#     git:    https://github.com/AccelerateHS/accelerate-io.git
-#     commit: c8a618b563853b08f3501979e05e51d1303d7fa4
-#   extra-dep: true
-
-# - location:
-#     git:    https://github.com/tmcdonell/mwc-random-accelerate.git
-#     commit: 1f76b6ed03a835a6077f68aa4bc65506eb1cd64f
-#   # extra-dep: true
-
-# - location:
-#     git:    https://github.com/tmcdonell/linear-accelerate.git
-#     commit: 952a2d4234b9855650ca7dc69ff6b234a7cdb56f
-#   extra-dep: true
-
-# - location:
-#     git:    https://github.com/tmcdonell/lens-accelerate.git
-#     commit: 00415bf19d76446685053222f90843f75ad6f94b
-#   extra-dep: true
+- '.'
 
 extra-deps:
 - 'accelerate-1.0.0.0'
