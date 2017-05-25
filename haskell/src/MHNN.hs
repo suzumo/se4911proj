@@ -6,6 +6,8 @@
 --
 -- linear vector things: https://github.com/tmcdonell/linear-accelerate
 
+module MHNN where
+
 import Prelude                                    as P
 import Debug.Trace
 import Data.Array.Accelerate                      as A
@@ -14,9 +16,7 @@ import Data.Array.Accelerate.System.Random.MWC
 import Data.Array.Accelerate.Control.Lens
 import Data.Array.Accelerate.Debug
 
-import MMult                                      ( mmult )
-
-type Matrix a = Array DIM2 a
+import Data.Array.Accelerate.Numeric.LinearAlgebra
 
 
 -- trying to translate coursera machine learning neural network 
@@ -185,12 +185,14 @@ predict theta1 theta2 xs =
         Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
 
         h1 = A.map sigmoid 
-           $ mmult ((fill (lift (Z:.h:.constant 1)) 1 :: Acc (Array DIM2 Float)) A.++ xs)
-                   (A.transpose theta1)
+           $ ((fill (lift (Z:.h:.constant 1)) 1 :: Acc (Array DIM2 Float)) A.++ xs)
+             <>
+             A.transpose theta1
         
         h2 = A.map sigmoid 
-           $ mmult ((fill (lift (Z:.constant 5000:.constant 1)) 1 :: Acc (Array DIM2 Float)) A.++ h1)
-                   (A.transpose theta2)
+           $ ((fill (lift (Z:.constant 5000:.constant 1)) 1 :: Acc (Array DIM2 Float)) A.++ h1)
+             <>
+             A.transpose theta2
         
         -- to get indices of the highest element in the row
         -- [dummy, pos] = max(h2, [], 2);
@@ -221,7 +223,7 @@ checkResult xs ys thetas =
         pLabels = A.map ((+1) . A.indexHead . A.fst)
                 $ A.fold1 (\x y -> A.snd x A.> A.snd y ? (x , y))
                 $ A.indexed 
-                $ mmult xs (transpose (A.use thetas))
+                $ xs <> transpose (A.use thetas)
     in
     pa
 
@@ -263,10 +265,10 @@ nnCostFunction ts l1 l2 n xs y lambda =
         -- feedforward
         a3 :: Acc (Matrix Float)
         a1 = xs -- (100x401)
-        z2 = mmult theta1 (transpose a1) -- 25x401 X 401x100 = 25x100 
+        z2 = theta1 <> transpose a1 -- 25x401 X 401x100 = 25x100 
         a2 = (fill (lift (Z :. h :. constant  1)) 1 :: Acc (Matrix Float)) 
            A.++ (A.transpose $ A.map sigmoid z2) -- (100x26)
-        z3 = mmult a2 (A.transpose theta2) -- (100x26) x (26x10) = (100x10)
+        z3 = a2 <> A.transpose theta2 -- (100x26) x (26x10) = (100x10)
         a3 = A.map sigmoid z3 -- (100x10)
 
         -- calculate cost J
@@ -287,14 +289,14 @@ nnCostFunction ts l1 l2 n xs y lambda =
         -- backpropagate to get gradients
         d3 = A.zipWith (-) a3 ys -- 100x10
         d2 = A.zipWith (*) 
-             (mmult d3 theta2)
-                    ((fill (lift (Z :. h :. constant  1)) 1 :: Acc (Matrix Float)) 
+                (d3 <> theta2)
+                ((fill (lift (Z :. h :. constant  1)) 1 :: Acc (Matrix Float)) 
                      A.++ (A.transpose $ A.map sigmoidGradient z2)) -- 100x26 .+ 100x26
 
         theta2grad = A.map (\x -> x/A.fromIntegral h) 
-                   $ mmult (transpose d3) a2 -- 10x100 X 100x26 = 10x26
+                   $ transpose d3 <> a2 -- 10x100 X 100x26 = 10x26
         theta1grad = A.map (\x -> x/A.fromIntegral h) 
-                   $ mmult (transpose (A.tail d2)) a1 -- 25x100 X 100X401 = 25x401
+                   $ transpose (A.tail d2) <> a1 -- 25x100 X 100X401 = 25x401
 
         -- add gradient regularisation
         theta1grad_ = A.zipWith (+) theta1grad 

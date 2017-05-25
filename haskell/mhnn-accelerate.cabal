@@ -71,6 +71,8 @@ executable mhnn-accelerate
   build-depends:
         base                        >= 4.8 && < 4.10
       , accelerate                  == 1.0.*
+      , lens-accelerate             >= 0.1
+      , mwc-random-accelerate       >= 0.1
 
   if flag(llvm-cpu)
     CPP-options:        -DACCELERATE_LLVM_NATIVE_BACKEND

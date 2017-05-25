@@ -38,7 +38,7 @@ flags:
     nvvm:  false
   mhnn-accelerate:
     llvm-cpu: true
-    llvm-ptx: true
+    llvm-ptx: false
 
 # Extra package databases containing global packages
 extra-package-dbs: []
