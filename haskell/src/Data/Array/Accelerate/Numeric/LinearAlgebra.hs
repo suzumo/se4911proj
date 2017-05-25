@@ -1,19 +1,87 @@
 {-# LANGUAGE FlexibleContexts    #-}
+{-# LANGUAGE GADTs               #-}
+{-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeFamilies        #-}
 {-# LANGUAGE TypeOperators       #-}
 
-module MMult where
+module Data.Array.Accelerate.Numeric.LinearAlgebra (
 
-import Prelude                           as P
-import Data.Array.Accelerate             as A
+  Matrix,
 
--- import Data.Array.Accelerate.Interpreter
+  -- * Products
+  -- ** Matrix-matrix
+  (<>),
+
+) where
+
+import Data.Array.Accelerate                              as A
 
 
-
+-- | Matrix representation
+--
 type Matrix a = Array DIM2 a
 
+
+data NumericR a where
+  NumericRfloat   :: NumericR Float
+  NumericRdouble  :: NumericR Double
+
+class (Elt a, Num a) => Numeric a where
+  numericR :: {- dummy -} a -> NumericR a
+
+instance Numeric Float where
+  numericR _ = NumericRfloat
+
+instance Numeric Double where
+  numericR _ = NumericRdouble
+
+
+-- | Dense matrix product
+--
+-- >>> let a = fromList (Z :. 3 :. 5) [1..]
+-- >>> a
+-- Matrix (Z:.3:.5)
+--  [  1.0,  2.0,  3.0,  4.0,  5.0
+--  ,  6.0,  7.0,  8.0,  9.0, 10.0
+--  , 11.0, 12.0, 13.0, 14.0, 15.0 ]
+--
+-- >>> let b = fromList (Z :. 5 :. 2) [1,3, 0,2, -1,5, 7,7, 6,0]
+-- >>> b
+-- Matrix (Z :. 5 :. 2)
+--  [  1.0, 3.0
+--  ,  0.0, 2.0
+--  , -1.0, 5.0
+--  ,  7.0, 7.0
+--  ,  6.0, 0.0 ]
+--
+-- >>> a <> b
+-- Matrix (Z :. 3 :. 2)
+--  [  56.0,  50.0
+--  , 121.0, 135.0
+--  , 186.0, 220.0 ]
+--
+infixr 8 <>
+(<>) :: Numeric e => Acc (Matrix e) -> Acc (Matrix e) -> Acc (Matrix e)
+(<>) = mmult
+
+
+-- General dense matrix-matrix multiply written in pure Accelerate. This is not
+-- efficient due to the memory access patterns.
+--
+mmult :: Num e => Acc (Matrix e) -> Acc (Matrix e) -> Acc (Matrix e)
+mmult arr brr
+  = fold (+) 0
+  $ zipWith (*) arrRepl brrRepl
+  where
+    Z :. rowsA :. _     = unlift (shape arr)  :: Z :. Exp Int :. Exp Int
+    Z :. _     :. colsB = unlift (shape brr)  :: Z :. Exp Int :. Exp Int
+    --
+    arrRepl             = replicate (lift $ Z :. All   :. colsB :. All) arr
+    brrRepl             = replicate (lift $ Z :. rowsA :. All   :. All) (transpose brr)
+
+
+{--
 add = A.zipWith (+)
 sub = A.zipWith (-)
 
@@ -127,28 +195,11 @@ concatHoriz a b = generate sh f
 
 -- (a b)
 -- (c d)
-concatFour :: Acc (Matrix Double) -> Acc (Matrix Double) -> Acc (Matrix Double) -> Acc (Matrix Double)
-           -> Acc (Matrix Double)
-concatFour a b c d = concatVert (concatHoriz a c) (concatHoriz b d)
-
-{--
-main = do
-  let xs = use $ fromList (Z :. 12 :. 12) [0.0..]
-      ys = use $ fromList (Z :. 12 :. 12) [1.0..]
-  P.print $ run $ mul' xs ys
-  P.print $ run $ mul xs ys
-  P.print $ run $ strassen xs ys
+concatFour
+    :: Acc (Matrix Double) -> Acc (Matrix Double)
+    -> Acc (Matrix Double) -> Acc (Matrix Double)
+    -> Acc (Matrix Double)
+concatFour a b c d =
+  concatVert (concatHoriz a c) (concatHoriz b d)
 --}
-
--- bottom out to this or cublas
-mmult :: A.Num e => A.Acc (Matrix e) -> A.Acc (Matrix e) -> A.Acc (Matrix e)
-mmult arr brr
-  = A.fold (+) 0
-  $ A.zipWith (*) arrRepl brrRepl
-  where
-    Z :. rowsA :. _     = unlift (A.shape arr)    :: Z :. Exp Int :. Exp Int
-    Z :. _     :. colsB = unlift (A.shape brr)    :: Z :. Exp Int :. Exp Int
-    --
-    arrRepl             = A.replicate (lift $ Z :. All   :. colsB :. All) arr
-    brrRepl             = A.replicate (lift $ Z :. rowsA :. All   :. All) (A.transpose brr)
 
