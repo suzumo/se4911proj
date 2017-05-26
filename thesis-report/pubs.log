@@ -1,0 +1,14 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdftex 2016.5.18)  18 MAY 2016 10:21
+entering extended mode
+**"C:/Users/Jiyong/OneDrive/2016/Semester 1/SENG4910/thesis A report/pubs.bib"
+("C:/Users/Jiyong/OneDrive/2016/Semester 1/SENG4910/thesis A report/pubs.bib"
+! Undefined control sequence.
+l.28    howpublished={http://\hspace
+                                    {0cm}\relax
+? 
+! Emergency stop.
+l.28    howpublished={http://\hspace
+                                    {0cm}\relax
+End of file on the terminal!
+
+!  ==> Fatal error occurred, no output PDF file produced!

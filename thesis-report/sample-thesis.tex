@@ -1,0 +1,91 @@
+\documentclass[]{unswthesis}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Haskell,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+%%% Class options:
+
+%  undergrad (default)
+%  hdr
+
+%  11pt (default)
+%  12pt
+
+%  final (default)
+%  draft
+
+%  oneside (default for hdr)
+%  twoside (default for undergrad)
+
+
+%% Thesis details
+\thesistitle{Implementing neural networks in Accelerate}
+\thesisschool{School of Computer Science and Engineering}
+\thesisauthor{Christina Jeong}
+\thesisZid{z2250189}
+\thesistopic{3733}
+\thesisdegree{Bachelor of Engineering in Software Engineering}
+\thesisdate{\today}
+\thesissupervisor{A/Prof.\ Gabriele Keller}
+
+
+%% My own LaTeX macros, definitions, etc
+\include{definitions}
+
+
+\begin{document}
+
+%% pages in the ``frontmatter'' section have roman numeral page number
+\frontmatter  
+\maketitle
+
+\include{abstract}
+\include{acknowledgements}
+\include{abbreviations}
+
+\tableofcontents
+\listoffigures  % if required
+%\listoftables  % if required
+
+%% pages in the ``mainmatter'' section have arabic page numbers and chapters are numbered
+\mainmatter
+
+\include{introduction}
+\include{background}
+\include{mywork} %% thesis B results
+\include{evaluation} %% evaluation of results
+\include{conclusion}
+
+%% chapters in the ``backmatter'' section do not have chapter numbering
+%% text in the ``backmatter'' is single spaced
+\backmatter
+\bibliographystyle{alpha}
+\bibliography{pubs}
+
+%\include{appendix1} %% for thesisB
+%\include{appendix2} %% for thesisB
+
+\end{document}
