@@ -1,0 +1,16 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Structure of a modern unit by\nobreakspace {}\cite {Kar16}.}}{4}
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Graphs of some common activation functions\nobreakspace {}\cite {Kar16}.}}{5}
+\contentsline {figure}{\numberline {2.3}{\ignorespaces An example of a 2-layer neural network\nobreakspace {}\cite {Kar16}.}}{6}
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Structure overview of \texttt {Data.Array.Accelerate}.\nobreakspace {}\cite {ChaKelLee11}}}{10}
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Types of array shapes and indices\nobreakspace {}\cite {ChaKelLee11}.}}{11}
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Some Accelerate functions\nobreakspace {}\cite {Mar13}.}}{12}
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Haskell and Accelerate versions for dot product\nobreakspace {}\cite {McD13}.}}{13}
+\contentsline {figure}{\numberline {2.8}{\ignorespaces Key Accelerate functions used in\nobreakspace {}\cite {Eve16}.}}{16}
+\contentsline {figure}{\numberline {2.9}{\ignorespaces Support functions for forward- and back-propagation used in\nobreakspace {}\cite {Eve16}.}}{16}
+\contentsline {figure}{\numberline {2.10}{\ignorespaces Accelerate and Haskell code are mixed in\nobreakspace {}\cite {Eve16}.}}{17}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Estimated timeline for this project.}}{22}
+\addvspace {10\p@ }
+\addvspace {10\p@ }

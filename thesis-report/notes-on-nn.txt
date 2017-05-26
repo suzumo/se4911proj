@@ -1,0 +1,38 @@
+19/may/16 meeting minutes
+
+issue 
+1. coordination language
+	- semantic problem?
+	- xmap (smap?)
+		- right approach
+		- though bad at sharing recovery/memory
+	- idea is to somehow put 'it' in type??
+
+2. integrate it into embedded langauge
+
+
+issues:
+scheduler problem with Acc?
+	- assuming we have a good schedule and work from there
+
+entire class of problem - address with adhoc solutions? or proper solutions
+
+optimizer <- make it simpler by taking out "cleverness" "automaticness"
+co-generator <- keep co-generator simple?
+
+rob's paper:
+not producing great benchmark results
+	- mostly to do with matrix multiplication, derived from vectorisation (vectorisation is not as smart??)
+		- input more small rules to make things smoother??
+	- small things are making big differences
+	- generally: regularity tracking more DYNAMICALLY may be causing an issue??
+				 - making the frontend bigger/slower - constant factor larger, having to reduce it down to small things
+				 make it do it statically??
+	- streaming 
+
+paper contributions:
+regular streams are supported
+regularity tracking hask
+optimization
+
+automatic differentiation - super speculative - NP Complete problem??

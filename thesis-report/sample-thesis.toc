@@ -1,0 +1,19 @@
+\contentsline {chapter}{\numberline {1}Introduction}{1}
+\contentsline {chapter}{\numberline {2}Background and Related Works}{3}
+\contentsline {section}{\numberline {2.1}Neural network architecture}{3}
+\contentsline {section}{\numberline {2.2}Feed-forward back-propagation learning algorithm}{6}
+\contentsline {section}{\numberline {2.3}GPU-accelerated programming and neural networks}{9}
+\contentsline {section}{\numberline {2.4}Accelerate}{10}
+\contentsline {section}{\numberline {2.5}Advantages of Accelerate}{12}
+\contentsline {section}{\numberline {2.6}Previous Implementations}{14}
+\contentsline {chapter}{\numberline {3}Thesis Proposal}{18}
+\contentsline {section}{\numberline {3.1}Choice of neural network}{18}
+\contentsline {section}{\numberline {3.2}Measuring performance}{19}
+\contentsline {section}{\numberline {3.3}Completed tasks}{20}
+\contentsline {section}{\numberline {3.4}Areas requiring development}{20}
+\contentsline {section}{\numberline {3.5}Expected schedule}{21}
+\contentsline {chapter}{\numberline {4}Evaluation}{23}
+\contentsline {section}{\numberline {4.1}Results}{23}
+\contentsline {section}{\numberline {4.2}Discussion}{23}
+\contentsline {chapter}{\numberline {5}Conclusion}{24}
+\contentsline {chapter}{Bibliography}{25}

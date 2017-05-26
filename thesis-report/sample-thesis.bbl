@@ -1,0 +1,108 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{MCKL13}
+
+\bibitem[BC16]{Goo16}
+Ian Goodfellow~Yoshua Bengio and Aaron Courville.
+\newblock Deep learning.
+\newblock Book in preparation for MIT Press, 2016.
+
+\bibitem[CKL{\etalchar{+}}11]{ChaKelLee11}
+Manuel M.~T. Chakravarty, Gabriele Keller, Sean Lee, Trevor McDonell, and Vinod
+  Grover.
+\newblock Accelerating haskell array codes with multicore gpus.
+\newblock {\em Declarative Aspects of Multicore Programming}, 2011.
+
+\bibitem[Eve16]{Eve16}
+Rob Everest.
+\newblock Untitled.
+\newblock 2016.
+
+\bibitem[GdAF13]{GurFor13}
+Sáskya T.~A. Gurgel and Andrei de~A.~Formiga.
+\newblock Parallel implementation of feedforward neural networks on gpus.
+\newblock pages 143--149, 2013.
+
+\bibitem[Kar16]{Kar16}
+Andrej Karpathy.
+\newblock Neural networks part 1: Setting up the architecture.
+\newblock http://\hspace{0cm}\relax cs231n.github.io/\hspace{0cm}\relax
+  neural-networks-1/, accessed 01/01/2016 to 30/05/2016, 2016.
+\newblock Course notes from CS231n: Convolutional Neural Networks for Visual
+  Recognition at School of Comp.\ Sci.\, Stanford University.
+
+\bibitem[LeC89]{Lec89}
+Y.~LeCun.
+\newblock Generalization and network design strategies.
+\newblock {\em University of Toronto Connectionist Research Group Technical
+  Report}, 89, 1989.
+
+\bibitem[Mar13]{Mar13}
+Simon Marlow.
+\newblock {\em Parallel and Concurrent Programming in Haskell}.
+\newblock O'Reilly Media, Sebastopol, CA, 1st edition, 2013.
+
+\bibitem[McD13]{McD13}
+Trevor~L. McDonell.
+\newblock Gpgpu programming in haskell with accelerate.
+\newblock https://\hspace{0cm}\relax
+  speakerdeck.com/\hspace{0cm}tmcdonell/\hspace{0cm}\relax
+  gpgpu-programming-in-haskell-with-accelerate\hspace{0cm}\relax, accessed
+  01/04/2016, 2013.
+\newblock YOW! Lambda Jam 2013 Workshop.
+
+\bibitem[MCKL13]{McDChaKel13}
+Trevor McDonell, Manuel M.~T. Chakravarty, Gabriele Keller, and Ben Lippmeier.
+\newblock Optimising purely functional gpu programs.
+\newblock {\em ACM SIGPLAN International Conference on Functional Programming},
+  2013.
+
+\bibitem[MP43]{McDPit43}
+Warren~S. McCulloch and Walter Pitts.
+\newblock A logical calculus of the ideas immanent in nervous activity.
+\newblock {\em Bulletin of Mathematical Biology}, 5:115--133, 1943.
+
+\bibitem[Ng16]{Ng12}
+Andrew Ng.
+\newblock Machine learning.
+\newblock http://\hspace{0cm}\relax
+  www.coursera.org/\hspace{0cm}learn\hspace{0cm}\relax machine-learning,
+  accessed 01/01/2016 to 30/05/2016, 2016.
+\newblock Coursera Inc.
+
+\bibitem[Nie15]{Nie16}
+Michael Nielson.
+\newblock {\em Neural Networks and Deep Learning}.
+\newblock Determination Press, 2015.
+
+\bibitem[Nor14]{Nor14}
+Russell Norvig.
+\newblock {\em Artificial Intelligence A Modern Approach}.
+\newblock Pearson Education Limited, New York City, New York, 3rd edition,
+  2014.
+
+\bibitem[NVI14]{Nvi14}
+NVIDIA.
+\newblock Cuda spotlight: Gpu-accelerated deep neural networks.
+\newblock https://\hspace{0cm}\relax
+  devblogs.nvidia.com/\hspace{0cm}parallelforall/\hspace{0cm}\relax
+  cuda-spotlight-gpu-accelerated-deep-neural-networks\hspace{0cm}\relax,
+  accessed 14/04/2016, 2014.
+\newblock NVIDIA Accelerated Computing.
+
+\bibitem[OJ04]{OhJun04}
+Kyoung-Su Oh and Keechul Jung.
+\newblock Gpu implementation of neural networks.
+\newblock {\em Pattern Recognition}, 37:1311--1314, 2004.
+
+\bibitem[RHW86]{RumHinWil86}
+David~E. Rumelhart, Geoffrey~E. Hinton, and Ronald~J. Williams.
+\newblock Learning representations by back-propagating errors.
+\newblock {\em Nature}, 323:533--536, 1986.
+
+\bibitem[Ros62]{Ros62}
+Frank Rosenblatt.
+\newblock {\em Principles of neurodynamics; perceptrons and the theory of brain
+  mechanisms}.
+\newblock Spartan Books, Washington, D.C., 1962.
+
+\end{thebibliography}

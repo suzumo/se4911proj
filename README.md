@@ -1,3 +1,3 @@
 Stuff I'm working on for Thesis B, 2017s1.
 Making a simple neural network using Accelerate.
-Stretch goal (at this rate): make convNet.
+Used Coursera Stanford Machine Learning, week 3 & 4 material. 

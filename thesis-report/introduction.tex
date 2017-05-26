@@ -1,0 +1,27 @@
+\chapter{Introduction}\label{ch:intro}
+
+%% SELL THE TOPIC (1-2 pp)
+Neural networks are widely used for computer vision and one of the best methods for most pattern recognition problems~\cite{Nvi14}. For instance, Deep neural networks (DNN) can already perform at human level on tasks such as handwritten character recognition (including Chinese), various automotive problems and mitosis detection.
+
+One issue with DNN is its compute-intensiveness. Training a neural network with massive numbers of features require a lot of computations. Unfortunately, the most efficient and economical approach to testing the validity of many hypotheses is repeated trial-and-error~\cite{Ng12}.
+
+For the above reason, neural networks implemented with GPU-accelerated computing are common, as such arrangements are generally faster than with a CPU cluster. The main languages for GPU programming are Compute Unified Device Architecture (CUDA) or Open Computing Language (OpenCL). Both are very low-level languages based on C/C++. 
+
+On the other hand, Accelerate is a embedded domain-specific language (EDSL) created for GPU programming inside Haskell, with higher level semantics and cleaner syntax, while still offering competitive performance. 
+
+Thus, the motivations for this thesis is to explore the feasibility of implementing a neural network in a more on-the-fly, user-friendly approach using Accelerate. If successful, it may enable us test neural network hypotheses in a more convenient manner. 
+
+As an initial prototype, a feed-forward back-propagation (FFBP) neural network implementation has recently been made~\cite{Eve16}. 
+
+%% FIX FROM THIS POINT ONWARDS: 
+
+This project aims to build upon that work and create a convolutional neural network (ConvNet), which is often specialised for image recognition problems.
+
+It is crucial that the performance of the implementation is fairly competitive to existing high-level language implementations of neural networks, such as Python. Thus ways to enhancing the performance will also be explored once the basic implementation is finished.
+
+
+The following section, Chapter~\ref{ch:background} outlines the background relating to this topic, from a general overview of neural networks, the mathematics behind FFBP algorithm, an overview of the Accelerate language to previous implementation using Accelerate.
+
+Chapter~\ref{ch:style} introduces my thesis proposal and predicts some issues as well areas that need further development.
+
+Finally, Chapter~\ref{ch:conclusion} summarises the contents of this report.
