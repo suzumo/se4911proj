@@ -1,6 +1,5 @@
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE OverloadedLists #-}
 {-# LANGUAGE RebindableSyntax #-}
+{-# LANGUAGE TypeOperators    #-}
 module Main where
 -- random numbers: https://github.com/tmcdonell/mwc-random-accelerate
 --
@@ -18,13 +17,15 @@ import Data.Array.Accelerate.Debug
 
 import Data.Array.Accelerate.Numeric.LinearAlgebra
 
+import Criterion.Main
+
 
 -- trying to translate coursera machine learning neural network 
 -- into accelerate version...
 
 main = do
     -- train the neural network with 100 randomized training samples
-    thetas <- train "../data/data1000.txt" "../data/label1000.txt" 400 25 10 400
+    thetas <- train "../data/data1000.txt" "../data/label1000.txt" 400 25 10 1000
     -- get weights
     let (theta1, theta2) = unlift thetas :: (Acc (Matrix Float), Acc (Matrix Float))
     -- load full data set to test the calculations
@@ -35,24 +36,38 @@ main = do
     print $ run result
 
 
-train :: String -> String -> Int -> Int -> Int -> Int -> IO (Acc (Matrix Float, Matrix Float))
-train xsFile ysFile inputl hiddenl ss sampleNum = do
+train :: String
+      -> String
+      -> Int      -- number of input layer nodes (e.g. 20x20 pixels = 400 input data points)
+      -> Int      -- number of hidden layers
+      -> Int      -- number of output layers sample size
+      -> Int      -- how many samples to take out of the input to train with
+      -> IO (Acc (Matrix Float, Matrix Float))
+train xsFile ysFile inputl hiddenl labelSize sampleNum = do
     let lambda = (1.0 :: Exp Float)
-    let n = 10
+    let n = 10 -- number of labels to train for
     let l1 = constant inputl
     let l2 = constant hiddenl
     xs <- loadxs xsFile sampleNum inputl
     ys <- loadys ysFile sampleNum
-    theta1 <- gentheta2 inputl hiddenl -- 25x401
-    theta2 <- gentheta2 hiddenl n -- 10x26
+    theta1 <- gentheta2 inputl hiddenl -- 25x401 (25 = middle layer, 400 = input size + 1 for bias)
+    theta2 <- gentheta2 hiddenl n      -- 10x26  (10 = exit layer, 26 = hidden layer + 1 bias)
     let ts = flatten theta1 A.++ flatten theta2 
 
     let (thetas, j) = fmincg (\t -> nnCostFunction t l1 l2 (constant n) xs ys lambda) ts
 
+    -- benchmarking of nnCostFunction
+    --
+    defaultMain
+      [ bgroup "fmincg"
+        [ bench "nnCostFunction" $ whnf (run1 (lift . fmincg (\t -> nnCostFunction t l1 l2 (constant n) xs ys lambda))) (run ts)
+        ]
+      ]
+
     -- unroll theta1
     let theta1 = reshape (index2 (constant hiddenl) (constant (inputl+1))) 
                $ A.take ((constant hiddenl)*(constant (inputl+1))) thetas
-    let theta2 = reshape (index2  (constant ss) (constant (hiddenl+1))) 
+    let theta2 = reshape (index2  (constant labelSize) (constant (hiddenl+1))) 
                $ A.drop (constant (hiddenl)*(constant (inputl+1))) thetas
 
     -- let pred = predict theta1 theta2 xs
@@ -231,7 +246,10 @@ nnCostFunction ts l1 l2 n xs y lambda =
     -- lift (theta1grad_, theta2grad_)
 
 
--- Minimize a continuous differentialble multivariate function
+-- Minimize a continuous differentiable multivariate function
+--
+-- Function minimize non-linear conjugate gradient
+--
 fmincg :: 
        (Acc (Vector Float) -> Acc (Scalar Float, Vector Float))
     -> Acc (Vector Float)               -- theta (weight vector)
@@ -239,8 +257,8 @@ fmincg ::
 fmincg costFunction theta = 
     let
         fX = fill (constant (Z :. (0::Int))) (0 :: Exp Float)
-        (f1, df1) = unlift $ costFunction theta
-        s = A.map negate df1
+        (f1, df1) = unlift $ costFunction theta -- f1 = error, df1 = gradients
+        s  = A.map negate df1 -- cause matlab...?
         d1 = A.map negate $ A.sum (A.zipWith (*) s s)        
         z1 = unit ((1::Exp Float)/(1 - (the d1)))
         -- ys = yEqCFloatVec yc c
@@ -279,7 +297,7 @@ outerMostLoop costFunction theta0 s0 d10 f10 z10 df10 fX0 =
             unit ((the length) A.< (50 :: Exp Int)) -- SET LOOP HERE -- matlab = 50
     
         body :: Acc (Vector Float, Vector Float, Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
-            -> Acc (Vector Float, Vector Float, Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
+             -> Acc (Vector Float, Vector Float, Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
         body args =
             let
                 (theta, fX, s, df1, f1, d1, z1, length) = unlift args :: (Acc (Vector Float), Acc (Vector Float), Acc (Vector Float), Acc (Vector Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Int))
@@ -291,7 +309,7 @@ outerMostLoop costFunction theta0 s0 d10 f10 z10 df10 fX0 =
                 d3 = d1
                 z2 = unit (1 :: Exp Float) -- dummy value...
                 z3 = A.map negate z1
-                m = unit (1 :: Exp Int) -- max M=20
+                m = unit (1 :: Exp Int) -- XXX: max M=20
                 limit = unit ((-1) :: Exp Float)
 
                 -- call middleLoop...
@@ -303,7 +321,7 @@ outerMostLoop costFunction theta0 s0 d10 f10 z10 df10 fX0 =
                 (theta_, f1_, fX_, s_, df1_, df2_, d1_, d2_, z1_) = handleSuccess theta' s d1 f1 f2' z1' df1 df2' fX
                     -- unlift finalCal
                                    
-                -- seems unnecessary to test this condition......?
+                -- XXX: seems unnecessary to test this condition......?
                 -- finalCal = condition
                 --          ?| ( lift $ handleSuccess theta' s d1 f1 f2' z1' df1 df2' fX , 
                 --               lift $ handleFailure theta s d1 d2 f1 f2' z1' df10 df2' fX )
