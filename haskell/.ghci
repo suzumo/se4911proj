@@ -1,0 +1,2 @@
+:set -DACCELERATE_LLVM_NATIVE_BACKEND
+:set -isrc
