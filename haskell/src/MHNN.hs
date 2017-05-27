@@ -181,7 +181,8 @@ nnCostFunction ts l1 l2 n xs y lambda =
     let
         Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
 
-        -- unroll theta1
+        -- unroll theta into theta1 & theta2 (for input-hidden and hidden-output
+        -- layer weights respectively)
         theta1 = reshape (index2 l2 (l1+1)) $ A.take (l2*(l1+1)) ts
         theta2 = reshape (index2  n (l2+1)) $ A.drop (l2*(l1+1)) ts
 
