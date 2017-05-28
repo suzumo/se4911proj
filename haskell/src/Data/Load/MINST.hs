@@ -7,13 +7,13 @@ module Data.Load.MINST (
 ) where
 
 import Control.Monad
-import Data.Array.Accelerate.IO
 import Data.Binary.Get
 import Data.ByteString
 import Data.Word
 import qualified Data.ByteString                as B
 import qualified Data.ByteString.Lazy           as L
 
+import Data.Array.Accelerate.IO
 import Data.Array.Accelerate                    ( Array, DIM1, DIM3, Z(..), (:.)(..) )
 
 

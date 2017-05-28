@@ -1,6 +1,7 @@
 {-# LANGUAGE RebindableSyntax #-}
 {-# LANGUAGE TypeOperators    #-}
-module Main where
+
+module MHNN where
 -- random numbers: https://github.com/tmcdonell/mwc-random-accelerate
 --
 -- linear vector things: https://github.com/tmcdonell/linear-accelerate
@@ -23,6 +24,7 @@ import Data.Array.Accelerate.System.Random.MWC
 import Criterion.Main
 import Data.Load.CSV
 
+{--
 -- trying to translate coursera machine learning neural network
 -- into accelerate version...
 
@@ -37,8 +39,8 @@ main = do
     let pred = predict theta1 theta2 xs
     let result = testAccuracy pred ys
     print $ run result
-
-
+--}
+{--
 trainMnist :: Int      -- number of input layer nodes (e.g. 20x20 pixels = 400 input data points)
       -> Int      -- number of hidden layers (e.g. 25)
       -> Int      -- number of output layers sample size (e.g. 10, for digit recognition)
@@ -75,7 +77,7 @@ trainMnist inputl hiddenl labelSize sampleNum = do
     theta2 <- gentheta2 hiddenl labelSize      -- 10x26  (10 = exit layer, 26 = hidden layer + 1 bias)
     let ts = flatten theta1 A.++ flatten theta2
 
-    let (thetas, j) = fmincg (\t -> nnCostFunction t l1 l2 (constant labelSize) xs ys lambda) ts
+    let (thetas, j) = fmincg (nnCostFunction l1 l2 (constant labelSize) lambda xs ys) ts
 
     -- benchmarking of nnCostFunction
     --
@@ -97,8 +99,8 @@ trainMnist inputl hiddenl labelSize sampleNum = do
     -- return $ run (lift result)
     return $ lift (theta1, theta2, result)
     -- return $ lift (theta1, theta2)
-
-
+--}
+{--
 train :: String
       -> String
       -> Int      -- number of input layer nodes (e.g. 20x20 pixels = 400 input data points)
@@ -117,15 +119,15 @@ train xsFile ysFile inputl hiddenl labelSize sampleNum = do
     theta2 <- gentheta2 hiddenl n      -- 10x26  (10 = exit layer, 26 = hidden layer + 1 bias)
     let ts = flatten theta1 A.++ flatten theta2
 
-    let (thetas, j) = fmincg (\t -> nnCostFunction t l1 l2 (constant n) xs ys lambda) ts
+    let (thetas, j) = fmincg (nnCostFunction l1 l2 (constant n) lambda xs ys) ts
 
-    -- benchmarking of nnCostFunction
-    --
-    defaultMain
-      [ bgroup "fmincg"
-        [ bench "nnCostFunction" $ whnf (run1 (lift . fmincg (\t -> nnCostFunction t l1 l2 (constant n) xs ys lambda))) (run ts)
-        ]
-      ]
+    -- -- benchmarking of nnCostFunction
+    -- --
+    -- defaultMain
+    --   [ bgroup "fmincg"
+    --     [ bench "nnCostFunction" $ whnf (run1 (lift . fmincg (\t -> nnCostFunction t l1 l2 (constant n) xs ys lambda))) (run ts)
+    --     ]
+    --   ]
 
     -- unroll theta1
     let theta1 = reshape (index2 (constant hiddenl) (constant (inputl+1)))
@@ -138,7 +140,7 @@ train xsFile ysFile inputl hiddenl labelSize sampleNum = do
 
     -- return $ run (lift result)
     return $ lift (theta1, theta2)
-
+--}
 
 predict ::
        Acc (Matrix Float)               -- input theta matrix
@@ -231,23 +233,23 @@ matrixfy ys =
     A.permute const zeroMat (\m -> index2 (unindex1 m) (A.round (ys A.!! (unindex1 m)) -1)) onesVec
 
 
-nnCostFunction ::
-       Acc (Vector Float)               -- input flattened thetas vector
-    -> Exp Int                          -- input layer num
-    -> Exp Int                          -- hidden layer num
-    -> Exp Int                          -- num of labels
+nnCostFunction
+    :: Int                              -- number of input layers
+    -> Int                              -- number of hidden layers
+    -> Int                              -- number of output labels
+    -> Float                            -- lambda (learning rate)
     -> Acc (Matrix Float)               -- X (data matrix) in the form [1 X] (5000x401)
     -> Acc (Vector Float)               -- y (labels)
-    -> Exp Float                        -- lambda
+    -> Acc (Vector Float)               -- input flattened thetas vector
     -> Acc (Scalar Float, Vector Float ) -- j, theta1+theta2 vector
-nnCostFunction ts l1 l2 n xs y lambda =
+nnCostFunction l1 l2 l3 lambda xs y ts =
     let
         Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
 
         -- unroll theta into theta1 & theta2 (for input-hidden and hidden-output
         -- layer weights respectively)
-        theta1 = reshape (index2 l2 (l1+1)) $ A.take (l2*(l1+1)) ts
-        theta2 = reshape (index2  n (l2+1)) $ A.drop (l2*(l1+1)) ts
+        theta1 = reshape (constant (Z :. l2 :. l1+1)) $ A.take (constant (l2*(l1+1))) ts
+        theta2 = reshape (constant (Z :. l3 :. l2+1)) $ A.drop (constant (l2*(l1+1))) ts
 
         -- make vector y into matrix Y
         ys = matrixfy y
@@ -268,7 +270,7 @@ nnCostFunction ts l1 l2 n xs y lambda =
           $ A.foldAll (+) 0
           $ A.zipWith (\y a -> -y * (log a) - (1-y)*log(1-a)) ys a3
           where
-            regCost = A.map (\x -> x * lambda/(2*(A.fromIntegral h)))
+            regCost = A.map (\x -> x * constant lambda/(2*(A.fromIntegral h)))
                       (A.zipWith (+) j1 j2)
             j1      = foldAll (+) 0 (A.zipWith (*) ttheta1 ttheta1)
             j2      = foldAll (+) 0 (A.zipWith (*) ttheta2 ttheta2)
@@ -290,14 +292,14 @@ nnCostFunction ts l1 l2 n xs y lambda =
 
         -- add gradient regularisation
         theta1grad_ = A.zipWith (+) theta1grad
-                    $ A.map (\x -> lambda * x/A.fromIntegral h)
+                    $ A.map (\x -> constant lambda * x/A.fromIntegral h)
                       ((fill (lift (Z :. w1 :. constant 1)) 0 :: Acc (Matrix Float))
                        A.++ ttheta1)
                       where
                         Z :. h1 :. w1 = unlift (shape theta1) :: Z :. Exp Int :. Exp Int
 
         theta2grad_ = A.zipWith (+) theta2grad
-                    $ A.map (\x -> lambda * x/A.fromIntegral h)
+                    $ A.map (\x -> constant lambda * x/A.fromIntegral h)
                       ((fill (lift (Z :. w2 :. constant 1)) 0 :: Acc (Matrix Float))
                        A.++ ttheta2)
                       where
