@@ -18,7 +18,7 @@ import Data.Array.Accelerate.Debug
 import Data.Array.Accelerate.Numeric.LinearAlgebra
 
 import Criterion.Main
-
+import Data.Load.CSV
 
 -- trying to translate coursera machine learning neural network
 -- into accelerate version...
@@ -34,6 +34,58 @@ main = do
     let pred = predict theta1 theta2 xs
     let result = testAccuracy pred ys
     print $ run result
+
+
+trainMnist :: Int      -- number of input layer nodes (e.g. 20x20 pixels = 400 input data points)
+      -> Int      -- number of hidden layers
+      -> Int      -- number of output layers sample size
+      -> Int      -- how many samples to take out of the input to train with
+      -> IO (Acc (Matrix Float, Matrix Float, Scalar Float))
+trainMnist inputl hiddenl labelSize sampleNum = do
+    let lambda = (1.0 :: Exp Float)
+    let l1 = constant inputl
+    let l2 = constant hiddenl
+
+    mnist <- loadCSV "../../data/mnist_train.csv" :: IO (Array DIM2 Float)
+    let ys = reshape (index1 (constant sampleNum))
+           $ A.take (constant sampleNum) (A.transpose (A.take 1 (A.use mnist)))
+    let yt = reshape (index1 (constant (60000-sampleNum)))
+           $ A.drop (constant sampleNum) (A.transpose (A.take 1 (A.use mnist)))
+    let ones_xs = fill (constant (Z:.sampleNum:.1)) 1 :: Acc (Array DIM2 Float)
+    let xs = ones_xs A.++
+           (A.transpose (A.take (constant sampleNum) (A.transpose (A.drop 1 (A.use mnist)))))
+
+    let ones_xt = fill (constant (Z:.(60000-sampleNum):.1)) 1 :: Acc (Array DIM2 Float)
+    let xt = ones_xt A.++
+           (A.transpose (A.drop (constant sampleNum) (A.transpose (A.drop 1 (A.use mnist)))))
+
+
+    theta1 <- gentheta2 inputl hiddenl -- 25x401 (25 = middle layer, 400 = input size + 1 for bias)
+    theta2 <- gentheta2 hiddenl labelSize      -- 10x26  (10 = exit layer, 26 = hidden layer + 1 bias)
+    let ts = flatten theta1 A.++ flatten theta2
+
+    let (thetas, j) = fmincg (\t -> nnCostFunction t l1 l2 (constant labelSize) xs ys lambda) ts
+
+    -- benchmarking of nnCostFunction
+    --
+    -- defaultMain
+    --   [ bgroup "fmincg"
+    --     [ bench "nnCostFunction" $ whnf (run1 (lift . fmincg (\t -> nnCostFunction t l1 l2 (constant n) xs ys lambda))) (run ts)
+    --     ]
+    --   ]
+
+    -- unroll theta1
+    let theta1 = reshape (index2 (constant hiddenl) (constant (inputl+1)))
+               $ A.take ((constant hiddenl)*(constant (inputl+1))) thetas
+    let theta2 = reshape (index2  (constant labelSize) (constant (hiddenl+1)))
+               $ A.drop (constant (hiddenl)*(constant (inputl+1))) thetas
+
+    let pred = predict theta1 theta2 xt
+    let result = testAccuracy pred yt
+
+    -- return $ run (lift result)
+    return $ lift (theta1, theta2, result)
+    -- return $ lift (theta1, theta2)
 
 
 train :: String

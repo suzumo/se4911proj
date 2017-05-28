@@ -28,4 +28,3 @@ loadCSV csv = do
                                           , x   <- V.toList row
                                       ]
 
-
