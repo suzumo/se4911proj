@@ -15,7 +15,7 @@ Lastly, in terms of familiarity, I was more conversed with Matlab than with othe
 
 TO CHECK::::: Can C++ or Python versions use multiple threads/GPU?
 
-\subsection{Brief characteristics of Matlab} \label{se:impl.matlab.background}
+\subsection{Peculiarities of Matlab} \label{se:impl.matlab.background}
 %% or divide this up into implementation section
 
 MATLAB, or Matrix Laboratory, is a highly doman-specific programming language, specialised to conduct numerical calculations and analysis in late 1970s. It is a imperative, object-orientated, procedural language. It is widely used among the industry and academia, particularly in science, engineering and economics.
@@ -24,27 +24,77 @@ MATLAB is a weakly typed programming language, as types are implicitly converted
 
 MATLAB functions accept matrices as an argument, and will automatically apply multiplications of a scalar to each element of the matrix as in Accelerate's \texttt{zipWith}. As a result, MATLAB code is deceptively simple and does not reveal the actual structure of the underlying operation. Indexing of matrices and arrays also start from 1. Method dispatching also does not strictly adhere to the method signature, but selects the method by first matching the arguments in a class precedence and then by left-most priority~\cite{Mat17}. However, MATLAB also does not support overloading functions of the same name using different signature of the same name.
 
-\subsection{Neural network structure} \label{se:impl.matlab.structure}
-
-MATLAB neural network is a 3-layer simple neural network - input layer, hidden layer and an output layer. There is an bias unit which always outputs $+1$ in each layer to the next. My implementation can easily be modified to take more than 1 hidden layer by changing \texttt{nnCostFunction}. Hidden layer in this case roughly corresponds to detectors that look for strokes and other patterns in the input~\cite{Ng12}.
-
 \section{Accelerate Implementation} \label{se:impl.acc}
 
-The parts to Matlab program can be preportioned into 3 equations, and I will briefly outline how they have been implemented in the sections following:
+\subsection{Neural network structure} \label{se:impl.nn.struct}
 
-\begin{enumerate}
-  \item Initialisation of parameters
-  \item Neural network cost function
-  \item Function minimise conjugate gradient function
-\end{enumerate}
+A 3-layer simple neural network is implemented, with an input layer, hidden layer and an output layer. There is an bias unit which always outputs $+1$ in each preceding layer to the next. 
+
+My implementation can easily be modified to take more than 1 hidden layer by changing the \texttt{nnCostFunction}~\ref{fig:nnCostFunction.hiddenlayers}. For instance, each extra hidden layer should only require implementing two extra matrix multiplications in feed-forward and backpropagate, and all the steps required to update the new theta layer calculations.
+
+\begin{figure}
+  \begin{lstlisting}
+    -- current feed-forward with 1 hidden layer
+    a3 :: Acc (Matrix Float)
+    a1 = xs 
+    z2 = theta1 <> transpose a1 
+    a2 = (fill (lift (Z :. h :. constant  1)) 1 :: Acc (Matrix Float)) 
+         A.++ (A.transpose $ A.map sigmoid z2) 
+    z3 = a2 <> A.transpose theta2 
+    a3 = A.map sigmoid z3
+    
+    -- an example feed-forward with 2 hidden layers
+    a4 :: Acc (Matrix Float)
+    a3' = (fill (lift (Z :. h' :. constant  1)) 1 :: Acc (Matrix Float))
+          A.++ (A.transpose $ A.map sigmoid z3)
+    z4 = a3' <> A.transpose theta3
+    a4 = A.map sigmoid z4
+    
+    -- an example backpropagate with 2 hidden layers
+    d4 = A.zipWith (-) a4 ys
+    d3 = A.zipWith (*) 
+         (d4 <> theta3)
+         ((fill (lift (Z :. h' :. constant  1)) 1 :: Acc (Matrix Float)) 
+           A.++ (A.transpose $ A.map sigmoidGradient z3)) 
+    d2 = A.zipWith (*) 
+         (d3 <> theta2)
+         ((fill (lift (Z :. h :. constant  1)) 1 :: Acc (Matrix Float)) 
+           A.++ (A.transpose $ A.map sigmoidGradient z2)) 
+  \end{lstlisting}
+  \caption{Changing the number of hidden layers in \texttt{nnCostFunction}}
+  \label{fig:nnCostFunction.hiddenlayers}
+\end{figure}
+
+The hidden layer in the handwritten numbers example roughly corresponds to detectors that look for strokes and other patterns in the input~\cite{Ng12}.
+
+\subsection{Program structure} \label{se:impl.program.struct}
+
+I have constructed my program to closely follow the MATLAB implementation. It can be preportioned into 3 parts: (1) initialisation; (2) neural network cost function; and, (3) function minimise conjugate gradient function. These will be explained in detail in the sections below.
 
 \subsection{Initialisation} \label{se:impl.init}
 
-Initialisation is a straightforward process, where values of alphas, randomisation of weight vectors are set. For effective random initialisation, theta values should be in the range $[-\epsilon_{init}, \epsilon_{init}]$ where one effective choice of $\epsilon_{init}$ is,
+Initialisation is a straightforward process, and we initialise (1) the learning rate \texttt{lambda}; (2) initial weight vectors, for instance \texttt{theta1}, \texttt{theta2}; (3) size of the input, hidden, output layers; and, (4) load the training set, that is, the input data set \texttt{xs} and the output data vector \texttt{ys}. 
 
-$$\epsilon_{init} = \sqrt{6} / \sqrt{L_{in} + L_{out}} $$
+\texttt{xs} represents $m$ training set data. After it has been loaded, each row of \texttt{xs} should represent a single training example, $x_1, x_2, ..., x_m$ where the length of $x_i$ is the size of the input layer. , with a column vector of $1$s to the leftmost of the array to represent the bias neuron,
+\[
+ \texttt{xs} =
+    \begin{bmatrix}
+      1 \\
+      1 \\
+      ... \\ 
+      1
+    \end{bmatrix}
+    \begin{bmatrix}
+       x_1 \\
+       x_2 \\
+       ... \\
+       x_m
+    \end{bmatrix}
+\]
 
-where $L_{in}$ is number of units in the preceding layer, and $L_{out}$ is the number of units in the subsequent layer of the theta/weights. 
+For the weights, the values should be in the range $[-\epsilon_{init}, \epsilon_{init}]$ for an effective random initialisation~\cite{Ng12}. One effective choice of $\epsilon_{init}$ is,
+\[ \epsilon_{init} = \sqrt{\frac{6}{L_{in} + L_{out}}} \]
+where $L_{in}$ is number of units in the preceding layer, and $L_{out}$ is the number of units in the subsequent layer of the thetas in question. 
 
 There is no optimal $\lambda$, or learning rate value. Generally, the one that gives the best result for the given data set is determined by trial-and-error. Likewise, the number of hidden units and even the number of hidden layers also seems to be determined by trial-and-error.
 
