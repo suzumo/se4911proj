@@ -1,0 +1,13 @@
+\begin{enumerate}
+\item point#1
+\item point#2
+\begin{itemize}
+\item subpoint#1
+\item subpoint#2
+\end{itemize}
+\item point#3
+\begin{enumerate}
+\item subpoint #1
+\item subpoint #2
+\end{enumerate}
+\end{enumerate}
