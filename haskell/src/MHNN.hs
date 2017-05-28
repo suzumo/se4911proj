@@ -7,15 +7,18 @@ module Main where
 
 
 import Prelude                                    as P
-import Debug.Trace
+import Data.Time.Clock
+import Text.Printf
+import System.IO
+
 import Data.Array.Accelerate                      as A
 import Data.Array.Accelerate.LLVM.Native          as CPU
 -- import Data.Array.Accelerate.LLVM.PTX             as PTX
-import Data.Array.Accelerate.System.Random.MWC
-import Data.Array.Accelerate.Control.Lens
 import Data.Array.Accelerate.Debug
 
+import Data.Array.Accelerate.Control.Lens
 import Data.Array.Accelerate.Numeric.LinearAlgebra
+import Data.Array.Accelerate.System.Random.MWC
 
 import Criterion.Main
 import Data.Load.CSV
@@ -37,16 +40,24 @@ main = do
 
 
 trainMnist :: Int      -- number of input layer nodes (e.g. 20x20 pixels = 400 input data points)
-      -> Int      -- number of hidden layers
-      -> Int      -- number of output layers sample size
+      -> Int      -- number of hidden layers (e.g. 25)
+      -> Int      -- number of output layers sample size (e.g. 10, for digit recognition)
       -> Int      -- how many samples to take out of the input to train with
       -> IO (Acc (Matrix Float, Matrix Float, Scalar Float))
 trainMnist inputl hiddenl labelSize sampleNum = do
     let lambda = (1.0 :: Exp Float)
-    let l1 = constant inputl
-    let l2 = constant hiddenl
+    let l1     = constant inputl
+    let l2     = constant hiddenl
+    let csv    = "../data/mnist_train.csv"
 
-    mnist <- loadCSV "../../data/mnist_train.csv" :: IO (Array DIM2 Float)
+    printf "loading file: \"%s\"..." csv
+    hFlush stdout
+    t1    <- getCurrentTime
+    mnist <- loadCSV csv
+    t2    <- getCurrentTime
+    printf " done (%s)\n" (show (diffUTCTime t2 t1))
+    printf "file size is: %s\n" (show (arrayShape mnist))
+
     let ys = reshape (index1 (constant sampleNum))
            $ A.take (constant sampleNum) (A.transpose (A.take 1 (A.use mnist)))
     let yt = reshape (index1 (constant (60000-sampleNum)))

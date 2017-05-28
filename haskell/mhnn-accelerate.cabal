@@ -84,9 +84,10 @@ executable mhnn-accelerate
       , cassava                     >= 0.4
       , criterion                   >= 1.0
       , deepseq
-      , vector                      >= 0.9
       , lens-accelerate             >= 0.1
       , mwc-random-accelerate       >= 0.1
+      , time                        >= 1.5
+      , vector                      >= 0.9
 
   if flag(llvm-cpu)
     CPP-options:        -DACCELERATE_LLVM_NATIVE_BACKEND
