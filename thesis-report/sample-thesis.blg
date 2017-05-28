@@ -1,13 +1,59 @@
-This is BibTeX, Version 0.99dThe top-level auxiliary file: sample-thesis.aux
+This is BibTeX, Version 0.99d (TeX Live 2015/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: sample-thesis.aux
 A level-1 auxiliary file: abstract.aux
 A level-1 auxiliary file: acknowledgements.aux
 A level-1 auxiliary file: abbreviations.aux
 A level-1 auxiliary file: introduction.aux
 A level-1 auxiliary file: background.aux
 A level-1 auxiliary file: mywork.aux
+A level-1 auxiliary file: results.aux
+A level-1 auxiliary file: evaluation.aux
 A level-1 auxiliary file: conclusion.aux
 The style file: alpha.bst
+A level-1 auxiliary file: appendix1.aux
 Database file #1: pubs.bib
 Warning--empty note in Eve16
 Warning--empty booktitle in GurFor13
+You've used 18 entries,
+            2543 wiz_defined-function locations,
+            687 strings with 7912 characters,
+and the built_in function-call counts, 5930 in all, are:
+= -- 587
+> -- 244
+< -- 13
++ -- 77
+- -- 76
+* -- 343
+:= -- 992
+add.period$ -- 61
+call.type$ -- 18
+change.case$ -- 100
+chr.to.int$ -- 18
+cite$ -- 20
+duplicate$ -- 244
+empty$ -- 461
+format.name$ -- 105
+if$ -- 1212
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 14
+newline$ -- 101
+num.names$ -- 54
+pop$ -- 131
+preamble$ -- 1
+purify$ -- 120
+quote$ -- 0
+skip$ -- 204
+stack$ -- 0
+substring$ -- 240
+swap$ -- 26
+text.length$ -- 13
+text.prefix$ -- 12
+top$ -- 0
+type$ -- 128
+warning$ -- 2
+while$ -- 51
+width$ -- 21
+write$ -- 240
 (There were 2 warnings)

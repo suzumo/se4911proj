@@ -4,16 +4,35 @@
 \contentsline {section}{\numberline {2.2}Feed-forward back-propagation learning algorithm}{6}
 \contentsline {section}{\numberline {2.3}GPU-accelerated programming and neural networks}{9}
 \contentsline {section}{\numberline {2.4}Accelerate}{10}
-\contentsline {section}{\numberline {2.5}Advantages of Accelerate}{12}
-\contentsline {section}{\numberline {2.6}Previous Implementations}{14}
-\contentsline {chapter}{\numberline {3}Thesis Proposal}{18}
-\contentsline {section}{\numberline {3.1}Choice of neural network}{18}
-\contentsline {section}{\numberline {3.2}Measuring performance}{19}
-\contentsline {section}{\numberline {3.3}Completed tasks}{20}
-\contentsline {section}{\numberline {3.4}Areas requiring development}{20}
-\contentsline {section}{\numberline {3.5}Expected schedule}{21}
-\contentsline {chapter}{\numberline {4}Evaluation}{23}
-\contentsline {section}{\numberline {4.1}Results}{23}
-\contentsline {section}{\numberline {4.2}Discussion}{23}
-\contentsline {chapter}{\numberline {5}Conclusion}{24}
-\contentsline {chapter}{Bibliography}{25}
+\contentsline {subsection}{\numberline {2.4.1}Advantages of Accelerate}{12}
+\contentsline {section}{\numberline {2.5}Previous Implementations in Accelerate}{14}
+\contentsline {section}{\numberline {2.6}Measuring performance}{17}
+\contentsline {chapter}{\numberline {3}Implementation}{19}
+\contentsline {section}{\numberline {3.1}Matlab implementation of neural network}{19}
+\contentsline {subsection}{\numberline {3.1.1}Peculiarities of Matlab}{20}
+\contentsline {section}{\numberline {3.2}Accelerate Implementation}{21}
+\contentsline {subsection}{\numberline {3.2.1}Neural network structure}{21}
+\contentsline {subsection}{\numberline {3.2.2}Program structure}{22}
+\contentsline {subsection}{\numberline {3.2.3}Initialisation}{22}
+\contentsline {subsection}{\numberline {3.2.4}Neural network cost function}{23}
+\contentsline {subsection}{\numberline {3.2.5}Function minimise nonlinear conjugate gradient function}{24}
+\contentsline {section}{\numberline {3.3}Limitations of this implementation}{27}
+\contentsline {chapter}{\numberline {4}Results}{29}
+\contentsline {section}{\numberline {4.1}Performance results}{29}
+\contentsline {section}{\numberline {4.2}Others etc}{29}
+\contentsline {chapter}{\numberline {5}Evaluation}{30}
+\contentsline {section}{\numberline {5.1}Discussion}{30}
+\contentsline {section}{\numberline {5.2}Benefits of Accelerate implementation}{30}
+\contentsline {section}{\numberline {5.3}Incomplete works}{31}
+\contentsline {section}{\numberline {5.4}Future works}{31}
+\contentsline {chapter}{\numberline {6}Conclusion}{32}
+\contentsline {chapter}{Bibliography}{33}
+\contentsline {chapter}{Appendix 1}{35}
+\contentsline {section}{\numberline {A.1}Options}{35}
+\contentsline {section}{\numberline {A.2}Margins}{35}
+\contentsline {section}{\numberline {A.3}Page Headers}{36}
+\contentsline {subsection}{\numberline {A.3.1}Undergraduate Theses}{36}
+\contentsline {subsection}{\numberline {A.3.2}Higher Degree Research Theses}{36}
+\contentsline {section}{\numberline {A.4}Page Footers}{36}
+\contentsline {section}{\numberline {A.5}Double Spacing}{37}
+\contentsline {section}{\numberline {A.6}Files}{37}

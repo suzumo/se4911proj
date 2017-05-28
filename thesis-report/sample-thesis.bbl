@@ -1,11 +1,6 @@
 \newcommand{\etalchar}[1]{$^{#1}$}
 \begin{thebibliography}{MCKL13}
 
-\bibitem[BC16]{Goo16}
-Ian Goodfellow~Yoshua Bengio and Aaron Courville.
-\newblock Deep learning.
-\newblock Book in preparation for MIT Press, 2016.
-
 \bibitem[CKL{\etalchar{+}}11]{ChaKelLee11}
 Manuel M.~T. Chakravarty, Gabriele Keller, Sean Lee, Trevor McDonell, and Vinod
   Grover.
@@ -30,24 +25,24 @@ Andrej Karpathy.
 \newblock Course notes from CS231n: Convolutional Neural Networks for Visual
   Recognition at School of Comp.\ Sci.\, Stanford University.
 
-\bibitem[LeC89]{Lec89}
-Y.~LeCun.
-\newblock Generalization and network design strategies.
-\newblock {\em University of Toronto Connectionist Research Group Technical
-  Report}, 89, 1989.
-
 \bibitem[Mar13]{Mar13}
 Simon Marlow.
 \newblock {\em Parallel and Concurrent Programming in Haskell}.
 \newblock O'Reilly Media, Sebastopol, CA, 1st edition, 2013.
+
+\bibitem[Mat17]{Mat17}
+MathWorks.
+\newblock fminunc.
+\newblock https://\hspace{0cm}\relax au.mathworks.com/\hspace{0cm}help,
+  accessed from 01/03/2017 to 30/05/2017, 2017.
+\newblock MATLAB.
 
 \bibitem[McD13]{McD13}
 Trevor~L. McDonell.
 \newblock Gpgpu programming in haskell with accelerate.
 \newblock https://\hspace{0cm}\relax
   speakerdeck.com/\hspace{0cm}tmcdonell/\hspace{0cm}\relax
-  gpgpu-programming-in-haskell-with-accelerate\hspace{0cm}\relax, accessed
-  01/04/2016, 2013.
+  gpgpu-programming-in-haskell-with-accelerate, accessed 01/04/2016, 2013.
 \newblock YOW! Lambda Jam 2013 Workshop.
 
 \bibitem[MCKL13]{McDChaKel13}
@@ -85,14 +80,24 @@ NVIDIA.
 \newblock Cuda spotlight: Gpu-accelerated deep neural networks.
 \newblock https://\hspace{0cm}\relax
   devblogs.nvidia.com/\hspace{0cm}parallelforall/\hspace{0cm}\relax
-  cuda-spotlight-gpu-accelerated-deep-neural-networks\hspace{0cm}\relax,
-  accessed 14/04/2016, 2014.
+  cuda-spotlight-gpu-accelerated-deep-neural-networks, accessed 14/04/2016,
+  2014.
 \newblock NVIDIA Accelerated Computing.
 
 \bibitem[OJ04]{OhJun04}
 Kyoung-Su Oh and Keechul Jung.
 \newblock Gpu implementation of neural networks.
 \newblock {\em Pattern Recognition}, 37:1311--1314, 2004.
+
+\bibitem[Reb13]{Reb13}
+Jason Rebello.
+\newblock Logistic regression with regularization used to classify hand written
+  digits.
+\newblock https://\hspace{0cm}\relax
+  au.mathworks.com/\hspace{0cm}fileexchange/\hspace{0cm}\relax
+  42770-logistic-regression-with-regularization-used-to-classify-hand-written-digits,
+  accessed 14/05/2017, 2013.
+\newblock MATLAB.
 
 \bibitem[RHW86]{RumHinWil86}
 David~E. Rumelhart, Geoffrey~E. Hinton, and Ronald~J. Williams.
@@ -104,5 +109,13 @@ Frank Rosenblatt.
 \newblock {\em Principles of neurodynamics; perceptrons and the theory of brain
   mechanisms}.
 \newblock Spartan Books, Washington, D.C., 1962.
+
+\bibitem[Unk17]{Wiki1}
+Unknown.
+\newblock Matlab.
+\newblock https://\hspace{0cm}\relax
+  en.wikipedia.org/\hspace{0cm}wiki/\hspace{0cm}\relax MATLAB, accessed
+  14/05/2016, 2017.
+\newblock MATLAB, Wikipedia article.
 
 \end{thebibliography}
