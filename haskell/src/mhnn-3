@@ -1,125 +1,58 @@
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE OverloadedLists #-}
 {-# LANGUAGE RebindableSyntax #-}
-{-# LANGUAGE TypeOperators    #-}
 module Main where
 -- random numbers: https://github.com/tmcdonell/mwc-random-accelerate
 --
 -- linear vector things: https://github.com/tmcdonell/linear-accelerate
 
-
 import Prelude                                    as P
 import Debug.Trace
 import Data.Array.Accelerate                      as A
-import Data.Array.Accelerate.LLVM.Native          as CPU
--- import Data.Array.Accelerate.LLVM.PTX             as PTX
+import Data.Array.Accelerate.LLVM.Native          as I
 import Data.Array.Accelerate.System.Random.MWC
 import Data.Array.Accelerate.Control.Lens
 import Data.Array.Accelerate.Debug
 
-import Data.Array.Accelerate.Numeric.LinearAlgebra
+import MMult                                      ( mmult )
 
-import Criterion.Main
-import Load
+type Matrix a = Array DIM2 a
+
 
 -- trying to translate coursera machine learning neural network 
 -- into accelerate version...
 
 main = do
     -- train the neural network with 100 randomized training samples
-    thetas <- train "../data/data1000.txt" "../data/label1000.txt" 400 25 10 1000
+    thetas <- train "data1000.txt" "label1000.txt" 400 25 10 400
     -- get weights
     let (theta1, theta2) = unlift thetas :: (Acc (Matrix Float), Acc (Matrix Float))
     -- load full data set to test the calculations
-    xs <- loadxs "../data/data1000.txt" 1000 400
-    ys <- loadys "../data/label1000.txt" 1000
+    xs <- loadxs "data1000.txt" 1000 400
+    ys <- loadys "label1000.txt" 1000
     let pred = predict theta1 theta2 xs
     let result = testAccuracy pred ys
     print $ run result
 
 
-trainMnist :: Int      -- number of input layer nodes (e.g. 20x20 pixels = 400 input data points)
-      -> Int      -- number of hidden layers
-      -> Int      -- number of output layers sample size
-      -> Int      -- how many samples to take out of the input to train with
-      -> IO (Acc (Matrix Float, Matrix Float, Scalar Float))
-trainMnist inputl hiddenl labelSize sampleNum = do
+train :: String -> String -> Int -> Int -> Int -> Int -> IO (Acc (Matrix Float, Matrix Float))
+train xsFile ysFile inputl hiddenl ss sampleNum = do
     let lambda = (1.0 :: Exp Float)
-    let l1 = constant inputl
-    let l2 = constant hiddenl
-
-    mnist <- loadCSV "../../data/mnist_train.csv" :: IO (Array DIM2 Float)
-    let ys = reshape (index1 (constant sampleNum)) 
-           $ A.take (constant sampleNum) (A.transpose (A.take 1 (A.use mnist)))
-    let yt = reshape (index1 (constant (60000-sampleNum))) 
-           $ A.drop (constant sampleNum) (A.transpose (A.take 1 (A.use mnist)))
-    let ones_xs = fill (constant (Z:.sampleNum:.1)) 1 :: Acc (Array DIM2 Float)
-    let xs = ones_xs A.++ 
-           (A.transpose (A.take (constant sampleNum) (A.transpose (A.drop 1 (A.use mnist)))))
-
-    let ones_xt = fill (constant (Z:.(60000-sampleNum):.1)) 1 :: Acc (Array DIM2 Float)
-    let xt = ones_xt A.++
-           (A.transpose (A.drop (constant sampleNum) (A.transpose (A.drop 1 (A.use mnist)))))
-
-
-    theta1 <- gentheta2 inputl hiddenl -- 25x401 (25 = middle layer, 400 = input size + 1 for bias)
-    theta2 <- gentheta2 hiddenl labelSize      -- 10x26  (10 = exit layer, 26 = hidden layer + 1 bias)
-    let ts = flatten theta1 A.++ flatten theta2 
-
-    let (thetas, j) = fmincg (\t -> nnCostFunction t l1 l2 (constant labelSize) xs ys lambda) ts
-
-    -- benchmarking of nnCostFunction
-    --
-    -- defaultMain
-    --   [ bgroup "fmincg"
-    --     [ bench "nnCostFunction" $ whnf (run1 (lift . fmincg (\t -> nnCostFunction t l1 l2 (constant n) xs ys lambda))) (run ts)
-    --     ]
-    --   ]
-
-    -- unroll theta1
-    let theta1 = reshape (index2 (constant hiddenl) (constant (inputl+1))) 
-               $ A.take ((constant hiddenl)*(constant (inputl+1))) thetas
-    let theta2 = reshape (index2  (constant labelSize) (constant (hiddenl+1))) 
-               $ A.drop (constant (hiddenl)*(constant (inputl+1))) thetas
-
-    let pred = predict theta1 theta2 xt
-    let result = testAccuracy pred yt
-
-    -- return $ run (lift result)
-    return $ lift (theta1, theta2, result)
-    -- return $ lift (theta1, theta2)
-
-
-train :: String
-      -> String
-      -> Int      -- number of input layer nodes (e.g. 20x20 pixels = 400 input data points)
-      -> Int      -- number of hidden layers
-      -> Int      -- number of output layers sample size
-      -> Int      -- how many samples to take out of the input to train with
-      -> IO (Acc (Matrix Float, Matrix Float))
-train xsFile ysFile inputl hiddenl labelSize sampleNum = do
-    let lambda = (1.0 :: Exp Float)
-    let n = 10 -- number of labels to train for
+    let n = 10
     let l1 = constant inputl
     let l2 = constant hiddenl
     xs <- loadxs xsFile sampleNum inputl
     ys <- loadys ysFile sampleNum
-    theta1 <- gentheta2 inputl hiddenl -- 25x401 (25 = middle layer, 400 = input size + 1 for bias)
-    theta2 <- gentheta2 hiddenl n      -- 10x26  (10 = exit layer, 26 = hidden layer + 1 bias)
+    theta1 <- gentheta2 inputl hiddenl -- 25x401
+    theta2 <- gentheta2 hiddenl n -- 10x26
     let ts = flatten theta1 A.++ flatten theta2 
 
     let (thetas, j) = fmincg (\t -> nnCostFunction t l1 l2 (constant n) xs ys lambda) ts
 
-    -- benchmarking of nnCostFunction
-    --
-    defaultMain
-      [ bgroup "fmincg"
-        [ bench "nnCostFunction" $ whnf (run1 (lift . fmincg (\t -> nnCostFunction t l1 l2 (constant n) xs ys lambda))) (run ts)
-        ]
-      ]
-
     -- unroll theta1
     let theta1 = reshape (index2 (constant hiddenl) (constant (inputl+1))) 
                $ A.take ((constant hiddenl)*(constant (inputl+1))) thetas
-    let theta2 = reshape (index2  (constant labelSize) (constant (hiddenl+1))) 
+    let theta2 = reshape (index2  (constant ss) (constant (hiddenl+1))) 
                $ A.drop (constant (hiddenl)*(constant (inputl+1))) thetas
 
     -- let pred = predict theta1 theta2 xs
@@ -137,14 +70,13 @@ predict ::
 predict theta1 theta2 xs = 
     let
         h1 = A.map sigmoid 
-           $ xs <> A.transpose theta1
+           $ mmult xs (A.transpose theta1)
         
         Z :. m :. n = unlift (shape h1) :: Z :. Exp Int :. Exp Int
         
         h2 = A.map sigmoid 
-           $ ((fill (lift (Z:.m:.(constant 1))) 1 :: Acc (Matrix Float)) A.++ h1)
-             <>
-             (A.transpose theta2)
+           $ mmult ((fill (lift (Z:.m:.(constant 1))) 1 :: Acc (Matrix Float)) A.++ h1)
+                   (A.transpose theta2)
 
         getYs :: Acc (Vector Int)
         getYs
@@ -243,10 +175,10 @@ nnCostFunction ts l1 l2 n xs y lambda =
         -- feedforward
         a3 :: Acc (Matrix Float)
         a1 = xs 
-        z2 = theta1 <> transpose a1 
+        z2 = mmult theta1 (transpose a1) 
         a2 = (fill (lift (Z :. h :. constant  1)) 1 :: Acc (Matrix Float)) 
            A.++ (A.transpose $ A.map sigmoid z2) 
-        z3 = a2 <> A.transpose theta2 
+        z3 = mmult a2 (A.transpose theta2) 
         a3 = A.map sigmoid z3 
 
         -- calculate cost J
@@ -267,14 +199,14 @@ nnCostFunction ts l1 l2 n xs y lambda =
         -- backpropagate to get gradients
         d3 = A.zipWith (-) a3 ys
         d2 = A.zipWith (*) 
-             (d3 <> theta2)
+             (mmult d3 theta2)
                     ((fill (lift (Z :. h :. constant  1)) 1 :: Acc (Matrix Float)) 
                      A.++ (A.transpose $ A.map sigmoidGradient z2)) 
 
         theta2grad = A.map (\x -> x/A.fromIntegral h) 
-                   $ transpose d3 <> a2 
+                   $ mmult (transpose d3) a2 
         theta1grad = A.map (\x -> x/A.fromIntegral h) 
-                   $ transpose (A.tail d2) <> a1 
+                   $ mmult (transpose (A.tail d2)) a1 
 
         -- add gradient regularisation
         theta1grad_ = A.zipWith (+) theta1grad 
@@ -298,10 +230,7 @@ nnCostFunction ts l1 l2 n xs y lambda =
     -- lift (theta1grad_, theta2grad_)
 
 
--- Minimize a continuous differentiable multivariate function
---
--- Function minimize non-linear conjugate gradient
---
+-- Minimize a continuous differentialble multivariate function
 fmincg :: 
        (Acc (Vector Float) -> Acc (Scalar Float, Vector Float))
     -> Acc (Vector Float)               -- theta (weight vector)
@@ -309,8 +238,8 @@ fmincg ::
 fmincg costFunction theta = 
     let
         fX = fill (constant (Z :. (0::Int))) (0 :: Exp Float)
-        (f1, df1) = unlift $ costFunction theta -- f1 = error, df1 = gradients
-        s  = A.map negate df1 -- cause matlab...?
+        (f1, df1) = unlift $ costFunction theta
+        s = A.map negate df1
         d1 = A.map negate $ A.sum (A.zipWith (*) s s)        
         z1 = unit ((1::Exp Float)/(1 - (the d1)))
         -- ys = yEqCFloatVec yc c
@@ -349,7 +278,7 @@ outerMostLoop costFunction theta0 s0 d10 f10 z10 df10 fX0 =
             unit ((the length) A.< (50 :: Exp Int)) -- SET LOOP HERE -- matlab = 50
     
         body :: Acc (Vector Float, Vector Float, Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
-             -> Acc (Vector Float, Vector Float, Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
+            -> Acc (Vector Float, Vector Float, Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
         body args =
             let
                 (theta, fX, s, df1, f1, d1, z1, length) = unlift args :: (Acc (Vector Float), Acc (Vector Float), Acc (Vector Float), Acc (Vector Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Int))
@@ -361,7 +290,7 @@ outerMostLoop costFunction theta0 s0 d10 f10 z10 df10 fX0 =
                 d3 = d1
                 z2 = unit (1 :: Exp Float) -- dummy value...
                 z3 = A.map negate z1
-                m = unit (1 :: Exp Int) -- XXX: max M=20
+                m = unit (1 :: Exp Int) -- max M=20
                 limit = unit ((-1) :: Exp Float)
 
                 -- call middleLoop...
@@ -373,7 +302,7 @@ outerMostLoop costFunction theta0 s0 d10 f10 z10 df10 fX0 =
                 (theta_, f1_, fX_, s_, df1_, df2_, d1_, d2_, z1_) = handleSuccess theta' s d1 f1 f2' z1' df1 df2' fX
                     -- unlift finalCal
                                    
-                -- XXX: seems unnecessary to test this condition......?
+                -- seems unnecessary to test this condition......?
                 -- finalCal = condition
                 --          ?| ( lift $ handleSuccess theta' s d1 f1 f2' z1' df1 df2' fX , 
                 --               lift $ handleFailure theta s d1 d2 f1 f2' z1' df10 df2' fX )
@@ -801,7 +730,7 @@ checkResult xs ys thetas =
         pLabels = A.map ((+1) . A.indexHead . A.fst)
                 $ A.fold1 (\x y -> A.snd x A.> A.snd y ? (x , y))
                 $ A.indexed 
-                $ xs <> transpose (A.use thetas)
+                $ mmult xs (transpose (A.use thetas))
     in
     pa
 
@@ -922,4 +851,3 @@ loadt2 = do
     -- let ones = fill (constant (Z:.25:.1)) 1 :: Acc (Array DIM2 Float)
     let arr = A.use $ A.fromList (Z:.10:.26) dbarr
     return arr
-
