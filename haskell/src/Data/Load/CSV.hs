@@ -2,6 +2,7 @@
 module Data.Load.CSV where
 
 import Data.Csv
+import Control.DeepSeq
 import qualified Data.ByteString.Lazy                     as B
 import qualified Data.Vector                              as V
 import Prelude                                            as P
@@ -17,14 +18,14 @@ import Data.Array.Accelerate                              ( Array, Elt, DIM2, Z(
 --
 loadCSV :: (Elt e, FromField e) => FilePath -> IO (Array DIM2 e)
 loadCSV csv = do
-  er  <- decode NoHeader <$> B.readFile csv
+  er <- decode NoHeader <$> B.readFile csv
   case er of
     Left err -> error err
     Right vv ->
       let h = V.length vv
           w = V.length (V.head vv)
       in
-      return $ fromList (Z :. h :. w) [ x | row <- V.toList vv
-                                          , x   <- V.toList row
-                                      ]
+      return $!! fromList (Z :. h :. w) [ x | row <- V.toList vv
+                                            , x   <- V.toList row
+                                        ]
 
