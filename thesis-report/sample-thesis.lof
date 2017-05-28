@@ -11,6 +11,9 @@
 \contentsline {figure}{\numberline {2.9}{\ignorespaces Support functions for forward- and back-propagation used in\nobreakspace {}\cite {Eve16}.}}{16}
 \contentsline {figure}{\numberline {2.10}{\ignorespaces Accelerate and Haskell code are mixed in\nobreakspace {}\cite {Eve16}.}}{17}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Estimated timeline for this project.}}{22}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Neural network cost function in Matlab.}}{23}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Neural network cost function in Accelerate.}}{24}
+\addvspace {10\p@ }
+\addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

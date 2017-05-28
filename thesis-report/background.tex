@@ -178,7 +178,7 @@ Now, as the first method may require the array data to be copied from computer's
 
 Further details about the Accelerate language is continued in \ref{se:previmplem}.
 
-\section{Advantages of Accelerate}\label{se:acc-adv}
+\subsection{Advantages of Accelerate}\label{se:acc-adv}
 
 There are several advantages to using Accelerate. First, it results in much simpler source programs as programs are written in Haskell syntax; Accelerate code is very similar to an ordinary Haskell code~\cite{Mar13}. For instance, Fig. \ref{fig:dotp} shows a dot product function comparison in Haskell and in Accelerate by~\cite{McD13}. There are minimal syntactic difference; for example, in the input and output types (Haskell's version takes and gives Haskell arrays while Accelerate's \texttt{dotp} deals with only Accelerate arrays), and in that Haskell's \texttt{foldl} is a left-to-right traversal, whereas Accelerate's \texttt{fold} is neither left nor right as it occurs in parallel~\cite{McD13}.
 
@@ -211,7 +211,7 @@ Some of the overheads however, such as dynamic kernel compilation overheads, may
 
 In terms of performance, Accelerate can be competitive with CUDA depending on the nature of the data input and the program~\cite{McDChaKel13}. 
 
-\section{Previous Implementations} \label{se:previmplem}
+\section{Previous Implementations in Accelerate} \label{se:previmplem}
 
 A neural network in Accelerate is a fairly new concept and as such, there is only one known work in~\cite{Eve16}. In it, Everest (2016) implements a FFBP neural network with a \textit{stochastic gradient descent} (SGD) learning algorithm. This section briefly covers the details of this implementation.
 
@@ -297,3 +297,20 @@ The actual FFBP algorithm is in the function \texttt{backprop}. In \texttt{backp
 \end{figure}
 
 At the time of this report, Everest (2016) has reported some performance issues with this implementation, but has yet to determine the cause. He noted that the implementation was running at a slower speed than an equivalent neural network that was implemented with Theano. Theano is a Python library that is optimised for multi-dimensional array computations.
+
+
+\section{Measuring performance} \label{se:measuringperf}
+
+One of the issues that has been raised during Thesis A is the need to find a suitable test subject, that provides an appropriate complexity, size and number to fully evaluate the performance of the implementation. 
+
+Currently, I have tentatively decided to test the system with the basic National Institute of Standards and Technology (MNIST) data set of handwritten digits. Should this prove unsuitable as a test subject, I may try an online repository for image data sets at the University of California, Irvine Center for Machine Learning and Intelligent Systems.
+
+Another problem that I may encounter using such pre-made repositories is that there may be insufficient training samples in the provided data set to train my neural network. In machine learning, a concept called \textit{artificial data synthesis} may resolve this dilemma~\cite{Ng12}. 
+
+Artificial data synthesis comprises of the following two methods to create \textit{synthetic data}: 
+\begin{enumerate}
+\item Create new \textit{labeled} samples by superimposing original sample with a suitable replacement. For example, an original image of an alphabet can be edited to a new sample by overlaying the existing letter with a new font type of the same letter.
+\item Amplify the data set by introducing \textit{smart} distortion to original sample. For instance, edit an original image of an alphabet into multiple versions by introducing various wave-like distortions.
+\end{enumerate}
+
+Artificial data synthesis is generally more efficient than obtaining raw data and labeling them manually. In the second method, the distortion must be non-trivial and the resulting sample must lie within a naturally occurring variance -- it must be reasonably found in the real world~\cite{Ng12}.
