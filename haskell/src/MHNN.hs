@@ -20,7 +20,7 @@ import Data.Array.Accelerate.Numeric.LinearAlgebra
 import Criterion.Main
 
 
--- trying to translate coursera machine learning neural network 
+-- trying to translate coursera machine learning neural network
 -- into accelerate version...
 
 main = do
@@ -52,7 +52,7 @@ train xsFile ysFile inputl hiddenl labelSize sampleNum = do
     ys <- loadys ysFile sampleNum
     theta1 <- gentheta2 inputl hiddenl -- 25x401 (25 = middle layer, 400 = input size + 1 for bias)
     theta2 <- gentheta2 hiddenl n      -- 10x26  (10 = exit layer, 26 = hidden layer + 1 bias)
-    let ts = flatten theta1 A.++ flatten theta2 
+    let ts = flatten theta1 A.++ flatten theta2
 
     let (thetas, j) = fmincg (\t -> nnCostFunction t l1 l2 (constant n) xs ys lambda) ts
 
@@ -65,9 +65,9 @@ train xsFile ysFile inputl hiddenl labelSize sampleNum = do
       ]
 
     -- unroll theta1
-    let theta1 = reshape (index2 (constant hiddenl) (constant (inputl+1))) 
+    let theta1 = reshape (index2 (constant hiddenl) (constant (inputl+1)))
                $ A.take ((constant hiddenl)*(constant (inputl+1))) thetas
-    let theta2 = reshape (index2  (constant labelSize) (constant (hiddenl+1))) 
+    let theta2 = reshape (index2  (constant labelSize) (constant (hiddenl+1)))
                $ A.drop (constant (hiddenl)*(constant (inputl+1))) thetas
 
     -- let pred = predict theta1 theta2 xs
@@ -82,14 +82,14 @@ predict ::
     -> Acc (Matrix Float)               -- hidden theta matrix
     -> Acc (Matrix Float)               -- input matrix to predict label of
     -> Acc (Vector Int)
-predict theta1 theta2 xs = 
+predict theta1 theta2 xs =
     let
-        h1 = A.map sigmoid 
+        h1 = A.map sigmoid
            $ xs <> A.transpose theta1
-        
+
         Z :. m :. n = unlift (shape h1) :: Z :. Exp Int :. Exp Int
-        
-        h2 = A.map sigmoid 
+
+        h2 = A.map sigmoid
            $ ((fill (lift (Z:.m:.(constant 1))) 1 :: Acc (Matrix Float)) A.++ h1)
              <>
              (A.transpose theta2)
@@ -104,14 +104,14 @@ predict theta1 theta2 xs =
     getYs
 
 
-testAccuracy :: 
+testAccuracy ::
        Acc (Vector Int)
     -> Acc (Vector Float)
     -> Acc (Scalar Float)
-testAccuracy predict labels = 
+testAccuracy predict labels =
     let
         pa = A.map (\x -> (A.fromIntegral x)/(A.fromIntegral $ A.length labels))
-           $ A.sum 
+           $ A.sum
            $ A.map boolToInt
            $ A.zipWith (A.==) (A.map (A.round) labels) predict
     in
@@ -120,12 +120,12 @@ testAccuracy predict labels =
 
 loadxs :: String -> Int -> Int -> IO (Acc (Matrix Float))
 loadxs filename m n = do
-    content <- readFile filename 
+    content <- readFile filename
     let strarr = words content
     let dbarr = P.map read strarr
     let ones = fill (constant (Z:.m:.1)) 1 :: Acc (Array DIM2 Float)
     let arr = A.use (A.fromList (Z:.m:.n) dbarr)
-    let carr = ones A.++ arr 
+    let carr = ones A.++ arr
     return carr
 
 
@@ -158,7 +158,7 @@ yEqCFloatVec ys c = A.map (A.fromIntegral . boolToInt . (c A.==)) ys
 
 -- make vector ys into matrix ys for neural network
 matrixfy :: Acc (Vector Float) -> Acc (Matrix Float)
-matrixfy ys = 
+matrixfy ys =
     let
         n = 10 :: Exp Int
         zeroMat = A.fill (index2 (A.length ys) n) 0
@@ -169,7 +169,7 @@ matrixfy ys =
 
 
 nnCostFunction ::
-       Acc (Vector Float)               -- input flattened thetas vector 
+       Acc (Vector Float)               -- input flattened thetas vector
     -> Exp Int                          -- input layer num
     -> Exp Int                          -- hidden layer num
     -> Exp Int                          -- num of labels
@@ -177,7 +177,7 @@ nnCostFunction ::
     -> Acc (Vector Float)               -- y (labels)
     -> Exp Float                        -- lambda
     -> Acc (Scalar Float, Vector Float ) -- j, theta1+theta2 vector
-nnCostFunction ts l1 l2 n xs y lambda = 
+nnCostFunction ts l1 l2 n xs y lambda =
     let
         Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
 
@@ -191,16 +191,16 @@ nnCostFunction ts l1 l2 n xs y lambda =
 
         -- feedforward
         a3 :: Acc (Matrix Float)
-        a1 = xs 
-        z2 = theta1 <> transpose a1 
-        a2 = (fill (lift (Z :. h :. constant  1)) 1 :: Acc (Matrix Float)) 
-           A.++ (A.transpose $ A.map sigmoid z2) 
-        z3 = a2 <> A.transpose theta2 
-        a3 = A.map sigmoid z3 
+        a1 = xs
+        z2 = theta1 <> transpose a1
+        a2 = (fill (lift (Z :. h :. constant  1)) 1 :: Acc (Matrix Float))
+           A.++ (A.transpose $ A.map sigmoid z2)
+        z3 = a2 <> A.transpose theta2
+        a3 = A.map sigmoid z3
 
         -- calculate cost J
         j :: Acc (Scalar Float)
-        j = A.zipWith (+) regCost 
+        j = A.zipWith (+) regCost
           $ A.map (\x -> x / A.fromIntegral h)
           $ A.foldAll (+) 0
           $ A.zipWith (\y a -> -y * (log a) - (1-y)*log(1-a)) ys a3
@@ -210,36 +210,36 @@ nnCostFunction ts l1 l2 n xs y lambda =
             j1      = foldAll (+) 0 (A.zipWith (*) ttheta1 ttheta1)
             j2      = foldAll (+) 0 (A.zipWith (*) ttheta2 ttheta2)
 
-        ttheta1 = A.tail theta1 
-        ttheta2 = A.tail theta2 
+        ttheta1 = A.tail theta1
+        ttheta2 = A.tail theta2
 
         -- backpropagate to get gradients
         d3 = A.zipWith (-) a3 ys
-        d2 = A.zipWith (*) 
+        d2 = A.zipWith (*)
              (d3 <> theta2)
-                    ((fill (lift (Z :. h :. constant  1)) 1 :: Acc (Matrix Float)) 
-                     A.++ (A.transpose $ A.map sigmoidGradient z2)) 
+                    ((fill (lift (Z :. h :. constant  1)) 1 :: Acc (Matrix Float))
+                     A.++ (A.transpose $ A.map sigmoidGradient z2))
 
-        theta2grad = A.map (\x -> x/A.fromIntegral h) 
-                   $ transpose d3 <> a2 
-        theta1grad = A.map (\x -> x/A.fromIntegral h) 
-                   $ transpose (A.tail d2) <> a1 
+        theta2grad = A.map (\x -> x/A.fromIntegral h)
+                   $ transpose d3 <> a2
+        theta1grad = A.map (\x -> x/A.fromIntegral h)
+                   $ transpose (A.tail d2) <> a1
 
         -- add gradient regularisation
-        theta1grad_ = A.zipWith (+) theta1grad 
+        theta1grad_ = A.zipWith (+) theta1grad
                     $ A.map (\x -> lambda * x/A.fromIntegral h)
                       ((fill (lift (Z :. w1 :. constant 1)) 0 :: Acc (Matrix Float))
-                       A.++ ttheta1) 
+                       A.++ ttheta1)
                       where
-                        Z :. h1 :. w1 = unlift (shape theta1) :: Z :. Exp Int :. Exp Int 
-        
-        theta2grad_ = A.zipWith (+) theta2grad 
+                        Z :. h1 :. w1 = unlift (shape theta1) :: Z :. Exp Int :. Exp Int
+
+        theta2grad_ = A.zipWith (+) theta2grad
                     $ A.map (\x -> lambda * x/A.fromIntegral h)
                       ((fill (lift (Z :. w2 :. constant 1)) 0 :: Acc (Matrix Float))
-                       A.++ ttheta2) 
+                       A.++ ttheta2)
                       where
-                        Z :. h2 :. w2 = unlift (shape theta2) :: Z :. Exp Int :. Exp Int 
-        
+                        Z :. h2 :. w2 = unlift (shape theta2) :: Z :. Exp Int :. Exp Int
+
         grads = flatten theta1grad_ A.++ flatten theta2grad_
 
     in
@@ -251,16 +251,16 @@ nnCostFunction ts l1 l2 n xs y lambda =
 --
 -- Function minimize non-linear conjugate gradient
 --
-fmincg :: 
+fmincg ::
        (Acc (Vector Float) -> Acc (Scalar Float, Vector Float))
     -> Acc (Vector Float)               -- theta (weight vector)
-    -> (Acc (Vector Float), Acc (Vector Float)) -- theta, j 
-fmincg costFunction theta = 
+    -> (Acc (Vector Float), Acc (Vector Float)) -- theta, j
+fmincg costFunction theta =
     let
         fX = fill (constant (Z :. (0::Int))) (0 :: Exp Float)
         (f1, df1) = unlift $ costFunction theta -- f1 = error, df1 = gradients
         s  = A.map negate df1 -- cause matlab...?
-        d1 = A.map negate $ A.sum (A.zipWith (*) s s)        
+        d1 = A.map negate $ A.sum (A.zipWith (*) s s)
         z1 = unit ((1::Exp Float)/(1 - (the d1)))
         -- ys = yEqCFloatVec yc c
     in
@@ -288,15 +288,15 @@ outerMostLoop costFunction theta0 s0 d10 f10 z10 df10 fX0 =
         initial = lift (theta0, fX0, s0, df10, f10, d10, z10, length0)
 
         cond :: Acc (Vector Float, Vector Float, Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
-            -> Acc (Scalar Bool) 
-        cond args = 
+            -> Acc (Scalar Bool)
+        cond args =
             let theta, s, fX, df1 :: Acc (Vector Float)
                 f1, d1, z1 :: Acc (Scalar Float)
                 length :: Acc (Scalar Int)
                 (theta, fX, s, df1, f1, d1, z1, length) = unlift args
             in
             unit ((the length) A.< (50 :: Exp Int)) -- SET LOOP HERE -- matlab = 50
-    
+
         body :: Acc (Vector Float, Vector Float, Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
              -> Acc (Vector Float, Vector Float, Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
         body args =
@@ -321,20 +321,20 @@ outerMostLoop costFunction theta0 s0 d10 f10 z10 df10 fX0 =
                 d2_, f1_, d1_, z1_ :: Acc (Scalar Float)
                 (theta_, f1_, fX_, s_, df1_, df2_, d1_, d2_, z1_) = handleSuccess theta' s d1 f1 f2' z1' df1 df2' fX
                     -- unlift finalCal
-                                   
+
                 -- XXX: seems unnecessary to test this condition......?
                 -- finalCal = condition
-                --          ?| ( lift $ handleSuccess theta' s d1 f1 f2' z1' df1 df2' fX , 
+                --          ?| ( lift $ handleSuccess theta' s d1 f1 f2' z1' df1 df2' fX ,
                 --               lift $ handleFailure theta s d1 d2 f1 f2' z1' df10 df2' fX )
-                
+
                 -- condition = A.not cond1 A.&& cond2
                 --     where
-                --         cond1 = the f2' A.> (the f1 + (the z1')*0.01*(the d1)) 
+                --         cond1 = the f2' A.> (the f1 + (the z1')*0.01*(the d1))
                 --            A.|| the d2' A.> (-0.5)*(the d1)
                 --         cond2 = the d2' A.> 0.5 * (the d1)
                 --         cond3 = (the m) A.== 0
-                
-            in 
+
+            in
             lift (theta_, fX_, s_, df1_, f1_, d1_, z1_, length_)
 
         z1', d1', f1' :: Acc (Scalar Float)
@@ -342,10 +342,10 @@ outerMostLoop costFunction theta0 s0 d10 f10 z10 df10 fX0 =
         theta', df1', s' :: Acc (Vector Float)
         (theta', fX', s', df1', f1', d1', z1', length') = unlift $ awhile cond body initial
     in
-    (theta', fX') 
+    (theta', fX')
 
 
-handleSuccess :: 
+handleSuccess ::
        Acc (Vector Float) -- theta
     -> Acc (Vector Float) -- s
     -> Acc (Scalar Float) -- d1
@@ -371,23 +371,23 @@ handleSuccess theta0 s0 d10 f10 f20 z10 df10 df20 fX0 =
         s1 = A.zipWith (-) firstBit df20      -- Polack-Ribiere direction
         firstBit = A.map ((dividend/divisor) *) s0
         dividend = the (A.sum (A.zipWith (*) df20 df20)) - the (A.sum (A.zipWith (*) df10 df20))
-        divisor = the $ A.sum (A.zipWith (*) df10 df10) 
+        divisor = the $ A.sum (A.zipWith (*) df10 df10)
         df11 = df20
         df21 = df10
         d21 = A.sum (A.zipWith (*) df11 s1)
-        s2 = ((the d21) A.> 0) 
-            ?| ( A.map negate df11 , s1 ) 
-        d22 = ((the d21) A.> 0) 
+        s2 = ((the d21) A.> 0)
+            ?| ( A.map negate df11 , s1 )
+        d22 = ((the d21) A.> 0)
             ?| ( A.map negate (A.sum (A.zipWith (*) s2 s2)), d21)
         z11 = unit (the z10 * (A.min 100 ((the d10)/(the d22))))
-        -- realmin for float  = 1.1755e-38 
+        -- realmin for float  = 1.1755e-38
         -- realmin for double = 2.225073858507201e-308
-        d11 = d22 
+        d11 = d22
     in
     (theta0, f11, fX_, s2, df11, df21, d11, d22, z11)
 
 
-handleFailure :: 
+handleFailure ::
        Acc (Vector Float) -- theta
     -> Acc (Vector Float) -- s
     -> Acc (Scalar Float) -- d1
@@ -419,11 +419,11 @@ handleFailure theta0 s0 d10 d20 f10 f20 z10 df10 df20 fX0 =
     (theta0, f10, fX_, s1, df11, df21, d11, d20, z11)
 
 
-middleLoop :: 
+middleLoop ::
        (Acc (Vector Float) -> Acc (Scalar Float, Vector Float))
     -> Acc (Vector Float) -- theta
     -> Acc (Vector Float) -- s == -df1
-    -> Acc (Vector Float) -- df2 
+    -> Acc (Vector Float) -- df2
     -> Acc (Scalar Float) -- d1 slope
     -> Acc (Scalar Float) -- d2
     -> Acc (Scalar Float) -- d3
@@ -444,12 +444,12 @@ middleLoop ::
         , Acc (Scalar Float) -- z1
         , Acc (Scalar Float) -- z2
         , Acc (Scalar Float) ) -- z3
-middleLoop costFunction theta0 s0 df20 d10 d20 d30 f10 f20 f30 z10 z20 z30 m0 limit0 = 
+middleLoop costFunction theta0 s0 df20 d10 d20 d30 f10 f20 f30 z10 z20 z30 m0 limit0 =
     let
         -- innerWhile initially once
         initial :: Acc (Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int, Scalar Float)
         initial =
-            let 
+            let
                 (theta1, df21, d21, f21, z11, z21, z31, m1, limit1) = innerLoop costFunction s0 df20 d10 f10 d20 f20 f30 z10 z20 z30 m0 theta0 limit0
           in
           lift (theta1, df21, d10, d21, d30, f10, f21, f30, z11, z21, z31, m1, limit1)
@@ -487,7 +487,7 @@ middleLoop costFunction theta0 s0 df20 d10 d20 d30 f10 f20 f30 z10 z20 z30 m0 li
     (theta2, df22, d22, d32, f22, f32, z12, z22, z32)
 
 
-middleFunction :: 
+middleFunction ::
        (Acc (Vector Float) -> Acc (Scalar Float, Vector Float))
     -> Acc (Vector Float) -- theta
     -> Acc (Vector Float) -- s == -df1
@@ -510,11 +510,11 @@ middleFunction ::
         , Acc (Scalar Float) -- z1
         , Acc (Scalar Float) -- z2
         , Acc (Scalar Float) ) -- z3
-middleFunction costFunction theta0 s d20 d30 f20 f30 z10 z30 limit = 
-    let 
+middleFunction costFunction theta0 s d20 d30 f20 f30 z10 z30 limit =
+    let
         z21 = cubicExtrapolate d20 d30 f20 f30 z10 z30 limit
         f31 = f20 -- f3 = f2
-        d31 = d20 -- d3 = d2 
+        d31 = d20 -- d3 = d2
         z31 = A.negate z21 -- z3 = -z2
         z11 = z10 + z21 -- z1 = z1 + z2
         theta1 = A.zipWith (+) theta0 (A.map (z21*) s) -- X = X + z2*s
@@ -540,12 +540,12 @@ middleLoopCondition f1 f2 z1 d1 d2 m = f A.|| s A.|| t
         t = (m A.== 0) -- failure
 
 
-innerLoop :: 
+innerLoop ::
        (Acc (Vector Float) -> Acc (Scalar Float, Vector Float)) -- costFunction
     -> Acc (Vector Float) -- s
     -> Acc (Vector Float) -- df2
     -> Acc (Scalar Float) -- Exp Float -- d1
-    -> Acc (Scalar Float) -- Exp Float -- f1 
+    -> Acc (Scalar Float) -- Exp Float -- f1
     -> Acc (Scalar Float) -- d2 -- changes from here
     -> Acc (Scalar Float) -- f2
     -> Acc (Scalar Float) -- f3
@@ -572,7 +572,7 @@ innerLoop costFunction s df2 d1 f1 d2 f2 f3 z1 z2 z3 m theta limit =
         cond :: Acc (Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int, Scalar Float)
              -> Acc (Scalar Bool)
         cond args =
-          let 
+          let
               theta0, df20 :: Acc (Vector Float)
               d20, f20, z10, z20, z30, limit0 :: Acc (Scalar Float)
               (theta0, df20, d20, f20, z10, z20, z30, m0, limit0) = unlift args
@@ -597,11 +597,11 @@ innerLoop costFunction s df2 d1 f1 d2 f2 f3 z1 z2 z3 m theta limit =
         m' :: Acc (Scalar Int)
         (theta', df2', d2', f2', z1', z2', z3', m', limit') = unlift $ awhile cond body initial
 
-    in 
+    in
     (theta', df2', d2', f2', z1', z2', z3', m', limit')
 
 
-innerFunction :: 
+innerFunction ::
        (Acc (Vector Float) -> Acc (Scalar Float, Vector Float))
     -> Acc (Vector Float) -- theta
     -> Acc (Vector Float) -- s == -df1
@@ -622,10 +622,10 @@ innerFunction ::
         , Acc (Scalar Float) -- z2
         , Acc (Scalar Float) -- z3
         , Acc (Scalar Float) ) -- limit
-innerFunction costFunction theta0 s d10 d20 d30 f10 f20 f30 z10 z20 z30 = 
-    let 
+innerFunction costFunction theta0 s d10 d20 d30 f10 f20 f30 z10 z20 z30 =
+    let
         limit = z10
-        z21  = (f20 A.> f10) 
+        z21  = (f20 A.> f10)
             ? ( quadraticFit d30 f20 f30 z30, cubicFit d20 d30 f20 f30 z30 )
         z22 = A.max ( A.min z21 (0.1 * z30) ) (0.9 * z30) -- z2 = max(min(z2, INT*z3),(1-INT)*z3)
         z11 = z10 + z22 -- z1 = z1 + z2;
@@ -635,7 +635,7 @@ innerFunction costFunction theta0 s d10 d20 d30 f10 f20 f30 z10 z20 z30 =
         z31 = A.subtract z30 z22; -- z3 = z3-z2;
     in
     (theta1, df21, d21, f21, unit z11, unit z22, unit z31, unit limit)
-    
+
 
 innerLoopCondition :: Exp Float -- f1
     -> Exp Float -- f2
@@ -650,20 +650,20 @@ innerLoopCondition f1 f2 z1 d1 d2 m = (f A.&& m A.> 0) -- f1 f2 f3 d1 d2 m
 
 
 -- Logistic Regression Functions...
-lrCostFunction :: 
+lrCostFunction ::
        Acc (Vector Float)      -- theta (weight vector)
     -> Acc (Matrix Float)      -- X (data matrix)
     -> Acc (Vector Float)      -- y (labels)
     -> Exp Float               -- lambda (learning rate)
     -> ( Acc (Scalar Float)    -- J (cost)
        , Acc (Vector Float) )  -- gradients
-lrCostFunction theta xs ys lambda = 
+lrCostFunction theta xs ys lambda =
     let
         temp :: Acc (Vector Float) -- theta with theta[0] = 0
         temp = (enumFromN (constant (Z:.1)) 0) A.++ (A.tail theta)
 
         grad :: Acc (Vector Float)
-        grad = A.map (\x -> -x / A.fromIntegral m) 
+        grad = A.map (\x -> -x / A.fromIntegral m)
              $ A.zipWith (+) (A.map (lambda *) theta) $ fold (+) 0 (A.zipWith (*) (transpose xs) hy)
 
         hy :: Acc (Matrix Float)
@@ -697,16 +697,16 @@ lrCostFunction theta xs ys lambda =
     (unit jreg, grad)
 
 
-all_theta :: 
+all_theta ::
        Acc (Matrix Float)               -- X (data matrix)
     -> Acc (Vector Float)               -- y (labels data matching X)
     -> Exp Int                          -- number of labels
     -> Exp Float                        -- lambda (learning rate)s
     -> Acc (Matrix Float)               -- result theta matrix
-all_theta xs ys n lambda = 
+all_theta xs ys n lambda =
     let
         Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
-    
+
         -- create empty result matrix (10x401)
         initial :: Acc (Matrix Float, Scalar Int)
         initial = lift ( A.fill (index2 n w) (0 :: Exp Float), unit 0)
@@ -715,7 +715,7 @@ all_theta xs ys n lambda =
         cond args = A.map (A.< n) (A.asnd args)
 
         body :: Acc (Matrix Float, Scalar Int) -> Acc (Matrix Float, Scalar Int)
-        body args = 
+        body args =
             let
                 mat :: Acc (Matrix Float)
                 row ::Acc (Scalar Int)
@@ -736,20 +736,20 @@ all_theta xs ys n lambda =
     A.afst $ A.awhile cond body initial
 
 
-checkResult :: 
+checkResult ::
        Acc (Matrix Float)
     -> Acc (Vector Float)
     -> Matrix Float
     -> Acc (Scalar Int)
-checkResult xs ys thetas = 
+checkResult xs ys thetas =
     let
-        pa = A.sum 
+        pa = A.sum
           $ A.map boolToInt
           $ A.zipWith (A.==) pLabels (A.map (A.round) ys)
 
         pLabels = A.map ((+1) . A.indexHead . A.fst)
                 $ A.fold1 (\x y -> A.snd x A.> A.snd y ? (x , y))
-                $ A.indexed 
+                $ A.indexed
                 $ xs <> transpose (A.use thetas)
     in
     pa
@@ -767,12 +767,12 @@ sigmoidGradient z = (sigmoid z) * (1 - sigmoid z)
 quadraticFit :: Exp Float -> Exp Float -> Exp Float -> Exp Float -> Exp Float
 quadraticFit d3 f2 f3 z3 = det A.== 0
                          ? ( z3/2 , z3 - (0.5*d3*z3*z3)/det)
-    where 
+    where
         det = (d3*z3 + f2 - f3)
 
 
 cubicFit :: Exp Float -> Exp Float -> Exp Float -> Exp Float -> Exp Float -> Exp Float
-cubicFit d2 d3 f2 f3 z3 = (det A.< 0 A.|| divisor A.== 0) 
+cubicFit d2 d3 f2 f3 z3 = (det A.< 0 A.|| divisor A.== 0)
                         ? ( z3/2 , (P.sqrt det - b)/a )
     where
         divisor = z3 + 3*(d2 + d3)
@@ -781,7 +781,7 @@ cubicFit d2 d3 f2 f3 z3 = (det A.< 0 A.|| divisor A.== 0)
         det = b*b - a*d2*z3*z3
 
 
-cubicExtrapolate :: 
+cubicExtrapolate ::
        Exp Float      -- d2
     -> Exp Float      -- d3
     -> Exp Float      -- f2
@@ -805,7 +805,7 @@ cubicExtrapolate d2 d3 f2 f3 z1 z3 limit =
         then (limit - z1)*(0.9) -- (1.0 - INT)
     else
         z2
-    where 
+    where
         a   = 6*(f2 - f3)/z3 + 3*(d2 + d3)
         b   = 3*(f3 - f2) - z3*(d3 + 2*d2)
         det = b*b - a*d2*z3*z3
@@ -838,7 +838,7 @@ test1 :: IO (Vector Float)
 test1 = do
     xs <- loadxs "trainsample100.txt" 100 400
     ys <- loadys "trainlabel100.txt" 100
-    let theta = gentheta xs 
+    let theta = gentheta xs
     let lambda = (0.1 :: Exp Float)
     let yc = yEqCFloatVec ys (1.0 :: Exp Float)
     let (newTheta, j) = fmincg (\t -> lift $ lrCostFunction t xs yc lambda) theta
