@@ -167,3 +167,4 @@ but \texttt{realmin} for \texttt{Float} is $1.1755e^{38}$ and for a \texttt{Doub
 Lastly, some of the optimisations in \texttt{fmincg} to come to the conclusion faster has been ignored, namely, the innermost loop and the handling a failure to obtain an answer. The reasons for this is that failure should not be triggered if the function input is valid and it needlessly slows down the software by introducing flow divergence. Also, the innermost loop does not behave in the expected manner and the reasons for this is still unfathomed at the time of writing the thesis.
 
 Also because this implementation is more or less a straight forward translation of MATLAB code with minimal optimisation to suit Accelerate, there may be even more faster and efficient manner to create a neural network in native Accelerate, particularly in regards to \texttt{fmincg}.
+
