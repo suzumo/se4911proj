@@ -71,8 +71,12 @@ executable mhnn-accelerate
   build-depends:
         base                        >= 4.8 && < 4.10
       , accelerate                  == 1.0.*
+      , bytestring                  >= 0.9
+      , bytestring-lexing           >= 0.5
+      , cassava                     >= 0.4
       , criterion                   >= 1.0
       , deepseq
+      , vector                      >= 0.9
       , lens-accelerate             >= 0.1
       , mwc-random-accelerate       >= 0.1
 
