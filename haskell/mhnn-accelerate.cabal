@@ -64,6 +64,12 @@ executable mhnn-accelerate
 
   -- Modules included in this executable, other than Main.
   other-modules:
+      -- File loaders
+      Data.Load.CSV
+      Data.Load.TXT
+      Data.Load.MINST
+
+      -- For matrix multiply
       Data.Array.Accelerate.Numeric.LinearAlgebra
       Data.Array.Accelerate.Numeric.LinearAlgebra.Type
 
@@ -71,6 +77,8 @@ executable mhnn-accelerate
   build-depends:
         base                        >= 4.8 && < 4.10
       , accelerate                  == 1.0.*
+      , accelerate-io               == 1.0.*
+      , binary                      >= 0.7
       , bytestring                  >= 0.9
       , bytestring-lexing           >= 0.5
       , cassava                     >= 0.4
