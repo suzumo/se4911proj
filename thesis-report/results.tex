@@ -3,12 +3,16 @@
 \section{Test Data}\label{se:res.testdata}
 There are two data sets that I have tested the implementation with: (1) handwritten digits data set from~\cite{Ng12}; and, (2) handwritten digits data set from~\cite{LeCCorBur}.
 
-(1) is a $5000$ training examples of $20 \times 20$ pixel greyscale images of digits, each pixel represented by a floating point number that indicates the greyscale intensity at that location. The input layer will thus have 400 neurons. Hidden layer has 25 neurons and the output layer has 10 neurons. The output neuron with the highest activation value will be the digit that the sample will be classifed as. For instance, if the neuron 4 of the output vector, \texttt{ys[3]} had the highest value, then the sample will be classified as digit 4.
+(1) is a $5000$ training examples of $20 \times 20$ pixel greyscale images of digits, each pixel represented by a floating point number that indicates the greyscale intensity at that location. The input layer will thus have 400 neurons. Hidden layer has 25 neurons and the output layer has 10 neurons. The size of weight vector between input and hidden layers is $401 \times 25 = 10025$ and the size of the weight vector between hidden and output layers is $26 \times 10 = 260$. 
+
+The output neuron with the highest activation value will be the digit that the sample will be classifed as. For instance, if the neuron 4 of the output vector, \texttt{ys[3]} had the highest value, then the sample will be classified as digit 4.
 
 This data set was mostly used during the development to assess the accuracy of the implementation, as I could easily check the values that I get from my program with the values in the MATLAB program. In ~\ref{se:res.performance} I evaluated the comparative performance of Accelerate and MATLAB, up to 2 cores.
 
-(2) is Le Cunn's MNIST handwritten digits database. This consists of a training set of $60000$ examples and a test set of $10000$ examples. Each example is a $28 \times 28$ pixel greyscale images written by $250$ writers. This input layer has 784 neurons and a hidden layer of 300 neurons. This data was used to test the performance of completed Accelerate implementation up to 8 cores.
+(2) is Le Cunn's MNIST handwritten digits database. This consists of a training set of $60000$ examples and a test set of $10000$ examples. Each example is a $28 \times 28$ pixel greyscale images. This input layer has 784 neurons and a hidden layer of 300 neurons. Thus the size of weight vector between them is $785 \times 300 = 235500$. The size of weight vector between hidden and output layer is $301 \times 10 = 3010$. This data set was used to test the performance of completed Accelerate implementation from 1 to 8 cores.
 
+Each test was repeated 10 times and the average value plotted. The initial weight vectors for training set 2 benchmarking was kept consistent to strictly measure the effect of cores on performance. In training set 1, the initial weight are randomly initialised, and thus up to 1\% in fluctuations could result from this factor~\cite{Ng12}.
+ 
 \section{Testing environment}\label{se:res.testsys}
 There are two testing environments. Both environments ran on \texttt{llvm} backends as the testing data was too small for the GPU backend. 
 
@@ -65,9 +69,10 @@ Table \ref{tb:acc.vs.matlab} shows that in the development environment with trai
 Table \ref{tb:acc.vs.cores} indicates a performance improvement with the addition of more cores. It levels off rapidly, however, perhaps indicating that there may be too much overhead to keep the cores synchronized to gain more benefit with the current implementation (see Chapter~\ref{ch:eval}).
 
 \begin{figure}
-	\centerline{\includegraphics{training1.png}}
-	
-	\centerline{\includegraphics{training2.png}}
-	\caption{Graphs of training set 1 (above) and 2 (below) benchmarks.}
+\centerline{
+	{\includegraphics[scale=0.5]{training1.png}}
+	{\includegraphics[scale=0.5]{training2.png}}
+	}
+	\caption{Graphs of training set 1 (left) and 2 (right) benchmarks.}
 	\label{fig:traininggraphs}
 \end{figure}

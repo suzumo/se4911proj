@@ -28,12 +28,3 @@
 \contentsline {section}{\numberline {5.4}Future works}{35}
 \contentsline {chapter}{\numberline {6}Conclusion}{36}
 \contentsline {chapter}{Bibliography}{37}
-\contentsline {chapter}{Appendix 1}{39}
-\contentsline {section}{\numberline {A.1}Options}{39}
-\contentsline {section}{\numberline {A.2}Margins}{39}
-\contentsline {section}{\numberline {A.3}Page Headers}{40}
-\contentsline {subsection}{\numberline {A.3.1}Undergraduate Theses}{40}
-\contentsline {subsection}{\numberline {A.3.2}Higher Degree Research Theses}{40}
-\contentsline {section}{\numberline {A.4}Page Footers}{40}
-\contentsline {section}{\numberline {A.5}Double Spacing}{41}
-\contentsline {section}{\numberline {A.6}Files}{41}
