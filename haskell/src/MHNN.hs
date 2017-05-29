@@ -6,12 +6,12 @@
 module MHNN (
 
   fmincg, nnCostFunction, lrCostFunction, generateTheta,
-  predict, test
+  predict, validate
 
 ) where
 
 import Prelude                                            as P
-import Data.Array.Accelerate                              as A
+import Data.Array.Accelerate                              as A hiding ( cond )
 import Data.Array.Accelerate.Numeric.LinearAlgebra
 import Data.Array.Accelerate.System.Random.MWC
 
@@ -161,14 +161,15 @@ predict theta1 theta2 xs =
 
 -- Test the accuracy of the predictions
 --
-test :: Acc (Vector Int)          -- predicted labels
-     -> Acc (Vector Float)        -- actual labels
-     -> Acc (Scalar Float)        -- percent correct
-test predict labels
-  = A.map (\x -> (A.fromIntegral x)/(A.fromIntegral $ A.length labels))
+validate
+    :: Acc (Vector Int)           -- predicted labels
+    -> Acc (Vector Float)         -- actual labels
+    -> Acc (Scalar Float)         -- percent correct
+validate predicted actual
+  = A.map (\x -> (A.fromIntegral x)/(A.fromIntegral $ A.length actual))
   $ A.sum
   $ A.map boolToInt
-  $ A.zipWith (A.==) (A.map (A.round) labels) predict
+  $ A.zipWith (A.==) (A.map (A.round) actual) predicted
 
 
 {--
@@ -198,6 +199,9 @@ loadys filename m = do
 --         Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
 
 
+-- | Generate a vector of random numbers suitable for use with the given number
+-- of input and output layers.
+--
 generateTheta :: Int -> Int -> IO (Acc (Matrix Float))
 generateTheta sizeIn sizeOut = do
     let n       = (sizeIn + 1) * sizeOut
@@ -212,6 +216,7 @@ yEqCFloatVec ys c = A.map (A.fromIntegral . boolToInt . (c A.==)) ys
 
 
 -- make vector ys into matrix ys for neural network
+--
 matrixfy :: Acc (Vector Float) -> Acc (Matrix Float)
 matrixfy ys =
     let
@@ -231,7 +236,7 @@ nnCostFunction
     -> Acc (Matrix Float)               -- X (data matrix) in the form [1 X] (5000x401)
     -> Acc (Vector Float)               -- y (labels)
     -> Acc (Vector Float)               -- input flattened thetas vector
-    -> Acc (Scalar Float, Vector Float ) -- j, theta1+theta2 vector
+    -> Acc (Scalar Float, Vector Float) -- j, theta1+theta2 vector
 nnCostFunction l1 l2 l3 lambda xs y ts =
     let
         Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
@@ -312,11 +317,11 @@ fmincg ::
     -> (Acc (Vector Float), Acc (Vector Float)) -- theta, j
 fmincg costFunction theta =
     let
-        fX = fill (constant (Z :. (0::Int))) (0 :: Exp Float)
+        fX        = fill (constant (Z :. (0::Int))) (0 :: Exp Float)
         (f1, df1) = unlift $ costFunction theta -- f1 = error, df1 = gradients
-        s  = A.map negate df1 -- cause matlab...?
-        d1 = A.map negate $ A.sum (A.zipWith (*) s s)
-        z1 = unit ((1::Exp Float)/(1 - (the d1)))
+        s         = A.map negate df1 -- cause matlab...?
+        d1        = A.map negate $ A.sum (A.zipWith (*) s s)
+        z1        = unit ((1::Exp Float)/(1 - (the d1)))
         -- ys = yEqCFloatVec yc c
     in
     outerMostLoop costFunction theta s d1 f1 z1 df1 fX
@@ -347,17 +352,17 @@ outerMostLoop costFunction theta0 s0 d10 f10 z10 df10 fX0 =
         cond args =
             let theta, s, fX, df1 :: Acc (Vector Float)
                 f1, d1, z1 :: Acc (Scalar Float)
-                length :: Acc (Scalar Int)
-                (theta, fX, s, df1, f1, d1, z1, length) = unlift args
+                len :: Acc (Scalar Int)
+                (theta, fX, s, df1, f1, d1, z1, len) = unlift args
             in
-            unit ((the length) A.< (50 :: Exp Int)) -- SET LOOP HERE -- matlab = 50
+            unit ((the len) A.< (50 :: Exp Int)) -- SET LOOP HERE -- matlab = 50
 
         body :: Acc (Vector Float, Vector Float, Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
              -> Acc (Vector Float, Vector Float, Vector Float, Vector Float, Scalar Float, Scalar Float, Scalar Float, Scalar Int)
         body args =
             let
-                (theta, fX, s, df1, f1, d1, z1, length) = unlift args :: (Acc (Vector Float), Acc (Vector Float), Acc (Vector Float), Acc (Vector Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Int))
-                length_ = A.map (+1) length
+                (theta, fX, s, df1, f1, d1, z1, len) = unlift args :: (Acc (Vector Float), Acc (Vector Float), Acc (Vector Float), Acc (Vector Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Float), Acc (Scalar Int))
+                length_ = A.map (+1) len
                 theta1 = A.zipWith (+) theta (A.map ((the z1) A.*) s) -- set up initial values
                 (f2, df2) = unlift $ costFunction theta1
                 d2 = A.sum $ A.zipWith (*) df2 s
@@ -530,8 +535,7 @@ middleLoop costFunction theta0 s0 df20 d10 d20 d30 f10 f20 f30 z10 z20 z30 m0 li
               m_ = A.map (A.subtract 1) m'
 
               (theta'', df2'', d2'', d3_, f2'', f3_, z1'', z2'', z3'') = middleFunction costFunction theta' s0 (the d2') (the d3') (the f2') (the f3') (the z1') (the z3') (the limit')
-
-              (theta_, df2_, d2_, f2_, z1_, z2_, z3_, m__, limit_)                    = innerLoop costFunction s0 df2'' d1' f1' d2'' f2'' f3_ z1'' z2'' z3'' m_ theta'' limit'
+              (theta_, df2_, d2_, f2_, z1_, z2_, z3_, m__, limit_)     = innerLoop costFunction s0 df2'' d1' f1' d2'' f2'' f3_ z1'' z2'' z3'' m_ theta'' limit'
           in
           lift (theta_, df2_, d1', d2_, d3_, f1', f2_, f3_, z1_, z2_, z3_, m__, limit_)
 
@@ -680,8 +684,9 @@ innerFunction ::
 innerFunction costFunction theta0 s d10 d20 d30 f10 f20 f30 z10 z20 z30 =
     let
         limit = z10
-        z21  = (f20 A.> f10)
-            ? ( quadraticFit d30 f20 f30 z30, cubicFit d20 d30 f20 f30 z30 )
+        z21   = if f20 A.> f10
+                  then quadraticFit d30 f20 f30 z30
+                  else cubicFit d20 d30 f20 f30 z30
         z22 = A.max ( A.min z21 (0.1 * z30) ) (0.9 * z30) -- z2 = max(min(z2, INT*z3),(1-INT)*z3)
         z11 = z10 + z22 -- z1 = z1 + z2;
         theta1 = A.zipWith (+) theta0 (A.map (z22 A.*) s) -- X = X + z2*s;

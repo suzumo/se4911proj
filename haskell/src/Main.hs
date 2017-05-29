@@ -63,7 +63,7 @@ main = do
   _ <- timed (printf "training network: %d hidden layers, %d training images" hiddenLayers trainSamples) (return $!! thetaOut)
   r <- timed (printf "testing network: %d sample images" testSamples) (return $!! prediction testImages')
 
-  let accuracy      = CPU.run $ test (A.use r) (A.use testLabels)
+  let accuracy      = CPU.run $ validate (A.use r) (A.use testLabels)
   printf "network accuracy: %.2f%%\n" (100 * (A.indexArray accuracy Z))
 
   -- defaultMain
