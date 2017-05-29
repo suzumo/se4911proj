@@ -12,6 +12,7 @@ import Data.Time.Clock
 import System.CPUTime
 import System.IO
 import Text.Printf
+-- import Criterion.Main
 
 import Data.Array.Accelerate                              ( Array, Acc, Exp, Z(..), (:.)(..), DIM1, DIM2 )
 import qualified Data.Array.Accelerate                    as A
@@ -23,9 +24,9 @@ main :: IO ()
 main = do
   -- Network configuration
   -- ---------------------
-  let hiddenLayers    = 25    -- pick a number, any number!
+  let hiddenLayers    = 300   -- pick a number, any number!
       outputLayers    = 10    -- number of output labels to train the network to recognise
-      learningRate    = 1.0
+      regularisation  = 1.0
       --
       trainImagesFile = "../data/train-images-idx3-ubyte"
       trainLabelsFile = "../data/train-labels-idx1-ubyte"
@@ -49,7 +50,7 @@ main = do
   theta1  <- timed "generating theta1" $ (CPU.run <$> gentheta2 inputLayers hiddenLayers)
   theta2  <- timed "generating theta2" $ (CPU.run <$> gentheta2 hiddenLayers outputLayers)
 
-  let training      = CPU.run1 $ A.lift . fmincg (nnCostFunction inputLayers hiddenLayers outputLayers learningRate (bias (A.use trainImages)) (A.use trainLabels))
+  let training      = CPU.run1 $ A.lift . fmincg (nnCostFunction inputLayers hiddenLayers outputLayers regularisation (bias (A.use trainImages)) (A.use trainLabels))
       prediction    = CPU.run1 $ predict (A.use weights1) (A.use weights2)
       --
       thetaIn       = CPU.run  $ A.flatten (A.use theta1) A.++ A.flatten (A.use theta2)
@@ -64,6 +65,13 @@ main = do
 
   let accuracy      = CPU.run $ testAccuracy (A.use r) (A.use testLabels)
   printf "network accuracy: %.2f%%\n" (100 * (A.indexArray accuracy Z))
+
+  -- defaultMain
+  --   [ bgroup "nnCostFunction"
+  --     [ bench "train"   $ whnf training thetaIn
+  --     , bench "predict" $ whnf prediction testImages'
+  --     ]
+  --   ]
 
   return ()
 
