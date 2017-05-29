@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.26)  29 MAY 2017 23:23
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.26)  30 MAY 2017 01:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -499,46 +499,46 @@ Underfull \vbox (badness 1931) has occurred while \output is active []
 [24] [25] [26] <realmin.png, id=169, 628.3475pt x 60.225pt>
 File: realmin.png Graphic file (type png)
  <use realmin.png>
-Package pdftex.def Info: realmin.png used on input line 197.
+Package pdftex.def Info: realmin.png used on input line 194.
 (pdftex.def)             Requested size: 412.56497pt x 39.54276pt.
-
-[27 <./realmin.png>]) [28]
+)
+[27 <./realmin.png>] [28]
 \openout2 = `results.aux'.
 
  (./results.tex
 Chapter 4.
-<ng-dataset.png, id=177, 294.09875pt x 294.09875pt>
-File: ng-dataset.png Graphic file (type png)
- <use ng-dataset.png>
-Package pdftex.def Info: ng-dataset.png used on input line 9.
-(pdftex.def)             Requested size: 294.09802pt x 294.09802pt.
-
 [29
 
 
 
-] [30 <./ng-dataset.png>]
-Overfull \hbox (13.46426pt too wide) in paragraph at lines 21--22
-\OT1/cmr/m/n/10.95 CPU (64-bit, 2.2GHz, 12GB RAM, hy-per-thread-ing en-abled) r
-un-ning GNU/Linux (Ubuntu
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 46--46
+]
+Underfull \hbox (badness 10000) in paragraph at lines 40--40
 []\OT1/cmr/m/n/10.95 Accelerate
  []
 
 
-Underfull \hbox (badness 6016) in paragraph at lines 46--46
+Underfull \hbox (badness 6016) in paragraph at lines 40--40
 []\OT1/cmr/m/n/10.95 Accelerate ac-cu-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 46--46
+Underfull \hbox (badness 10000) in paragraph at lines 40--40
 []\OT1/cmr/m/n/10.95 MATLAB ac-cu-
  []
 
-[31]) [32]
+<training1.png, id=181, 362.10281pt x 216.81pt>
+File: training1.png Graphic file (type png)
+ <use training1.png>
+Package pdftex.def Info: training1.png used on input line 68.
+(pdftex.def)             Requested size: 362.10191pt x 216.80946pt.
+
+<training2.png, id=182, 362.10281pt x 217.5628pt>
+File: training2.png Graphic file (type png)
+ <use training2.png>
+Package pdftex.def Info: training2.png used on input line 70.
+(pdftex.def)             Requested size: 362.10191pt x 217.56227pt.
+) [30]
+[31] [32 <./training1.png> <./training2.png>]
 \openout2 = `evaluation.aux'.
 
  (./evaluation.tex
@@ -617,34 +617,37 @@ Underfull \vbox (badness 5637) has occurred while \output is active []
 ]
 [40] [41]) [42] (./sample-thesis.aux (./abstract.aux) (./acknowledgements.aux)
 (./abbreviations.aux) (./introduction.aux) (./background.aux) (./mywork.aux)
-(./results.aux) (./evaluation.aux) (./conclusion.aux) (./appendix1.aux)) ) 
+(./results.aux) (./evaluation.aux) (./conclusion.aux) (./appendix1.aux))
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
 Here is how much of TeX's memory you used:
- 5691 strings out of 493029
- 80225 string characters out of 6136234
+ 5697 strings out of 493029
+ 80324 string characters out of 6136234
  249844 words of memory out of 5000000
- 9037 multiletter control sequences out of 15000+600000
+ 9042 multiletter control sequences out of 15000+600000
  21414 words of font info for 61 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  38i,14n,45p,1123b,1551s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr
-/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf
--dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
-/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></u
-sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/shar
-e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/te
-xmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fon
-ts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on sample-thesis.pdf (50 pages, 765733 bytes).
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.
+pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></u
+sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-d
+ist/fonts/type1/urw/helvetic/uhvr8a.pfb>
+Output written on sample-thesis.pdf (50 pages, 725870 bytes).
 PDF statistics:
- 271 PDF objects out of 1000 (max. 8388607)
+ 272 PDF objects out of 1000 (max. 8388607)
  187 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 41 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 46 words of extra memory for PDF output out of 10000 (max. 10000000)
 

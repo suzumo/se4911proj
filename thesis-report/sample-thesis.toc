@@ -19,8 +19,8 @@
 \contentsline {section}{\numberline {3.4}Other works}{28}
 \contentsline {chapter}{\numberline {4}Testing and Results}{29}
 \contentsline {section}{\numberline {4.1}Test Data}{29}
-\contentsline {section}{\numberline {4.2}Testing environment}{31}
-\contentsline {section}{\numberline {4.3}Performance results}{31}
+\contentsline {section}{\numberline {4.2}Testing environment}{30}
+\contentsline {section}{\numberline {4.3}Performance results}{30}
 \contentsline {chapter}{\numberline {5}Evaluation}{33}
 \contentsline {section}{\numberline {5.1}Discussion}{34}
 \contentsline {section}{\numberline {5.2}Benefits of Accelerate implementation}{34}

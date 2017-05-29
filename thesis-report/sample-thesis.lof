@@ -17,7 +17,7 @@
 \contentsline {figure}{\numberline {3.4}{\ignorespaces Assisting Accelerate with predefining types of unused variables in \texttt {unlift}.}}{26}
 \contentsline {figure}{\numberline {3.5}{\ignorespaces MATLAB's \texttt {double} is actually a \texttt {float}? What it means for \texttt {realmin}.}}{27}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces An example representation of the handwritten digits data set from\nobreakspace {}\cite {Ng12}.}}{30}
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Graphs of training set 1 (above) and 2 (below) benchmarks.}}{32}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
