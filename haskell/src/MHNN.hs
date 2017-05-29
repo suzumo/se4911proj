@@ -1,33 +1,21 @@
 {-# LANGUAGE RebindableSyntax #-}
 {-# LANGUAGE TypeOperators    #-}
 
-module MHNN where
--- random numbers: https://github.com/tmcdonell/mwc-random-accelerate
+-- Trying to translate coursera machine learning neural network into Accelerate
 --
--- linear vector things: https://github.com/tmcdonell/linear-accelerate
+module MHNN (
 
+  fmincg, nnCostFunction, lrCostFunction, generateTheta,
+  predict, test
 
-import Prelude                                    as P
-import Data.Time.Clock
-import Text.Printf
-import System.IO
+) where
 
-import Data.Array.Accelerate                      as A
-import Data.Array.Accelerate.LLVM.Native          as CPU
--- import Data.Array.Accelerate.LLVM.PTX             as PTX
-import Data.Array.Accelerate.Debug
-
-import Data.Array.Accelerate.Control.Lens
+import Prelude                                            as P
+import Data.Array.Accelerate                              as A
 import Data.Array.Accelerate.Numeric.LinearAlgebra
 import Data.Array.Accelerate.System.Random.MWC
 
-import Criterion.Main
-import Data.Load.CSV
-
 {--
--- trying to translate coursera machine learning neural network
--- into accelerate version...
-
 main = do
     -- train the neural network with 100 randomized training samples
     thetas <- train "../data/data1000.txt" "../data/label1000.txt" 400 25 10 1000
@@ -142,11 +130,13 @@ train xsFile ysFile inputl hiddenl labelSize sampleNum = do
     return $ lift (theta1, theta2)
 --}
 
-predict ::
-       Acc (Matrix Float)               -- input theta matrix
-    -> Acc (Matrix Float)               -- hidden theta matrix
-    -> Acc (Matrix Float)               -- input matrix to predict label of
-    -> Acc (Vector Int)
+-- Use the trained network to predict some labels
+--
+predict
+    :: Acc (Matrix Float)         -- weights between input->hidden layers
+    -> Acc (Matrix Float)         -- weights between hidden->output layers
+    -> Acc (Matrix Float)         -- unknown inputs to generate labels for
+    -> Acc (Vector Int)           -- predicted labels
 predict theta1 theta2 xs =
     let
         h1 = A.map sigmoid
@@ -169,20 +159,19 @@ predict theta1 theta2 xs =
     getYs
 
 
-testAccuracy ::
-       Acc (Vector Int)
-    -> Acc (Vector Float)
-    -> Acc (Scalar Float)
-testAccuracy predict labels =
-    let
-        pa = A.map (\x -> (A.fromIntegral x)/(A.fromIntegral $ A.length labels))
-           $ A.sum
-           $ A.map boolToInt
-           $ A.zipWith (A.==) (A.map (A.round) labels) predict
-    in
-    pa
+-- Test the accuracy of the predictions
+--
+test :: Acc (Vector Int)          -- predicted labels
+     -> Acc (Vector Float)        -- actual labels
+     -> Acc (Scalar Float)        -- percent correct
+test predict labels
+  = A.map (\x -> (A.fromIntegral x)/(A.fromIntegral $ A.length labels))
+  $ A.sum
+  $ A.map boolToInt
+  $ A.zipWith (A.==) (A.map (A.round) labels) predict
 
 
+{--
 loadxs :: String -> Int -> Int -> IO (Acc (Matrix Float))
 loadxs filename m n = do
     content <- readFile filename
@@ -201,19 +190,20 @@ loadys filename m = do
     let dbarr = P.map read strarr
     let arr = A.use $ A.fromList (Z:.m) dbarr
     return arr
+--}
+
+-- gentheta :: Acc (Matrix Float) -> Acc (Vector Float)
+-- gentheta xs = lift $ A.fill (index1 w) 0
+--     where
+--         Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
 
 
-gentheta :: Acc (Matrix Float) -> Acc (Vector Float)
-gentheta xs = lift $ A.fill (index1 w) 0
-    where
-        Z :. h :. w = unlift (shape xs) :: Z :. Exp Int :. Exp Int
-
-
-gentheta2 :: Int -> Int -> IO (Acc (Matrix Float))
-gentheta2 sizeIn sizeOut = do
-    let n = (sizeIn + 1)* sizeOut
+generateTheta :: Int -> Int -> IO (Acc (Matrix Float))
+generateTheta sizeIn sizeOut = do
+    let n       = (sizeIn + 1) * sizeOut
     let epsilon = 0.12 :: Exp Float
-    xs <- withSystemRandom $ \gen -> randomArray (uniformR (0,1)) (Z:.sizeOut:.(sizeIn + 1))
+    gen <- create
+    xs  <- randomArrayWith gen (uniformR (0,1)) (Z:.sizeOut:.(sizeIn + 1))
     return $ A.map (\x -> x*2*epsilon - epsilon) (A.use xs)
 
 
@@ -225,9 +215,9 @@ yEqCFloatVec ys c = A.map (A.fromIntegral . boolToInt . (c A.==)) ys
 matrixfy :: Acc (Vector Float) -> Acc (Matrix Float)
 matrixfy ys =
     let
-        n = 10 :: Exp Int
+        n = 10 :: Exp Int -- number of output layers
         zeroMat = A.fill (index2 (A.length ys) n) 0
-        onesVec  = A.fill (index1 (A.length ys)) 1.0 :: Acc (Vector Float)
+        onesVec = A.fill (index1 (A.length ys)) 1.0 :: Acc (Vector Float)
     in
     -- update the theta matrix with the newly computed values for this row
     A.permute const zeroMat (\m -> index2 (unindex1 m) (A.round (ys A.!! (unindex1 m)) -1)) onesVec
@@ -715,6 +705,7 @@ innerLoopCondition f1 f2 z1 d1 d2 m = (f A.&& m A.> 0) -- f1 f2 f3 d1 d2 m
 
 
 -- Logistic Regression Functions...
+--
 lrCostFunction ::
        Acc (Vector Float)      -- theta (weight vector)
     -> Acc (Matrix Float)      -- X (data matrix)
@@ -762,6 +753,7 @@ lrCostFunction theta xs ys lambda =
     (unit jreg, grad)
 
 
+{--
 all_theta ::
        Acc (Matrix Float)               -- X (data matrix)
     -> Acc (Vector Float)               -- y (labels data matching X)
@@ -799,8 +791,8 @@ all_theta xs ys n lambda =
             lift (mat', c)
     in
     A.afst $ A.awhile cond body initial
-
-
+--}
+{--
 checkResult ::
        Acc (Matrix Float)
     -> Acc (Vector Float)
@@ -818,9 +810,11 @@ checkResult xs ys thetas =
                 $ xs <> transpose (A.use thetas)
     in
     pa
-
+--}
 
 -- maths functions
+-- ---------------
+
 sigmoid :: Exp Float -> Exp Float
 sigmoid z = 1.0 / (1.0 + exp(-z))
 
@@ -877,7 +871,7 @@ cubicExtrapolate d2 d3 f2 f3 z1 z3 limit =
         z2  = -d2 * z3 * z3 / divisor
         divisor = b + sqrt det
 
-
+{--
 infixl 6 .-
 (.-) :: Exp Float -> Acc (Vector Float) -> Acc (Vector Float)
 (.-) x = A.map (x-)
@@ -886,8 +880,9 @@ infixl 6 .-
 infixl 7 .*
 (.*) :: Exp Float -> Acc (Vector Float) -> Acc (Vector Float)
 (.*) x = A.map (x*)
+--}
 
-
+{--
 -- debug functions
 caltheta = do
     xs <- loadxs "trainsample100.txt" 100 400
@@ -936,4 +931,5 @@ loadt2 = do
     -- let ones = fill (constant (Z:.25:.1)) 1 :: Acc (Array DIM2 Float)
     let arr = A.use $ A.fromList (Z:.10:.26) dbarr
     return arr
+--}
 

@@ -47,8 +47,8 @@ main = do
 
   -- Generate some random weights between the input->hidden layer, and between
   -- the hidden->output layer
-  theta1  <- timed "generating theta1" $ (CPU.run <$> gentheta2 inputLayers hiddenLayers)
-  theta2  <- timed "generating theta2" $ (CPU.run <$> gentheta2 hiddenLayers outputLayers)
+  theta1  <- timed "generating theta1" $ (CPU.run <$> generateTheta inputLayers hiddenLayers)
+  theta2  <- timed "generating theta2" $ (CPU.run <$> generateTheta hiddenLayers outputLayers)
 
   let training      = CPU.run1 $ A.lift . fmincg (nnCostFunction inputLayers hiddenLayers outputLayers regularisation (bias (A.use trainImages)) (A.use trainLabels))
       prediction    = CPU.run1 $ predict (A.use weights1) (A.use weights2)
@@ -63,7 +63,7 @@ main = do
   _ <- timed (printf "training network: %d hidden layers, %d training images" hiddenLayers trainSamples) (return $!! thetaOut)
   r <- timed (printf "testing network: %d sample images" testSamples) (return $!! prediction testImages')
 
-  let accuracy      = CPU.run $ testAccuracy (A.use r) (A.use testLabels)
+  let accuracy      = CPU.run $ test (A.use r) (A.use testLabels)
   printf "network accuracy: %.2f%%\n" (100 * (A.indexArray accuracy Z))
 
   -- defaultMain
@@ -72,8 +72,6 @@ main = do
   --     , bench "predict" $ whnf prediction testImages'
   --     ]
   --   ]
-
-  return ()
 
 
 -- Helper functions
