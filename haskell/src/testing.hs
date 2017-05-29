@@ -1,6 +1,18 @@
 :set -DACCELERATE_LLVM_NATIVE_BACKEND
 :reload
 :l MHNN.hs
+
+xs <- loadxs "../../data/data5000.txt" 5000 400
+ys <- loadys "../../data/label5000.txt" 5000
+
+let (t1, t2) = unlift ts :: (Acc (Matrix Float), Acc (Matrix Float))
+let pred = predict t1 t2 xs
+run $ testAccuracy pred ys
+
+
+
+
+
 setFlag dump_exec
 theta1 <- gentheta2 784 25
 theta2 <- gentheta2 25 10

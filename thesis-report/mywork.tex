@@ -3,34 +3,36 @@
 
 \chapter{Implementation}\label{ch:impl}
 
-\section{Matlab implementation of neural network} \label{se:impl.matlab.nn}
+\section{Using a MATLAB-based neural network as reference} \label{se:impl.matlab.nn}
 
-There are several motivations for choosing this particular implementation of neural network as a reference point. First, Matlab implementation is heavily reliant upon the mathematical interpretation of neural network and is clearly understandable where matrix multiplication and vectorisation is concerned. It was projected that it would be fairly simple and in the closest in spirit implementation to how it may work in Accelerate due to this.
+There are several motivations for choosing this particular implementation of neural network as reference. First, MATLAB implementation is heavily reliant upon the mathematical interpretation of neural network and is clearly understandable where matrix multiplication and vectorisation is concerned. It was projected that it would be fairly simple and in the closest-in-spirit implementation to how it may work in Accelerate due to this.
 
-Secondly, the Matlab implementation had a certain data set with expected 'answers' to compare my own implementations to. Thus, I could be assured that my implementation in Accelerate was accurate enough to be reliable, particularly in the light of difficulty of debugging Accelerate programs. Passing this 'accuracy' test will prove the small network reliable enough to be built upon for further development in the future.
+Secondly, the MATLAB implementation had a certain data set with expected 'answers' to compare my own implementations to. Thus, I could be assured that my implementation in Accelerate was accurate enough to be reliable, particularly in the light of difficulty of debugging Accelerate programs. Passing this 'accuracy' test will prove the small network reliable enough to be built upon for further development in the future.
 
-Thirdly, the codebase that I am basing my program is from Coursera, an online self-learning course, made by Andrew Ng of Stanford University. This course has drawn wide praise for its material and presumed to be reviewed by many in the same field. The structure of the course is reliable in terms of correctness and efficiency, and implemented already with much knowledge in the field. Hence, I projected that the Matlab implementation would be optimised for the best performance.
+Thirdly, the codebase that I am basing my program is from Coursera, an online self-learning course, made by Andrew Ng of Stanford University. This course has drawn wide praise for its material and presumed to be reviewed by many in the same field. The structure of the course is reliable in terms of correctness and efficiency, and implemented already with much knowledge in the field. Hence, I projected that the MATLAB implementation would be optimised for the best performance.
 
-Lastly, in terms of familiarity, I was more conversed with Matlab than with other neural network implementations, such as Python, C++, or Haskell, (PUT REFERENCES TO THESE IMPLEMENTATIONS) which may needlessly increase the time to start the project. I had researched about other implementations, but found that it took more time to understand these in order to integrate or implement an Accelerate neural network.
+Lastly, in terms of familiarity, I was more conversed with MATLAB than with other neural network implementations, such as Python, C++, or Haskell, (PUT REFERENCES TO THESE IMPLEMENTATIONS) which may needlessly increase the time to start the project. I had researched about other implementations, but found that it took more time to understand these in order to integrate or implement an Accelerate neural network.
 
 TO CHECK::::: Can C++ or Python versions use multiple threads/GPU?
 
-\subsection{Peculiarities of Matlab} \label{se:impl.matlab.background}
+\subsection{Key differences from Accelerate} \label{se:impl.matlab.background}
 %% or divide this up into implementation section
 
-MATLAB, or Matrix Laboratory, is a highly doman-specific programming language, specialised to conduct numerical calculations and analysis in late 1970s. It is a imperative, object-orientated, procedural language. It is widely used among the industry and academia, particularly in science, engineering and economics.
+MATLAB, or Matrix Laboratory, is a highly doman-specific programming language, specialised to conduct numerical calculations and analysis. It was created in the 1970s, and is an imperative, object-orientated, procedural language. It is widely used among the industry and academia, particularly in science, engineering and economics.
 
-MATLAB is a weakly typed programming language, as types are implicitly converted~\cite{Wiki1}. This means that variables can be declared without an explicit declaration of their type. Furthermore, MATLAB is also dynamically typed, meaning that the types may also change during runtime. All variables in MATLAB are "structure arrays", that is, each element of the array have the same fields. 
+MATLAB is a weakly typed programming language, as types are implicitly converted. This means that variables can be declared without an explicit declaration of their type~\cite{Wiki1}. Furthermore, MATLAB is also dynamically typed, meaning that the types may change during runtime. 
 
-MATLAB functions accept matrices as an argument, and will automatically apply multiplications of a scalar to each element of the matrix as in Accelerate's \texttt{zipWith}. As a result, MATLAB code is deceptively simple and does not reveal the actual structure of the underlying operation. Indexing of matrices and arrays also start from 1. Method dispatching also does not strictly adhere to the method signature, but selects the method by first matching the arguments in a class precedence and then by left-most priority~\cite{Mat17}. However, MATLAB also does not support overloading functions of the same name using different signature of the same name.
+MATLAB functions automatically apply multiplications of a scalar term to a matrix, by applying the operation of the scalar to each element of the matrix. Thus, if \texttt{a} is a scalar and \texttt{xs} is a matrix, it is possible to simply do \texttt{a} $\times$ \texttt{xs}. In Accelerate, this would be \texttt{A.map (*a) xs}. As a result, MATLAB code is deceptively compact and does not reveal the actual structure of the underlying operation just by looking at the code. 
+
+Other points include starting index of matrices and arrays being $1$, not $0$. Also, MATLAB method dispatching does not strictly adhere to the method signature, but selects the appropriate method by first matching the arguments in a class precedence and then by left-most priority~\cite{Mat17}. %MATLAB does not support overloading functions of the same name using different signature of the same name.
 
 \section{Accelerate Implementation} \label{se:impl.acc}
 
 \subsection{Neural network structure} \label{se:impl.nn.struct}
 
-A 3-layer simple neural network is implemented, with an input layer, hidden layer and an output layer. There is an bias unit which always outputs $+1$ in each preceding layer to the next. 
+I have implemented a two-layered, fully connected simple neural network, with one hidden layer.
 
-My implementation can easily be modified to take more than 1 hidden layer by changing the \texttt{nnCostFunction}~\ref{fig:nnCostFunction.hiddenlayers}. For instance, each extra hidden layer should only require implementing two extra matrix multiplications in feed-forward and backpropagate, and all the steps required to update the new theta layer calculations.
+My implementation can easily be modified to take more than 1 hidden layer by changing the \texttt{nnCostFunction}. For instance, each extra hidden layer should only require implementing two extra matrix multiplications in feed-forward ad backpropagate parts, plus all the steps required to update the new theta layer calculations (see~\ref{fig:nnCostFunction.hiddenlayers}).
 
 \begin{figure}
   \begin{lstlisting}
@@ -65,17 +67,17 @@ My implementation can easily be modified to take more than 1 hidden layer by cha
   \label{fig:nnCostFunction.hiddenlayers}
 \end{figure}
 
-The hidden layer in the handwritten numbers example roughly corresponds to detectors that look for strokes and other patterns in the input~\cite{Ng12}.
-
 \subsection{Program structure} \label{se:impl.program.struct}
 
-I have constructed my program to closely follow the MATLAB implementation. It can be preportioned into 3 parts: (1) initialisation; (2) neural network cost function; and, (3) function minimise conjugate gradient function. These will be explained in detail in the sections below.
+In terms of program structure, I closely followed the flow in the MATLAB version. It can be portioned into 3 parts: (1) initialisation; (2) neural network cost function; and, (3) function minimise conjugate gradient function. The implementation code is available at~\cite{McDJeo}.
 
-\subsection{Initialisation} \label{se:impl.init}
+\subsubsection{Initialisation} \label{se:impl.init}
 
-Initialisation is a straightforward process, and we initialise (1) the learning rate \texttt{lambda}; (2) initial weight vectors, for instance \texttt{theta1}, \texttt{theta2}; (3) size of the input, hidden, output layers; and, (4) load the training set, that is, the input data set \texttt{xs} and the output data vector \texttt{ys}. 
+Initialisation is a straightforward process. We initialise (1) the regularisation parameter \texttt{lambda}; (2) initial weight vectors, in this instance there are \texttt{theta1}, \texttt{theta2}; (3) size of the input, hidden, output layers; and, (4) the input training data set \texttt{xs} and the output vector \texttt{ys} to conduct the supervised learning. 
 
-\texttt{xs} represents $m$ training set data. After it has been loaded, each row of \texttt{xs} should represent a single training example, $x_1, x_2, ..., x_m$ where the length of $x_i$ is the size of the input layer. , with a column vector of $1$s to the leftmost of the array to represent the bias neuron,
+The number of input units correspond to the number of attributes in each sample of \texttt{xs}. The number of output units correspond to the number of classifications that these samples could be divided into, or, the range of the values of \texttt{ys}. Setting the number of neurons in the hidden layer is a bit of a mystery and seems to be done by trial-and-error. In \ref{se:res.testdata}, the hidden units are 25 neurons and 300 neurons for the two different handwritten numbers data sets and these are taken from other implementations with the same data sets, who had found these the most effective numbers by testing.
+
+Matrix \texttt{xs} represents $m$ training set data. After it has been loaded, each row of \texttt{xs} should represent a single training example, $x_1, x_2, ..., x_m$ where the length of vector $x_i$ is the size of the input layer. A column vector of $1$s is added to the leftmost of the array to represent the bias neuron, as shown below.
 \[
  \texttt{xs} =
     \begin{bmatrix}
@@ -92,79 +94,109 @@ Initialisation is a straightforward process, and we initialise (1) the learning 
     \end{bmatrix}
 \]
 
-For the weights, the values should be in the range $[-\epsilon_{init}, \epsilon_{init}]$ for an effective random initialisation~\cite{Ng12}. One effective choice of $\epsilon_{init}$ is,
+This is implemented in Accelerate using a combination of \texttt{fill} and concatenation \textbf{A.++}. Accelerate's operations are not the same as Haskell Prelude's, even if some operation names coincide. Thus they are distinguished by a prefix \texttt{A}, \texttt{P} for Accelerate and Prelude correspondingly, for instance \texttt{A.++} and \texttt{P.++}. Other key matrix manipulating functions used throughout the program include \texttt{A.take, A.drop, A.map} and \texttt{A.zipWith}.
+
+An effectiveness of the random initialisation of weight vectors will influence the accuracy of the neural network. Initial values should be in the range $[-\epsilon_{init}, \epsilon_{init}]$~\cite{Ng12}. One popular choice of $\epsilon_{init}$ is,
 \[ \epsilon_{init} = \sqrt{\frac{6}{L_{in} + L_{out}}} \]
-where $L_{in}$ is number of units in the preceding layer, and $L_{out}$ is the number of units in the subsequent layer of the thetas in question. 
+where $L_{in}$ is number of units in the preceding layer, and $L_{out}$ is the number of units in the subsequent layer of the weight vector-in-question. 
 
-There is no optimal $\lambda$, or learning rate value. Generally, the one that gives the best result for the given data set is determined by trial-and-error. Likewise, the number of hidden units and even the number of hidden layers also seems to be determined by trial-and-error.
+Optimal regularisation parameter \texttt{lambda}, is also discovered by trial-and-error. It is set by the user to set the level of appropriate 'overfitting' of the neural network to the training set. Whether higher or lower overfitting to the training set is better or worse for making predictions on new samples, depends on the nature of the data. 
 
-The numbers for the input and output units correspond to the number of attributes in the samples and the number of classifications that these samples should be divided into.
+\subsubsection{Neural network cost function, \texttt{nnCostFunction}} \label{se:impl.nnCostFunction}
 
-\subsection{Neural network cost function} \label{se:impl.nnCostFunction}
+This function applies both the feed-forward and back-progapation to sample data inputs and updates the weight vectors and error costs accordingly. 
 
-This function implements both the feed-forward and back-progapation to a sample data input in the existing neural network system and updates the weight vectors and error costs accordingly. It includes application of sigmoid function and regularisation calculation. 
+As described in \ref{sec:training} we apply the BGD method by grouping all the sample data into one massive batch to parse them in all at once for higher accuracy. 
 
-However, instead of parsing each sample data one-by-one, following the style of MATLAB implementation, it groups all of the sample data into one massive matrix to parse them in all at once in bulk. 
-
-CHECK IF THIS IS CORRECT::: Although this batch sample method is less accurate than if the examples were parsed in one by one, it is much more time efficient.
-
-The Accelerate implementation of this was also straightforward as this function only requires reshaping of the vectors, implemented using \texttt{reshape}, matrix multiplications, at first using \texttt{mmult}, eventually replaced with \texttt{INSERT NAME OF NEW MATRIX MULTIPLIER HERE} which has better performance. Other arithmetic operations were applied to matrixes coupled with \texttt{map} and \texttt{zipWith}.
-
-As Accelerate has its own sets of arithmetic operations, any calculations that were needed in the Accelerate world was using the Accelerate version, marked with \texttt{A}. The Haskell world version was marked with \texttt{P} for \texttt{Prelude}.
-
-PUT EXAMPLE HERE 
-
-For the full functions, please refer to Appendix 1~\ref{fig:nnCostFunction.matlab}, ~\ref{fig:nnCostFunction.acc}
+As \texttt{nnCostFunction} is used in conjunction with \texttt{fmincg} function~\ref{se:impl.fmincg}, it was necessary to flatten all the weight vectors into one before passing into, and also out of the \texttt{nnCostFunction}. The fused vector is sliced and reshaped this its original shapes inside \texttt{nnCostFunction}, which is implemented using \texttt{reshape} as shown in~\ref{fig:reshape}.
 
 \begin{figure}
-	\centerline{\includegraphics[width=\linewidth]{nnCostFunction-matlab.png}}
-	\caption{Neural network cost function in Matlab.}
-	\label{fig:nnCostFunction.matlab}
+	\begin{lstlisting}
+	-- type of reshape
+    reshape :: (Shape sh, Shape sh', Elt e) =>
+                Exp sh -> Acc (Array sh' e) -> Acc (Array sh e)
+
+    -- unroll theta1, theta2
+    theta1 = reshape (index2 hiddenl (inputl +1)) $ A.take (hiddenl*(inputl+1)) thetas
+    theta2 = reshape (index2 outputl (hiddenl+1)) $ A.drop (hiddenl*(inputl+1)) thetas
+	\end{lstlisting}
+  	\caption{Reshaping vectors into matrices in Accelerate.}
+	\label{fig:reshape}
 \end{figure}
 
-\begin{figure}
-	\centerline{\includegraphics[width=\linewidth]{nnCostFunction-acc.png}}
-	\caption{Neural network cost function in Accelerate.}
-	\label{fig:nnCostFunction.acc}
-\end{figure}
+\texttt{reshape} is tricky to maneuver at first, because it must be supplied with a \texttt{Exp sh}. \texttt{Exp sh} can be made in various ways and sometimes requires its type to be defined. For example, in the case where one \texttt{lift}s a \texttt{(Z:.m:.n)} form to supply \texttt{fill} with an \texttt{Exp sh},
+$$\texttt{fill (lift (Z:.m:.n)) 1 :: Acc (Matrix Float)}$$
+Thus, I found operations involving \texttt{Exp sh} quite tricky at times due to typing.
 
-\subsection{Function minimise nonlinear conjugate gradient function} \label{se:impl.fmincg}
+Matrix multiplications was initially implemented using \texttt{mmult}, but was eventually replaced with \texttt{hmatrix} package, which has a better performance. 
 
-This function is a modified version of MATLAB's \texttt{fminunc}. Given 
+\subsubsection{Function minimise nonlinear conjugate gradient function, \texttt{fmincg}} \label{se:impl.fmincg}
+
+This function repeats \texttt{nnCostFunction} for certain number of iterations, and progressively tries to minimise the error in the weight matrices. Generally, function minimisation by conjugate gradients is a quadratically convergent gradient method used to locate a local minimum when the function has several variables, or, is \textit{multivariate}~\cite{FleRee}.
+
+In MATLAB, function minisation by conjugate gradient is a function called \texttt{fminunc}, which states that given a starting point \texttt{x0} (can be a scalar, vector or a matrix), \texttt{x} is the the local minimum of unconstrained function \texttt{func}~\cite{Mat17}:
 $$\texttt{x = fminunc(func, x0)}$$
-\texttt{x} is the the local minimum of unconstrained multivariate function \texttt{func}, from starting point \texttt{x0}. \texttt{x0} can be a scalar, vector or a matrix.~\cite{Reb13}
+\texttt{fmincg} function is a modified version of \texttt{fminunc} and has the following MATLAB equation:
+$$\texttt{function [X, fX, i] = fmincg(f, X, options, P1, P2, P3, P4, P5)}$$
+According to the author, it is more efficient than \texttt{fminunc} in that it uses 'Polack-Ribiere' conjugate gradients, quadratic and cubic polynomial approximations and 'Wolfe-Powell stopping criteria' to more efficiently calculate slope and stepping sizes~\cite{Reb13}. The mathematics behind this method is beyond the scope of my understanding.
 
-\texttt{fmincg} is a more efficient modification of \texttt{fminunc} to minimize a continuous differentialble multivariate function. It uses Polack-Ribiere flavour of conjugate gradients, quadratic and cubic polynomial approximations and the Wolfe-Powell stopping criteria to more efficiently calculate slope and stepping sizes~\cite{Mat17}. The mathematics behind applying these methods are beyond the scope of this project.
+\texttt{fmincg} terminates when it either finds the local minimum, or if the progress is so insignificant that it is not worth any further exploration. It must be given a cost function \texttt{f}, initial weight vector \texttt{X} and maximum iteration number in \texttt{options}. Other parameters are not supplied. 
 
-The function terminates when it either finds the local minimum, or if the progress is so non-significant that it is not worth any further exploration. It returns the solution vector as \texttt{X} and the cost vector \texttt{fX}, which indicates the cost of each iteration or the progress made.
+\texttt{fmincg} returns the solution vector as \texttt{X} and a cost vector as \texttt{fX}. \texttt{fX} starts off as an empty vector, and \texttt{fmincg} pushes the cost/error of the newly recalibrated weights in each iteration to the back of \texttt{fX}. The end result is that the caller to see progress made throughout the iterations upon checking \texttt{fX}. Other variables are discarded.
 
-Translating \texttt{fmincg} into Accelerate is tricky. First, the MATLAB code had around 17 parameters, all of which constantly updated their values in a procedural way. Without a knowledge of the underlying mathematics, the procedure was puzzling. Their non-descript names, such as, \texttt{d1, f1, v1} were not enlightening either. Overall, it was difficult to follow the flow of control. I thus have followed the flow of procedure very closely, albeit with some substitions, as there were some aspects that were not yet implemented in Accelerate, such as \texttt{isInfinite} and \texttt{isNaN}. 
+My Accelerate implementation of \texttt{fmincg} can be seen in~\ref{fig:fmincg}. The vector argument is a concatenation of flattened weight matrices and is fed into the function argument. This is to enable \texttt{fmincg} to execute the function indepedent of the structure of the underlying neural network, i.e. the number of hidden layers. It is a artifact of MATLAB methodology that needs better implementation in Accelerate (see Chapter~\ref{ch:eval}).
 
-Second, there were three \texttt{while} loops in this code, with three \texttt{if-else} statements, one which had a flow divergence. Due to this, the type of flat parallelism may not be best suited for the GPU, although the flow divergence was upon a failure to find local minimum - which happens when the function supplied to \texttt{fmincg} is inaccurate~\cite{Reb13}. Thus, to get rid of this flow divergence, I have taken the assumption that there is always a local minimum that \texttt{fmincg} can  find, because the function supplied can be checked to be accurate prior to being supplied to this function.
+\begin{figure}
+	\begin{lstlisting}
+	fmincg :: (Acc (Vector Float) -> Acc (Scalar Float, Vector Float))
+           -> Acc (Vector Float)
+           -> (Acc (Vector Float), Acc (Vector Float))
+	\end{lstlisting}
+  	\caption{Function minimise conjugate gradient function.}
+	\label{fig:fmincg}
+\end{figure}
 
-Also, due to the limitations of MATLAB in \texttt{fmincg}, there is a seemingly redundant step of flattening the initial weight matrices into a vector, passing it as a parameter into \texttt{fmincg}. It is promptly then unrolled back into their original matrix shape, and after all the operations inside this function is complete, it is reflattened into a vector and returned.
+I faced a couple of challenging factors in implementing this function. First, the MATLAB version had approximately 17 parameters, most of which overwrote itself and interacted with each other. Without a knowledge of the underlying mathematics, I could not get fully comprehend the purpoes behind this 175-line procedure. The ambiguity and similarity of parameter names, such as \texttt{d1, d2, d3, f1,..., v1,...}, did not assist the issue. 
 
-This is to enable the function to iterate regardless of the matrices' size or shape. This duty is pushed to the function.
+Secondly, it is difficult to follow the flow of control in \texttt{fmincg}. In order to reduce the chance of errors arising, I chose to initially follow the procedure very closely, and optimise incrementally later (for which, I ran out of time). Certain expressions were substituted where operations had not yet been implemented in Accelerate (see~\ref{se:impl.limits}). I could not get the flow control perfectly, however, and the known issues and bugs are mentioned in~\ref{se:impl.limits}.
 
-The MATLAB version of the code had approximately 175 lines. I divided these up into their \texttt{while} loops and connected the parts using Accelerate's \texttt{awhile} flow control. This required \texttt{lift}, \texttt{unlift} in order to pack and unpack the many variables into a single \texttt{Acc} tuple in order to be passed around the loop. Through this process, I learnt that Accelerate cannot infer the type unless if the \texttt{unlift}ed expression is used, and it is thus sometimes necessary to predefine types for certain terms.
+Thirdly, MATLAB \texttt{fmincg} was composed of three \texttt{while} loops within each other and three \texttt{if-else} statements, one of the latter which resulted in a flow divergence. The last factor in particular may have greatly reduced this implementation's suitability for GPU execution, as such flat-data parallelism with flow divergence may slow down the GPU execution. Flat-data parallelism is where a sequential operations can be applied in parallel over bulk data.
 
-Accompanying this issue was that \texttt{awhile} requires that set of results I need after the \texttt{while} loop finishes be part of the tuples wrapped in \texttt{Acc}. This meant that even the paramters that are not used needed to be packed together, and these always needed a help in type inference as Accelerate could not infer their types during the loop.
+On the positive side, the flow divergence was triggered upon a failure to find a local minimum; which, according to~\cite{Reb13} occurs when the function supplied to \texttt{fmincg} is inaccurate or unsuitable. For this particular implementation, I have taken the assumption that the function supplied, \texttt{nnCostFunction} is accurate and that there is always a local minimum that \texttt{fmincg} will find. In my limited tests (see Chapter~\ref{ch:results}), all results support this assumption. More broadly, the correctness of the function can be checked for prior to being supplied to \texttt{fmincg}.
 
-GIVE EXAMPLES
+To explain the implementation more concretely, I divided the MATLAB code into their \texttt{while} loops. These were implemented using Accelerate's \texttt{awhile} flow control. 
 
-Such an implementation could be considered inefficient due to the number of space it consumes memory by creating intermediate variables rather unnecessarily in other languages. This has less impact with Accelerate due to 'sharing recovery', which will be explained in \ref{se:impl.benefits}.
+\texttt{awhile} requires variables that change during the loop and/or are returned when function ends, to be wrapped into a single \texttt{Acc} tuple to be used for the loop process. \texttt{lift} and \texttt{unlift} are necessary to pack and unpack the variables each loop for condition checks and for loop execution. An interesting fact I learnt was that Accelerate cannot infer the types of some variables unless if they are used after an \texttt{unlift} process. It is thus sometimes necessary to predefine types of certain terms to assist Accelerate with type inference as seen in~\ref{fig:unlift}.
 
-\section{Limitations of this implementation} \label{se:impl.limits}
+\begin{figure}
+	\begin{lstlisting}
+    d1, f1, limit :: Acc (Scalar Float)
+    m :: Acc (Scalar Int)
+    (theta, df2, d1, d2, d3, f1, f2, f3, z1, z2, z3, m, limit) = unlift $ awhile cond body initial
+	\end{lstlisting}
+  	\caption{Assisting Accelerate with predefining types of unused variables in \texttt{unlift}.}
+	\label{fig:unlift}
+\end{figure}
 
-There are several issues with my Accelerate implementation. For one, there are a couple of functions which may not cover all the cases that MATLAB implementation may cover. For example, \texttt{fmincg} requires to optimise and to take care of cases where certain variables are \texttt{isinf}, \texttt{isreal} or \texttt{isnan}, that is, whether a variable has an infinite value, is a real number, or is not-a-number correspondingly. Since these are yet to be implemented in Accelerate, I have substituted them for when an determinate may be less than zero for \texttt{isreal}, divisor is 0 for \texttt{isnan} and ignored the case for \texttt{isinf}. This may not cover all the range of numbers.
+\section{Known bugs} \label{se:impl.limits}
 
-Secondly, Matlab's \texttt{double} is by default a double-precision data type, and requires 64 bits~\cite{Mat17}. Yet, after testing it on the sample data, using \texttt{double} produces a result further away from the expected result than had I parsed them in Accelerate as \texttt{float}. This is a problem, because it may lead to inaccuracy. Also, one part in the MATLAB code accounts for overflow it seems, by minusing a \texttt{realmin} from a dividend,
+There are several issues with my Accelerate implementation. One, it does not have the robust enough to withstand wrong inputs as well as the MATLAB programs. For instance, I have already mentioned in \ref{se:impl.fmincg} that the function supplied to \texttt{fmincg} must be correct. 
 
-$$-- PUT EXAMPLE HERE$$
+Also, there are cases in \texttt{fmincg} where some variables need to checked for \texttt{isinf}, \texttt{isreal} or \texttt{isnan}, that is, be checked for an infinity, a real number, or 'not-a-number' properities, correspondingly. 
 
-but \texttt{realmin} for \texttt{Float} is $1.1755e^{38}$ and for a \texttt{Double} is $2.2251e^{308}$, which are orders of magnitude of $1xe^{270}$ times different and could vastly affect the result.
+As these functions were not yet available during the time of development in Accelerate, I substituted them for expressions which I believe will cover those particular situations. For instance, \texttt{isreal} check may arise when an determinate may be less than zero; \texttt{isnan} check may arise when divisor is 0. I was not able to devise a check for \texttt{isinf}. Thus the implementation may not cover all the range of inputs and remain fault-free.
 
-Lastly, some of the optimisations in \texttt{fmincg} to come to the conclusion faster has been ignored, namely, the innermost loop and the handling a failure to obtain an answer. The reasons for this is that failure should not be triggered if the function input is valid and it needlessly slows down the software by introducing flow divergence. Also, the innermost loop does not behave in the expected manner and the reasons for this is still unfathomed at the time of writing the thesis.
+Secondly, MATLAB's \texttt{double} is by default a double-precision data type, and requires 64 bits~\cite{Mat17}. Yet, after testing it on the sample data, importing the values in Accelerate as \texttt{Double}s produces a result further away from the MATLAB result than had I parsed them in Accelerate as \texttt{Float}s. Not only that, the accuracy of the Accelerate neural network predictions after training decreased with the same training set when the data was parsed as a \texttt{Double}. 
 
-Also because this implementation is more or less a straight forward translation of MATLAB code with minimal optimisation to suit Accelerate, there may be even more faster and efficient manner to create a neural network in native Accelerate, particularly in regards to \texttt{fmincg}.
+The source of the inaccuracy may be due to \texttt{fmincg}. There is one line that seems to account for an overflow, by minusing a \texttt{realmin} from a dividend as seen in~\ref{fig:realmin}. \texttt{realmin} for a \texttt{float} is defined as $1.1755e^{38}$ and for a \texttt{double} is $2.2251e^{308}$ in MATLAB. These are orders of magnitude of $1xe^{270}$ times different and could vastly affect the result. In my implementation, I have currently taken out \texttt{realmin} from the equation.
 
+\begin{figure}
+	\centerline{\includegraphics[width=\linewidth]{realmin.png}}
+	\caption{MATLAB's \texttt{double} is actually a \texttt{float}? What it means for \texttt{realmin}.}
+	\label{fig:realmin}
+\end{figure}
+
+Lastly, some of the optimisations in \texttt{fmincg} has been ignored, namely: (1) the innermost and middle loop iterations, thus the loop counter \texttt{M} is set to 1; and, (2) the handling of a failure case. The reason for (2) has already been discussed in \ref{se:impl.fmincg}. For (1), testing has shown that the iterations other than exactly once for the sections in question produces erroneous results, and the reasons for this is unfortunately still unknown at the time of writing. In addition, although setting \texttt{M=1} seems to closely align my program's results to MATLAB's results in the first training set, my neural network was unable to yield as high accuracy rate as in ~\cite{LeC98} for the second training set, almost off by 10 per cent (see Chapter~\ref{ch:results}).
+
+\section{Other works}
+I have also implemented a logistic regression cost function, which is akin to a neural network without any hidden layers. This can be accessed at ~\cite{McDJeo}.

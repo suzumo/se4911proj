@@ -12,6 +12,11 @@ Rob Everest.
 \newblock Untitled.
 \newblock 2016.
 
+\bibitem[FR64]{FleRee}
+R.~Fletcher and C.M. Reeves.
+\newblock Function minimization by conjugate gradients.
+\newblock {\em The Computer Journal}, 7:149--154, 1964.
+
 \bibitem[GdAF13]{GurFor13}
 Sáskya T.~A. Gurgel and Andrei de~A.~Formiga.
 \newblock Parallel implementation of feedforward neural networks on gpus.
@@ -24,6 +29,19 @@ Andrej Karpathy.
   neural-networks-1/, accessed 01/01/2016 to 30/05/2016, 2016.
 \newblock Course notes from CS231n: Convolutional Neural Networks for Visual
   Recognition at School of Comp.\ Sci.\, Stanford University.
+
+\bibitem[LBBH98]{LeC98}
+Y.~LeCun, Leon Bottou, Yoshua Bengio, and Patrick Haffiner.
+\newblock Gradient-based learning applied to document recognition.
+\newblock {\em Proceedings of the IEEE 1998}, 86, 1998.
+
+\bibitem[LCBnd]{LeCCorBur}
+Yann LeCun, Corinna Cortes, and Christopher~J.C. Burges.
+\newblock The mnist database of handwritten digits.
+\newblock https://\hspace{0cm}\relax
+  yann.lecun.com/\hspace{0cm}exdb/\hspace{0cm}\relax mnist/, accessed
+  20/05/2017, n.d.
+\newblock Sample database.
 
 \bibitem[Mar13]{Mar13}
 Simon Marlow.
@@ -50,6 +68,16 @@ Trevor McDonell, Manuel M.~T. Chakravarty, Gabriele Keller, and Ben Lippmeier.
 \newblock Optimising purely functional gpu programs.
 \newblock {\em ACM SIGPLAN International Conference on Functional Programming},
   2013.
+
+\bibitem[MJ17]{McDJeo}
+Trevor McDonnell and Ji~Yong Jeong.
+\newblock seng4911.
+\newblock https://\hspace{0cm}\relax
+  github.com/\hspace{0cm}suzumo/\hspace{0cm}\relax
+  seng4911/\hspace{0cm}blob/\hspace{0cm}master/\hspace{0cm}\relax
+  haskell/\hspace{0cm}src/\hspace{0cm}MHNN.hs, accessed 01/03/2017 to
+  31/05/2017, 2017.
+\newblock Thesis project repository.
 
 \bibitem[MP43]{McDPit43}
 Warren~S. McCulloch and Walter Pitts.

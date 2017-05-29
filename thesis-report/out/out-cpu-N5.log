@@ -1,0 +1,9 @@
+loading file '../data/train-images-idx3-ubyte'... done (224.286 ms, 2.35 x speedup)
+loading file '../data/train-labels-idx1-ubyte'... done (21.576 ms, 1.03 x speedup)
+loading file '../data/t10k-images-idx3-ubyte'... done (45.792 ms, 2.10 x speedup)
+loading file '../data/t10k-labels-idx1-ubyte'... done (23.002 ms, 1.15 x speedup)
+generating theta1... done (2.031 ms, 1.00 x speedup)
+generating theta2... done (34.000 µs, 0.97 x speedup)
+training network: 300 hidden layers, 60000 training images... done (133.421 s, 5.40 x speedup)
+testing network: 10000 sample images... done (269.072 ms, 2.97 x speedup)
+network accuracy: 84.46%

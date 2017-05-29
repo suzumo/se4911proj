@@ -1,11 +1,29 @@
 \chapter{Evaluation}\label{ch:eval}
 
-This section contains the evaluation of the result and the overall significance of my thesis result in the light of project's objective.
+The intent of this thesis was to evaluate the Accelerate's suitability in: (1) creating a neural network; (2) that is sufficiently well-performing; (3) with good useability; and, (4) analyse the benefits and disadvantages of such implementation. 
+
+Chapter ~\ref{ch:results} shows us that (1) and (2) should be possible. This implementation is more or less a straight translation of MATLAB code with minimal naturalisation to Accelerate. There is a number of issues with this:
+
+\begin{itemize}
+	\item
+\end{itemize}
+
+With further optimisation, it may be possible to have a faster and more efficient performance. 
+
+
+
+
+to create a \texttt{fmincg} or a simple neural network in native Accelerate.
+, and roughly corresponds to detectors that look for strokes and other patterns in the input~\cite{Ng12}
 
 \section{Discussion} \label{se:eval.discuss}
 
-The result of this work is the present document, being both a \LaTeX\
-template and a thesis requirement specification.
+First, the comparative training set prediction results from Accelerate and MATLAB using sample data (1) indicates that my Accelerate implementation does align with the MATLAB program and should be thus, fairly accurate (see \ref{se:res.performance}). The fluctuation in accuracy can be due to random initialisation of weight~\cite{Ng12}.
+
+Secondly, 
+
+
+Difficulties with developing with Accelerate -- debugging. Maths. Type checking.
 
 \section{Benefits of Accelerate implementation} \label{se:impl.benefits}
 
@@ -15,10 +33,22 @@ For instance, even if the code is 'inefficient' in the sense that it has repeati
 
 \section{Incomplete works} \label{se:eval.incomplete}
 
-The Dual function of this document somewhat de-emphasises the primary
-purpose of the document, namely the thesis requirements.  It would be
-better, if these could be stated on a few concise pages (cf Appendix
-1, p\pageref{app1}).
+I did not conduct testing the neural network with different activation functions as I was aiming to test the speed and load performance of my implementation and such activation functions should not have a drastic impact on the performance of the neural network.
+
+-- a full comparative analysis of other languages' implementation difficulty, performance, GPU harnessibility
 
 \section{Future works} \label{se:eval.future}
 
+
+
+-- from thesis A about creating testing data
+
+Another problem that I may encounter using such pre-made repositories is that there may be insufficient training samples in the provided data set to train my neural network. In machine learning, a concept called \textit{artificial data synthesis} may resolve this dilemma~\cite{Ng12}. 
+
+Artificial data synthesis comprises of the following two methods to create \textit{synthetic data}: 
+\begin{enumerate}
+\item Create new \textit{labeled} samples by superimposing original sample with a suitable replacement. For example, an original image of an alphabet can be edited to a new sample by overlaying the existing letter with a new font type of the same letter.
+\item Amplify the data set by introducing \textit{smart} distortion to original sample. For instance, edit an original image of an alphabet into multiple versions by introducing various wave-like distortions.
+\end{enumerate}
+
+Artificial data synthesis is generally more efficient than obtaining raw data and labeling them manually. In the second method, the distortion must be non-trivial and the resulting sample must lie within a naturally occurring variance -- it must be reasonably found in the real world~\cite{Ng12}.

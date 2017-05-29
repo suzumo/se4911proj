@@ -12,9 +12,12 @@
 \contentsline {figure}{\numberline {2.10}{\ignorespaces Accelerate and Haskell code are mixed in\nobreakspace {}\cite {Eve16}.}}{17}
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {3.1}{\ignorespaces Changing the number of hidden layers in \texttt {nnCostFunction}}}{21}
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Neural network cost function in Matlab.}}{24}
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Neural network cost function in Accelerate.}}{25}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Reshaping vectors into matrices in Accelerate.}}{23}
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Function minimise conjugate gradient function.}}{25}
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Assisting Accelerate with predefining types of unused variables in \texttt {unlift}.}}{26}
+\contentsline {figure}{\numberline {3.5}{\ignorespaces MATLAB's \texttt {double} is actually a \texttt {float}? What it means for \texttt {realmin}.}}{27}
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces An example representation of the handwritten digits data set from\nobreakspace {}\cite {Ng12}.}}{30}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
