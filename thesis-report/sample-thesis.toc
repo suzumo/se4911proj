@@ -9,11 +9,11 @@
 \contentsline {section}{\numberline {3.1}Using a MATLAB-based neural network as reference}{16}
 \contentsline {section}{\numberline {3.2}Accelerate Implementation}{17}
 \contentsline {subsection}{\numberline {3.2.1}Neural network structure}{17}
-\contentsline {subsection}{\numberline {3.2.2}Program structure}{18}
+\contentsline {subsection}{\numberline {3.2.2}Program structure}{19}
 \contentsline {subsubsection}{Initialisation}{19}
-\contentsline {subsubsection}{Neural network cost function, \texttt {nnCostFunction}}{20}
-\contentsline {subsubsection}{Function minimisation via conjugate gradient method, \texttt {fmincg}}{21}
-\contentsline {section}{\numberline {3.3}Known bugs}{24}
+\contentsline {subsubsection}{Neural network cost function, \texttt {nnCostFunction}}{21}
+\contentsline {subsubsection}{Function minimisation via conjugate gradient method, \texttt {fmincg}}{22}
+\contentsline {section}{\numberline {3.3}Known bugs}{25}
 \contentsline {section}{\numberline {3.4}Other works}{26}
 \contentsline {chapter}{\numberline {4}Testing and Results}{27}
 \contentsline {section}{\numberline {4.1}Test Data}{27}
@@ -22,7 +22,7 @@
 \contentsline {chapter}{\numberline {5}Evaluation}{31}
 \contentsline {section}{\numberline {5.1}Performance evaluation}{31}
 \contentsline {section}{\numberline {5.2}Usability and Accelerate}{33}
-\contentsline {section}{\numberline {5.3}Advantages of an Accelerate implementation}{34}
-\contentsline {section}{\numberline {5.4}Future work}{37}
-\contentsline {chapter}{\numberline {6}Conclusion}{39}
-\contentsline {chapter}{Bibliography}{40}
+\contentsline {section}{\numberline {5.3}Advantages of an Accelerate implementation}{35}
+\contentsline {section}{\numberline {5.4}Incomplete works}{36}
+\contentsline {chapter}{\numberline {6}Conclusion}{38}
+\contentsline {chapter}{Bibliography}{39}

@@ -14,9 +14,9 @@
 \contentsline {figure}{\numberline {3.2}{\ignorespaces Reshaping vectors into matrices in Accelerate.}}{21}
 \contentsline {figure}{\numberline {3.3}{\ignorespaces Function minimise conjugate gradient function.}}{23}
 \contentsline {figure}{\numberline {3.4}{\ignorespaces Assisting Accelerate by specifying types of unused variables in \texttt {unlift}.}}{24}
-\contentsline {figure}{\numberline {3.5}{\ignorespaces MATLAB's \texttt {double} is actually a \texttt {float}? What it means for \texttt {realmin}.}}{25}
+\contentsline {figure}{\numberline {3.5}{\ignorespaces MATLAB's \texttt {double} is actually a \texttt {float}? What it means for \texttt {realmin}.}}{26}
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {4.1}{\ignorespaces Graphs of training set 1 (top) and 2 (bottom) benchmarks.}}{30}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Comparing \texttt {predict} in MATLAB\nobreakspace {}\cite {Ng12}, Accelerate and C++\nobreakspace {}\cite {Wol17}.}}{35}
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Comparing \texttt {predict} in MATLAB\nobreakspace {}\cite {Ng12}, Accelerate and C++\nobreakspace {}\cite {Wol17}.}}{34}
 \addvspace {10\p@ }
