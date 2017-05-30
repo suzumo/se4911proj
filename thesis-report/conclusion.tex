@@ -1,7 +1,8 @@
 \chapter{Conclusion}\label{ch:conclusion}
 
-Accelerate was hypothesised to implement neural networks in a more convenient way to methods in existing programming languages, while retaining relative high performance and with added benefits of GPU harnessibility, type-safety, compile time optimisation and more.
+Accelerate was hypothesised to implement neural networks in a more convenient way to methods in existing programming languages, while retaining relatively good performance and with added benefits of GPU harnessibility, type-safety, compile time optimisation and more.
 
-I have constructed a simple two-layered neural network in Accelerate, using a MATLAB implementation as its base model. Although both languages are highly specialised for array and matrix computations, I found that this does not necessarily mean that their optimal implementations should also be similar. Thus, my current program could be improved further by adding uniquely-Accelerate optimisations. 
+I have constructed a simple two-layered neural network in Accelerate, using a MATLAB implementation as its base model. Although both languages are highly specialised for array and matrix computations, I found that this does not necessarily mean that their optimal implementations should also be similar, because Accelerate focuses on parallelism, whereas MATLAB tends towards sequential, imperative styles. Thus, my current program could be improved further by implementing it in a style more idiomatic of Accelerate and Haskell. 
 
-Even so, my work does promise us that Accelerate's powerful computational and architectural features does have the potential to create neural networks that \textit{can} encompass all --- well-performing, easy-to-use and functional.
+Even so, my work does promise us that Accelerate's powerful computational and architectural features does have the potential to create neural networks that achieve all of our goals --- well-performing, easy-to-use and functional.
+
