@@ -11,7 +11,9 @@ This data set was mostly used during the development to assess the accuracy of t
 
 Set (2) is Le Cunn's MNIST handwritten digits database. This consists of a training set of $60000$ examples and a test set of $10000$ examples. Each example is a $28 \times 28$ pixel greyscale image. This input layer has 784 neurons and a hidden layer of 300 neurons. Thus the size of weight vector between them is $785 \times 300 = 235500$. The size of weight vector between hidden and output layer is $301 \times 10 = 3010$. This data set was used to test the performance of completed Accelerate implementation from 1 to 8 cores.
 
-\texttt{lambda} is set to 1. Each test iterates FFBP 50 times to calculate the new weight matrices. Each test was then repeated 10 times and the average value plotted. The initial weight vectors for training set (2) benchmarking was kept consistent to strictly measure the effect of cores on performance. In training set (1), the initial weight are randomly initialised, and thus up to 1\% in fluctuations could result from this factor~\cite{Ng12}.
+For all tests \texttt{lambda} is set to 1, unless if specified otherwise. Each test iterates FFBP 50 times to calculate the new weight matrices. The tests were then repeated 10 times and the average value plotted. 
+
+The initial weight vectors for training set (2) benchmarking was kept consistent to strictly measure the effect of cores on performance. In training set (1), the initial weight are randomly initialised, and thus up to 1\% in fluctuations could result from this factor~\cite{Ng12}.
  
 \section{Testing environment}\label{se:res.testsys}
 There are two testing environments. Both environments ran on \texttt{llvm} backends as the testing data was too small for the GPU backend. 

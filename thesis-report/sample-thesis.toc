@@ -18,7 +18,7 @@
 \contentsline {chapter}{\numberline {4}Testing and Results}{27}
 \contentsline {section}{\numberline {4.1}Test Data}{27}
 \contentsline {section}{\numberline {4.2}Testing environment}{28}
-\contentsline {section}{\numberline {4.3}Performance results}{28}
+\contentsline {section}{\numberline {4.3}Performance results}{29}
 \contentsline {chapter}{\numberline {5}Evaluation}{31}
 \contentsline {section}{\numberline {5.1}Performance evaluation}{31}
 \contentsline {section}{\numberline {5.2}Usability and Accelerate}{33}
