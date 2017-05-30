@@ -5,24 +5,25 @@
 \contentsline {section}{\numberline {2.3}GPU-accelerated programming and neural networks}{9}
 \contentsline {section}{\numberline {2.4}Accelerate}{10}
 \contentsline {section}{\numberline {2.5}Previous Implementations in Accelerate}{13}
-\contentsline {chapter}{\numberline {3}Implementation}{17}
-\contentsline {section}{\numberline {3.1}Using a MATLAB-based neural network as reference}{17}
-\contentsline {section}{\numberline {3.2}Accelerate Implementation}{18}
-\contentsline {subsection}{\numberline {3.2.1}Neural network structure}{18}
-\contentsline {subsection}{\numberline {3.2.2}Program structure}{19}
-\contentsline {subsubsection}{Initialisation}{20}
-\contentsline {subsubsection}{Neural network cost function, \texttt {nnCostFunction}}{21}
-\contentsline {subsubsection}{Function minimisation via conjugate gradient method, \texttt {fmincg}}{22}
-\contentsline {section}{\numberline {3.3}Known bugs}{25}
-\contentsline {section}{\numberline {3.4}Other works}{27}
-\contentsline {chapter}{\numberline {4}Testing and Results}{28}
-\contentsline {section}{\numberline {4.1}Test Data}{28}
-\contentsline {section}{\numberline {4.2}Testing environment}{29}
-\contentsline {section}{\numberline {4.3}Performance results}{29}
-\contentsline {chapter}{\numberline {5}Evaluation}{32}
-\contentsline {section}{\numberline {5.1}Performance evaluation}{32}
-\contentsline {section}{\numberline {5.2}Benefits of Accelerate implementation}{33}
-\contentsline {section}{\numberline {5.3}Incomplete works}{35}
-\contentsline {section}{\numberline {5.4}Future works}{35}
-\contentsline {chapter}{\numberline {6}Conclusion}{37}
-\contentsline {chapter}{Bibliography}{38}
+\contentsline {chapter}{\numberline {3}Implementation}{16}
+\contentsline {section}{\numberline {3.1}Using a MATLAB-based neural network as reference}{16}
+\contentsline {section}{\numberline {3.2}Accelerate Implementation}{17}
+\contentsline {subsection}{\numberline {3.2.1}Neural network structure}{17}
+\contentsline {subsection}{\numberline {3.2.2}Program structure}{18}
+\contentsline {subsubsection}{Initialisation}{19}
+\contentsline {subsubsection}{Neural network cost function, \texttt {nnCostFunction}}{20}
+\contentsline {subsubsection}{Function minimisation via conjugate gradient method, \texttt {fmincg}}{21}
+\contentsline {section}{\numberline {3.3}Known bugs}{24}
+\contentsline {section}{\numberline {3.4}Other works}{26}
+\contentsline {chapter}{\numberline {4}Testing and Results}{27}
+\contentsline {section}{\numberline {4.1}Test Data}{27}
+\contentsline {section}{\numberline {4.2}Testing environment}{28}
+\contentsline {section}{\numberline {4.3}Performance results}{28}
+\contentsline {chapter}{\numberline {5}Evaluation}{31}
+\contentsline {section}{\numberline {5.1}Performance evaluation}{31}
+\contentsline {section}{\numberline {5.2}Useability and Accelerate}{33}
+\contentsline {section}{\numberline {5.3}Advantages of an Accelerate implementation}{33}
+\contentsline {section}{\numberline {5.4}Incomplete works}{35}
+\contentsline {section}{\numberline {5.5}Future works}{36}
+\contentsline {chapter}{\numberline {6}Conclusion}{38}
+\contentsline {chapter}{Bibliography}{39}

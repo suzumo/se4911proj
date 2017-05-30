@@ -42,7 +42,7 @@ Table \ref{tb:acc.vs.matlab} shows that in the development environment with trai
     5000 & 17.95 	& 95.54 	& 2.6811 	& 95.08  \\ 
     \hline
 	\end{tabular}}
-	\caption{Benchmarking training set 1.}
+	\caption{Benchmarking training set 1 (Training set from \cite{Ng12}).}
 	\label{tb:acc.vs.matlab}
 \end{table}
 
@@ -62,11 +62,13 @@ Table \ref{tb:acc.vs.matlab} shows that in the development environment with trai
      8 & 122.310 	& 84.46 	\\ 
     \hline
 	\end{tabular}}
-	\caption{Benchmarking training set 2.}
+	\caption{Benchmarking training set 2 (MNIST training set).}
 	\label{tb:acc.vs.cores}
 \end{table}
 
 Table \ref{tb:acc.vs.cores} indicates a performance improvement with the addition of more cores. It levels off rapidly, however, perhaps indicating that there may be too much overhead to keep the cores synchronized to gain more benefit with the current implementation (see Chapter~\ref{ch:eval}).
+
+Another alarming result is the lower than expected accuracy at 84.46\%. At \texttt{lambda=3.0}, this remains largely unchanged at 84.39\%. I checked the MATLAB accuracy with training set (2) and got an average of 91.68\% accuracy and 190.52 seconds time taken (10 tests on first testing environment), indicating that the issues outlined in~\ref{se:impl.limits} is having a significant impact on correctness of my implementation.
 
 \begin{figure}
 \centerline

@@ -1,29 +1,30 @@
 \chapter{Evaluation}\label{ch:eval}
 
-The intent of this thesis was to evaluate Accelerate's suitability in creating a neural network that is (1) sufficiently well-performing; (2) with good useability; and, (3) analyse the benefits and disadvantages of such implementation. I will go through each one in the sections below.
+The intent of this thesis was to create a neural network in Accelerate that is (1) sufficiently well-performing; (2) with good useability; and, (3) analyse the benefits and disadvantages of such implementation. I will go through each one in the sections below.
 
 \section{Performance evaluation} \label{se:eval.performance}
 
-I believe that Chapter ~\ref{ch:results} training set 2 results indicate that a decently well-performing neural network should be possible.
+In terms of performance, namely correctness, scaleability and relative speed, my implementation did not perform well as expected (see Chapter~\ref{ch:results}).
 
-Current implementation has an issue with accuracy: according to~\cite{LeC98}, a two-layer fully connected neural network 300 hidden units for MNIST dataset should produce an error of approximately 4.7\%. According to the paper, LeCun uses a carefully tuned, SGD algorithm to train the neural network~\ref{se:previmplem}. My implementation, on the other hand, uses BGD with conjugate gradient method. Perhaps due to the bugs in \texttt{fmincg} or otherwise, my implementation has a high error rate of approximately 15.5\%, which is closer to the error rate of LeCun's classic linear classifier at 12\%. A linear classifier architecture is similar to a neural network without a hidden layer.
+Although accuracy was on-par with MATLAB on training set (1), it had lower accuracy than other implementations, including MATLAB, on training set (2). According to~\cite{LeC98}, a two-layer fully connected neural network 300 hidden units for MNIST dataset should produce an error of approximately 4.7\%. Albeit the fact that LeCun (1998) uses a carefully tuned, SGD algorithm method named \textit{Stochastic Diagonal Levenberg-Marquardt}\footnote{This is a complex method, but amongst other techniques, LeCun (1998) calculates an individual learning rate for each weight before parsing the training set --- which is applied to the network around 20 times --- in a randomised order of \textit{patterns}, or the sorting of training samples in a properly randomised sequence.} to train his neural network~\ref{se:previmplem}, one should expect my Accelerate implementation to mirror the accuracy of MATLAB's performance as it did for training set (1). However,\ref{tb:acc.vs.cores} indicates that it is at average approximately 7.2\% less accurate than that of MATLAB. This seems to signify that the unresolved bugs and issues as previously mentioned in \ref{se:impl.limits} is a significant dampener on the correctness of my implementation.
 
-In terms of speed, I have found a C++ neural network that tested on the MNIST dataset\cite{Wol17}, but with only 30 hidden layers. This reduces the number of first weight vector from $235500$ to $23550$ and second weight vector from $3010$ to $310$. This implementation also uses the faster SGD method following ~\cite{LeC98}. Althought the testing environment of ~\cite{Wol17} is unclear, the training period is said to be 82 seconds.
+Also worth noting is that the MATLAB implementation has a higher error rate of 8.3\% compared to LeCun's SGD neural network at 4.7\%. This seems to imply that BGD with conjugate gradient method may not be as effective as SGD (or perhaps, for this particular data set). 
 
-With 8 cores, my Accelerate implementation runs at 122.3 seconds. This is despite the fact that this implementation is more or less a direct translation of the MATLAB code with minimal Accelerate naturalisation, and the list of unresolved issues (see~\ref{se:impl.limits}). With further optimisation and bug fixes, it may be possible to achieve a very reasonable performance and accuracy. 
+Interstingly, my program with an error rate of 15.5\% is closer the error rate reported by a native Haskell neural network implementation called \texttt{neural}~\cite{Bru16}. Upon testing with MNIST training set, it produced an error rate of approximately 17\% after 50 iterations, taking 983.9 seconds with 8 cores. This program reports to have reached an accuracy of 90.05\% after 450 iterations. 
 
+%Sadly, both of our accuracy rate is worse than the performance of LeCun's classic linear classifier\footnote{A linear classifier architecture is similar to a neural network without a hidden layer.} at 12\%.
 
-~\cite{Eve16} uses sigmoid function. This function is mathematically convenient, because its gradient, $\sigma'(x)$, is easy to calculate:
-$$\sigma'(x) = \sigma(x) \cdot (1 - \sigma(x))$$
-The sigmoid function suffers from the following two disadvantages and is now mostly unused~\cite{Kar16}:
-\begin{enumerate}
-\item When the unit's activation \textit{saturates} at either tail of 0 or 1, the gradient of the sigmoid function nears zero (refer to the sigmoid function graph in Fig. \ref{fig:activation-graphs}). Zero gradients effectively `kill' any signal flows through the neuron in forward- and back-propagation. Thus saturated neurons results in a ``network [that] will barely learn"~\cite{Kar16}. Accordingly, extra care must be taken not to initialise the weights with a large value.
-\item The range of the sigmoid function is not centered around zero. Hence if the inputs are always positive, it could introduce an undesirable \textit{zig-zagging dynamics} in the gradient updates for weights, as the gradient on the weights will be either all positive or all negative during back-propagation. However, this is a minor inconvenience as its impact is automatically mitigated in a BGD by the time the weights are updated.
-\end{enumerate}
+In terms of scaleability, my implementation linearly increases the time taken compared to size of input with constant number of cores similar to MATLAB, and reaches a plateau rapidly upon adding more (see ~\ref{fig:traininggraphs}). We believe this may be due to the rolling and unrolling of weight vectors during \texttt{fmincg} operation as mentioned in \ref{se:impl.fmincg}. The amount of work involved in copying the large matrices probably adds a significant overhead, reducing the benefit of having multicores.
 
+Such redundant work is also likely a factor in negatively affecting the speed, particularly for smaller data sets. For instance, the MATLAB program seems to perform much faster with the smaller training set (1) (see ~\ref{fig:traininggraphs}). With MNIST training set, however, my Accelerate program does perform more competitively --- but, further testing is required. 
 
+I was unable to find \textit{speed} performance results for MNIST training set on neural networks with same architecture in other languages in order to do a relative speed performance apart from MATLAB\footnote{The closest one I could find was a C++ neural network\cite{Wol17}, but with only 30 hidden layers. This reduces the first weight vector from $235500$ to $23550$ and the second weight vector from $3010$ to $310$. This implementation also uses the faster SGD method in the manner of~\cite{LeC98} and also did not disclaim his testing environment. Training time taken is said to be 82 seconds, but there were too many unknown factors in this data to draw comparisons.}.
 
-\section{Benefits of Accelerate implementation} \label{se:impl.benefits}
+Yet, on a positive note, my Accelerate neural network finishes training at 122.3 seconds with 8 cores. This is despite the fact that this implementation is more or less a direct translation of the MATLAB code with minimal Accelerate optimisation. With further Accelerate naturalisation (and bug fixes), it may be possible to achieve a very reasonable speed performance!
+
+\section{Useability and Accelerate} \label{se:eval.useability}
+
+\section{Advantages of an Accelerate implementation} \label{se:eval.advantages}
 
 Acclerate has inherent benefits.
 
@@ -67,6 +68,18 @@ In terms of performance, Accelerate can be competitive with CUDA depending on th
 
 
 \section{Incomplete works} \label{se:eval.incomplete}
+
+~\cite{Eve16} uses sigmoid function. This function is mathematically convenient, because its gradient, $\sigma'(x)$, is easy to calculate:
+$$\sigma'(x) = \sigma(x) \cdot (1 - \sigma(x))$$
+The sigmoid function suffers from the following two disadvantages and is now mostly unused~\cite{Kar16}:
+\begin{enumerate}
+\item When the unit's activation \textit{saturates} at either tail of 0 or 1, the gradient of the sigmoid function nears zero (refer to the sigmoid function graph in Fig. \ref{fig:activation-graphs}). Zero gradients effectively `kill' any signal flows through the neuron in forward- and back-propagation. Thus saturated neurons results in a ``network [that] will barely learn"~\cite{Kar16}. Accordingly, extra care must be taken not to initialise the weights with a large value.
+\item The range of the sigmoid function is not centered around zero. Hence if the inputs are always positive, it could introduce an undesirable \textit{zig-zagging dynamics} in the gradient updates for weights, as the gradient on the weights will be either all positive or all negative during back-propagation. However, this is a minor inconvenience as its impact is automatically mitigated in a BGD by the time the weights are updated.
+\end{enumerate}
+
+
+I believe that Chapter ~\ref{ch:results} training set 2 results indicate that a decently well-performing neural network should be possible.
+
 
 This was the expected behaviour --> First, the comparative training set prediction results from Accelerate and MATLAB using sample data (1) indicates that my Accelerate implementation does align with the MATLAB program and should be thus, fairly accurate (see \ref{se:res.performance}).
 

@@ -1,16 +1,26 @@
 \newcommand{\etalchar}[1]{$^{#1}$}
-\begin{thebibliography}{MCKL13}
+\begin{thebibliography}{CEMCK17}
+
+\bibitem[Bru16]{Bru16}
+Lars Bruenjes.
+\newblock neural: Neural networks in native haskell.
+\newblock https://\hspace{0cm}\relax
+  hackage.haskell.org/\hspace{0cm}package/\hspace{0cm}\relax neural, accessed
+  29/05/2017, 2016.
+\newblock hackage information page and git repository.
+
+\bibitem[CEMCK17]{Eve16}
+Robert Clifton-Everest, Trevor~L. McDonell, Manuel~M.T. Chakravarty, and
+  Gabriele Keller.
+\newblock Streaming irregular arrays.
+\newblock Actual paper is in review, linked is the git repository for neural
+  network work written for the paper, which was used for this thesis, 2017.
 
 \bibitem[CKL{\etalchar{+}}11]{ChaKelLee11}
 Manuel M.~T. Chakravarty, Gabriele Keller, Sean Lee, Trevor McDonell, and Vinod
   Grover.
 \newblock Accelerating haskell array codes with multicore gpus.
 \newblock {\em Declarative Aspects of Multicore Programming}, 2011.
-
-\bibitem[Eve16]{Eve16}
-Rob Everest.
-\newblock Untitled.
-\newblock 2016.
 
 \bibitem[FR64]{FleRee}
 R.~Fletcher and C.M. Reeves.
@@ -143,14 +153,6 @@ Frank Rosenblatt.
 \newblock {\em Principles of neurodynamics; perceptrons and the theory of brain
   mechanisms}.
 \newblock Spartan Books, Washington, D.C., 1962.
-
-\bibitem[Unk17]{Wiki1}
-Unknown.
-\newblock Matlab.
-\newblock https://\hspace{0cm}\relax
-  en.wikipedia.org/\hspace{0cm}wiki/\hspace{0cm}\relax MATLAB, accessed
-  14/05/2016, 2017.
-\newblock MATLAB, Wikipedia article.
 
 \bibitem[Wol17]{Wol17}
 Alan Wolfe.

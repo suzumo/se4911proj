@@ -214,7 +214,7 @@ There are six key Accelerate functions that were used and their names and operat
   \label{fig:acc-functions2}
 \end{figure}
 
-In~\citep{Eve16}, two support functions were also created to assist forward- and back-propagation processes -- \texttt{mvm} and \texttt{cross} (see Fig. \ref{fig:acc-functions3}).
+In~\cite{Eve16}, two support functions were also created to assist forward- and back-propagation processes -- \texttt{mvm} and \texttt{cross} (see Fig. \ref{fig:acc-functions3}).
 \begin{figure}
 \begin{lstlisting}
   -- matrix vector multiplication function
@@ -250,4 +250,4 @@ The actual FFBP algorithm is in the function \texttt{backprop}. In \texttt{backp
   \label{fig:acc-functions4}
 \end{figure}
 
-At the time of this report, ~\citep{Eve16} has reported some performance issues with this implementation with the success rate of digit prediction at appropriximately 50\%. The cause is yet unknown, but may possibly be due to the nature of data streaming. This implementation also purportedly running at a slower speed than an equivalent Theano implementation. Theano is a Python library that is optimised for multi-dimensional array computations, and can be optimised to use GPU for computations.
+At the time of this report, ~\cite{Eve16} has reported some performance issues with this implementation with the success rate of digit prediction at appropriximately 50\%. The cause is yet unknown, but may possibly be due to the nature of data streaming. This implementation also purportedly running at a slower speed than an equivalent Theano implementation. Theano is a Python library that is optimised for multi-dimensional array computations, and can be optimised to use GPU for computations.
