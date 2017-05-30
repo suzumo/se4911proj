@@ -26,7 +26,7 @@ Yet, on a positive note, my Accelerate neural network finishes training at 122.3
 
 It is fairly reasonable to say that the ease and convenience of a programming language can affect a programmer's work. One of the main reasons in starting this thesis was to gauge the the ease of creating a neural network using Accelerate.
 
-Firstly, Accelerate has a convenient syntax that Haskell-users will find easy to use. Although MATLAB may seem more convenient than Accelerate at times, especially in operations that requires array or matrix manipulations, MATLAB is also ambiguous and loose in its language, and meanings can get lost without more effort being invested by the reader (see ~\ref{se:impl.matlab}). In contrast, Accelerate allows programmers to know exactly what is occuring with its syntax, accompanied by many high performing libraries for array computations that are easy-to-use.
+Firstly, Accelerate has a convenient syntax that Haskell-users will find easy to use. Although MATLAB may seem more convenient than Accelerate at times, especially in operations that requires array or matrix manipulations, MATLAB is also ambiguous and loose in its language, and meanings can get lost without more effort being invested by the reader (see ~\ref{se:impl.matlab.nn}). In contrast, Accelerate allows programmers to know exactly what is occuring with its syntax, accompanied by many high performing libraries for array computations that are easy-to-use.
 
 Secondly, Accelerate is compact and succinct, but perhaps not as abbreviated as in MATLAB to become obscure to its users. Neither is Accelerate as verbose as C++, which can become cumbersome to read and write as seen in \ref{fig:eval.syntax.predict}.
 
@@ -68,15 +68,8 @@ Secondly, Accelerate is compact and succinct, but perhaps not as abbreviated as 
                 Z += pixels[inputIndex] * m_hiddenLayerWeights[HiddenLayerWeightIndex(inputIndex, neuronIndex)];
             m_hiddenLayerOutputs[neuronIndex] = 1.0f / (1.0f + std::exp(-Z));
         }
- 
-        for (size_t neuronIndex = 0; neuronIndex < OUTPUT_NEURONS; ++neuronIndex) {
-            float Z = m_outputLayerBiases[neuronIndex];
-            for (size_t inputIndex = 0; inputIndex < HIDDEN_NEURONS; ++inputIndex)
-                Z += m_hiddenLayerOutputs[inputIndex] * m_outputLayerWeights[OutputLayerWeightIndex(inputIndex, neuronIndex)];
-            m_outputLayerOutputs[neuronIndex] = 1.0f / (1.0f + std::exp(-Z));
-        }
-
-        ...
+        
+        ... 
         return maxLabel;
     }
   \end{lstlisting}
@@ -120,4 +113,4 @@ However, sigmoid function is not widely used these days, due to these two disadv
 
 It would be also interesting to implement a SGD neural network to test for its relative performance.
 
-Finally, after optimising the current implementation, there are many complicated neural network architectures that could be built by using this simple neural network as preliminary building blocks. For instance, convolutional neural networks, or \textit{convNets}, are one of the most reliable and efficient performers in image recognition problems. ConvNets work by processing only portions of the input image, which are tiled in subsequent layers in such a way that the input regions overlap and is deemed to obtain a better representation of the original image at a fraction of the computational cost ~\cite{BC16}. Each of the tiles are a small simple neural network!
+Finally, after optimising the current implementation, there are many complicated neural network architectures that could be built by using this simple neural network as preliminary building blocks. For instance, convolutional neural networks, or \textit{convNets}, are one of the most reliable and efficient performers in image recognition problems. ConvNets work by processing only portions of the input image, which are tiled in subsequent layers in such a way that the input regions overlap and is deemed to obtain a better representation of the original image at a fraction of the computational cost ~\cite{Kar16}. Each of the tiles are a small simple neural network!

@@ -1,7 +1,5 @@
 \chapter{Background and Related Works}\label{ch:background}
 
-%% SET THE CONTEXT - define, examine problem in detail, evaluation framework
-
 \section{Neural network architecture}\label{sec:nn-architecture}
 
 Broadly speaking, a neural network can be described as a certain layering of nodes, or \textit{units}, connected to each other by directed \textit{links}, where each link has a certain numeric weight that signifies the strength of connection between the connected nodes. 
@@ -76,7 +74,7 @@ For instance, the activation of unit $i$ in the first hidden layer can be expres
 $$a_{i}^{(2)} = g(\Theta_{i1}^{(1)}x_{1}^{(s)} + ... + \Theta_{im}^{(1)}x_{m}^{(s)})$$
 and, in the output layer as~\cite{Ng12},
 $$a_{i}^{(k)} = g(\Theta_{i1}^{(k-1)}a_{1}^{(k-1)} + ...+\Theta_{i|k-1|}^{(k-1)}a_{|k-1|}^{(k-1)})$$ 
-Also, unlike the approach taken above by~\cite{Ng12},~\cite{Kar16} states that the activation function is not commonly applied to output layer, because often the result as a real-value number received by the outer layer is the information sought by the user.
+Also, unlike the approach taken above by Ng (2016),~\cite{Kar16} states that the activation function is not commonly applied to output layer, because often the result as a real-value number received by the outer layer is the information sought by the user.
 
 \ref{eq:2.1} can be simplified using vectorised implementation. Let the activated units in layer $j$ be denoted as $a^{(j)} = [a_{1}^{(j)},...,a_{|j|}^{(j)}]$. Then inputs to this layer can be expressed as $z^{(j)} = \Theta^{(j-1)} a^{(j-1)}$ and so $a^{(j)}$ becomes,
 \begin{equation}
@@ -100,7 +98,7 @@ This, too, can be simplified using vectorised implementation as,
 \end{equation}
 Back-propagation ends for $s$ when the errors from the output layer is propagated to the first hidden layer.
 
-The FFBP learning algorithm is then repeated for all the training samples. $\Delta^{(j)}$ accumulates all the errors in the training set during this process. Once the process is finished, the final values are averaged out by the size of the training set, a \textit{regularisation term} is added, and finally the weights are updated. A regularisation term is a value that is added in gradient descent algorithm in machine learning, to prohibit features that are vastly different in its range of input values from one another from distorting the results~\cite{Ng12}. This entire process is also known as a form of \textit{batch gradient descent} (BGD) learning algorithm in machine learning~\cite{Ng12} and is the method chosen to implement my Accelerate neural network (see Chapter~\ref{ch:impl}).
+The FFBP learning algorithm is then repeated for all the training samples. $\Delta^{(j)}$ accumulates all the errors in the training set during this process. Once the process is finished, the final values are averaged out by the size of the training set, a \textit{regularisation term} is added, and finally the weights are updated. A regularisation term is a value that is added in gradient descent algorithm in machine learning, to prohibit features that are vastly different in its range of input values from one another from distorting the results~\cite{Ng12}. This entire process is also known as a form of \textit{batch gradient descent} (BGD) learning algorithm in machine learning~\cite{Ng12} and is the method chosen to implement my Accelerate neural network (see Chapter~\ref{ch:impl}.
 
 There are other advanced optimization methods that can improve the performance of neural networks, but these have yet to be explored at the time of this report. As with other machine learning algorithms, the performance may also be improved with either altering various parameters, such as regularisation parameter $\lambda$ and the learning rate parameter $\alpha$, altering the number of features, gaining more training examples, adding polynomial features, or any combination of these~\cite{Ng12}. However, \textit{diagnostic analysis} is often the fastest and most economically sound method to determine which set of features is effective~\cite{Ng12}. Diagnostic analysis is a form of trial-and-error testing of features sets, or \textit{hypotheses}, with a small set of training examples to assess its performance and thus its suitability.
 
@@ -114,7 +112,7 @@ The main GPU programming language is CUDA, an API model created by NVIDIA in 200
 
 \section{Accelerate}\label{se:accelerate}
 
-Accelerate is an Embedded Domain-Specific Language (EDSL) for high-performance computing on both CUDA-enabled GPUs and CPUs via LLVM, released by UNSW PLS in 2011. EDSLs are restricted languages that are embedded in a more powerful language, so as to reuse the host language's infrastructure and enable powerful metaprogramming. In the case of Accelerate, Haskell is the host language and it compiles into CUDA C or LLVM PTX code that is then compiled for the GPU directly by the CUDA compiler. 
+Accelerate is an Embedded Domain-Specific Language (EDSL) for GPU programming, released by UNSW PLS in 2011. EDSLs are restricted languages that are embedded in a more powerful language, so as to reuse the host language's infrastructure and enable powerful metaprogramming. In the case of Accelerate, Haskell is the host language and it compiles into CUDA code that runs directly on the GPU. 
 
 \begin{figure}
   \includegraphics[width=\linewidth]{accelerate-structure.jpg}
@@ -171,15 +169,17 @@ Now, as the first method may require the array data to be copied from computer's
 
 Since Accelerate has its own backend compiler, it must be set before any code can be \texttt{run}. There can be a number of backends to execute Accelerate computations: (1) \texttt{Data.Array.Accelerate.Intepreter}, the slowest performing, simple Haskell interpreter; (2) \texttt{accelerate-llvm-native}, which supports parallel execution on multicore CPUs; and, (3) \texttt{accelerate-llvm-ptx}, which supports parallel execution on CUDA-capable NVIDIA GPUs. \texttt{accelerate-cuda} is deprecated in favour of (3).
 
+Further details about the Accelerate language is continued in \ref{se:previmplem}.
+
 \section{Previous Implementations in Accelerate} \label{se:previmplem}
 
-A neural network in Accelerate is a fairly new concept and as such, there is only one known work in~\cite{Eve16}. In it, Everest implements a FFBP neural network with a \textit{stochastic gradient descent} (SGD) learning algorithm, based on a Python implementation~\cite{Nie16}. This section briefly covers the details of this implementation.
+A neural network in Accelerate is a fairly new concept and as such, there is only one known work in~\cite{Eve16}. In it, Everest (2016) implements a FFBP neural network with a \textit{stochastic gradient descent} (SGD) learning algorithm, based on a Python implementation~\cite{Nie16}. This section briefly covers the details of this implementation.
 
 SGD algorithm is a modification of BGD algorithm, shown in \ref{sec:training}. Rather than adjusting the neural network parameters after going through the entire training set, SGD updates the parameters immediately after doing the FFBP algorithm for a single training example, which is picked at random~\cite{Ng12}. SGD can also be modified to select certain small batches of training sample at a time~\cite{LeC98}. 
 
-As such, SGD is computationally less expensive than the BGD, and allows the training algorithms to scale better to much larger training sets~\cite{Ng12}. ~\cite{LeCBosDen89} also claims that SGD trains the neural network faster. The disadvantages of SGD are that it is said to be ``less accurate'' than BGD as it may take longer to reach the local/global minima, however, it is still the more popular choice as it places less strain on system resources. Also, SGD is suitable to the work in~\cite{Eve16}, because it deals with processing data in a streaming fashion to/from the GPU.
+As such, SGD is computationally less expensive than the BGD, and allows the training algorithms to scale better to much larger training sets~\cite{Ng12}. ~\cite{LeCBosDen89} also claims that SGD trains the neural network faster. The disadvantages of SGD are that it is said to be "less accurate" than BGD as it may take longer to reach the local/global minima, however, it is still the more popular choice due to less strain it puts on the system. Also, SGD is suitable to the work in~\cite{Eve16}, because it deals with processing data streaming.
 
-There are six key Accelerate functions that were used and their names and operations are listed in Fig. \ref{fig:acc-functions2}. These functions were also used in my own implementation (see Chapter~\ref{ch:impl}). In particular, the functions \texttt{lift} and \texttt{unlift} are used to inject and extract a data constructor into and out of \texttt{Exp}\footnote{\texttt{Exp} is another Accelerate data structure, that is similar to \texttt{Acc} (refer to \ref{se:accelerate}), but instead of an array, it represents an embedded \textit{scalar} computation~\cite{ChaKelLee11}.}, respectively, and are thus essential in interpreting the indices of arrays in Accelerate~\cite{Mar13}.
+There are six key Accelerate functions that were used and their names and operations are listed in Fig. \ref{fig:acc-functions2}. These functions were also used in my own implementation (see Chapter\~ref{ch:impl}). In particular, the functions \texttt{lift} and \texttt{unlift} are used to inject and extract a value into and out of \texttt{Exp}\footnote{\texttt{Exp} is another Accelerate data structure, that is similar to \texttt{Acc} (refer to \ref{se:accelerate}), but instead of an array, it represents an embedded \textit{scalar} computation~\cite{ChaKelLee11}.}, respectively, and are thus essential in interpreting the indices of arrays in Accelerate~\cite{Mar13}.
 
 \begin{figure}
   \begin{lstlisting}
