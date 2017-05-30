@@ -22,7 +22,73 @@ I was unable to find \textit{speed} performance results for MNIST training set o
 
 Yet, on a positive note, my Accelerate neural network finishes training at 122.3 seconds with 8 cores. This is despite the fact that this implementation is more or less a direct translation of the MATLAB code with minimal Accelerate optimisation. With further Accelerate naturalisation (and bug fixes), it may be possible to achieve a very reasonable speed performance!
 
-\section{Useability and Accelerate} \label{se:eval.useability}
+\section{Usability and Accelerate} \label{se:eval.usability}
+
+It is fairly reasonable to say that the ease and convenience of a programming language can affect a programmer's work. One of the main reasons in starting this thesis was to gauge the the ease of creating a neural network using Accelerate.
+
+Firstly, Accelerate has a convenient syntax that Haskell-users will find easy to use. Although MATLAB may seem more convenient than Accelerate at times, especially in operations that requires array or matrix manipulations, MATLAB is also ambiguous and loose in its language, and meaning can get lost without more effort given by the reader (such as in scalar matrix multiplication). In contrast, Accelerate allows programmers to know exactly what is occuring with their grammar. 
+
+Seconly, Accelerate is succinct, but perhaps not as abbreviated as in MATLAB to become too obscure to its readers. Accelerate is not a verbose as C++, which can become cumbersome to write as seen in \ref{fig:eval.syntax.predict}.
+
+\begin{figure}
+  \begin{lstlisting}
+	-- in MATLAB
+	function p = predict(Theta1, Theta2, X)
+	m = size(X, 1);
+	h1 = sigmoid([ones(m,1) X] * Theta1');
+	h2 = sigmoid([ones(m,1) h1] * Theta2');
+	[~,p] = max(h2, [], 2);
+	end
+	  	
+	-- in Accelerate  	
+  	predict :: Acc (Matrix Float) -> Acc (Matrix Float) -> Acc (Matrix Float) -> Acc (Vector Int)
+    predict theta1 theta2 xs = 
+    let
+        Z :. m :. n = unlift (shape h1) :: Z :. Exp Int :. Exp Int
+        h1 = A.map sigmoid 
+           $ xs <> A.transpose theta1                
+        h2 = A.map sigmoid 
+           $ ((fill (lift (Z:.m:.(constant 1))) 1 :: Acc (Matrix Float)) A.++ h1)
+             <>
+             (A.transpose theta2)
+
+        getYs :: Acc (Vector Int)
+        getYs
+          = A.map ((+1) . A.indexHead . A.fst)
+          $ A.fold1 (\x y -> A.snd x A.> A.snd y ? (x , y))
+          $ A.indexed h2
+    in
+    getYs
+  	
+  	-- in C++
+	uint8 ForwardPass (const float* pixels, uint8 correctLabel) {
+        for (size_t neuronIndex = 0; neuronIndex < HIDDEN_NEURONS; ++neuronIndex) {
+            float Z = m_hiddenLayerBiases[neuronIndex];
+            for (size_t inputIndex = 0; inputIndex < INPUTS; ++inputIndex)
+                Z += pixels[inputIndex] * m_hiddenLayerWeights[HiddenLayerWeightIndex(inputIndex, neuronIndex)];
+            m_hiddenLayerOutputs[neuronIndex] = 1.0f / (1.0f + std::exp(-Z));
+        }
+ 
+        for (size_t neuronIndex = 0; neuronIndex < OUTPUT_NEURONS; ++neuronIndex) {
+            float Z = m_outputLayerBiases[neuronIndex];
+            for (size_t inputIndex = 0; inputIndex < HIDDEN_NEURONS; ++inputIndex)
+                Z += m_hiddenLayerOutputs[inputIndex] * m_outputLayerWeights[OutputLayerWeightIndex(inputIndex, neuronIndex)];
+            m_outputLayerOutputs[neuronIndex] = 1.0f / (1.0f + std::exp(-Z));
+        }
+
+        ...
+        return maxLabel;
+    }
+  \end{lstlisting}
+  \caption{Comparing \texttt{predict} in MATLAB~\cite{Ng12}, Accelerate and C++~\cite{Wol17}.}
+  \label{fig:eval.syntax.predict}
+\end{figure}
+
+There are, however, several elements that can intimidate new users to Accelerate. For example, it was quite difficult for me to debug my program, as Accelerate computations are not observable until they are returned to Haskell world. 
+
+Secondly, I previously mentioned in ~\ref{se:impl.fmincg} that Haskell's type inference could not automatically infer the types of some variables, particularly in \texttt{unlift} operations. 
+
+Other minor inconveniences include determining which situation called for \texttt{Exp} and \texttt{Acc} and why or when one should switch between those two data structures, the fact that it was not possible to extract values from \texttt{Exp}, and lastly, the intimidating initial set up.
 
 \section{Advantages of an Accelerate implementation} \label{se:eval.advantages}
 
