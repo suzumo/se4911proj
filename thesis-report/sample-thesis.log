@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.26)  30 MAY 2017 18:08
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.26)  30 MAY 2017 18:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -471,7 +471,7 @@ File: accelerate-types.jpg Graphic file (type jpg)
 Package pdftex.def Info: accelerate-types.jpg used on input line 132.
 (pdftex.def)             Requested size: 206.28249pt x 131.03592pt.
  [11 <./accelerate-types.jpg>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 3547) has occurred while \output is active []
 
  [12]
 [13] [14]) [15]
@@ -553,28 +553,23 @@ Chapter 5.
 
 LaTeX Warning: Float too large for page by 81.87877pt on input line 85.
 
-[33] [34] [35]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 121.
+[33] [34]
 
- (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
-File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
-)
-LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 121.
+LaTeX Warning: Citation `McDChaGro' on page 35 undefined on input line 101.
 
-[36] [37]) [38] [39]
+[35] [36] [37]) [38]
 \openout2 = `conclusion.aux'.
 
  (./conclusion.tex
 Chapter 6.
-) [40
+) [39
 
 
 
 ] (./sample-thesis.bbl
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no ¡ in font cmr10!
- [41
+ [40
 
 
 
@@ -626,18 +621,21 @@ Underfull \hbox (badness 5064) in paragraph at lines 158--166
 , ac-cessed
  []
 
-[42]) [43] (./sample-thesis.aux (./abstract.aux) (./acknowledgements.aux)
+[41]) [42] (./sample-thesis.aux (./abstract.aux) (./acknowledgements.aux)
 (./abbreviations.aux) (./introduction.aux) (./background.aux) (./mywork.aux)
 (./results.aux) (./evaluation.aux) (./conclusion.aux))
+
+LaTeX Warning: There were undefined references.
+
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
  ) 
 Here is how much of TeX's memory you used:
- 5730 strings out of 493029
- 80793 string characters out of 6136234
+ 5713 strings out of 493029
+ 80500 string characters out of 6136234
  249844 words of memory out of 5000000
- 9082 multiletter control sequences out of 15000+600000
+ 9068 multiletter control sequences out of 15000+600000
  21414 words of font info for 61 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  38i,14n,45p,1328b,1555s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -655,10 +653,10 @@ sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/tex
 live/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-d
 ist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on sample-thesis.pdf (51 pages, 732483 bytes).
+Output written on sample-thesis.pdf (50 pages, 732214 bytes).
 PDF statistics:
- 275 PDF objects out of 1000 (max. 8388607)
- 189 compressed objects within 2 object streams
+ 272 PDF objects out of 1000 (max. 8388607)
+ 187 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -23,7 +23,7 @@
 \contentsline {section}{\numberline {5.1}Performance evaluation}{31}
 \contentsline {section}{\numberline {5.2}Usability and Accelerate}{33}
 \contentsline {section}{\numberline {5.3}Advantages of an Accelerate implementation}{35}
-\contentsline {section}{\numberline {5.4}Incomplete works}{37}
+\contentsline {section}{\numberline {5.4}Incomplete works}{36}
 \contentsline {section}{\numberline {5.5}Future works}{38}
-\contentsline {chapter}{\numberline {6}Conclusion}{40}
-\contentsline {chapter}{Bibliography}{41}
+\contentsline {chapter}{\numberline {6}Conclusion}{39}
+\contentsline {chapter}{Bibliography}{40}

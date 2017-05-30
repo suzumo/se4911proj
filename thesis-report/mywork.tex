@@ -150,7 +150,7 @@ The Haskell/Accelerate type signature of \texttt{fmincg} can be seen in~\ref{fig
 	\label{fig:fmincg}
 \end{figure}
 
-I faced a couple of challenging factors in implementing this function. First, the MATLAB version had approximately 17 parameters, most of which are overwritten and interact in complex, intricate ways. Without a knowledge of the underlying mathematics, I could not fully comprehend the overall structure of this 175-line procedure. The ambiguity and similarity of parameter names, such as \texttt{d1, d2, d3, f1,..., v1,...}, did nothing to ease the problem. 
+I faced a couple of challenging factors in implementing this function. First, the MATLAB version had approximately 17 parameters, most of which are overwritten and interact in complex, intricate ways. Without a knowledge of the underlying mathematics, I could not fully comprehend the overall structure of this 175-line procedure. The ambiguity and similarity of parameter names, such as \texttt{d1,d2,...,v3}, did nothing to ease the problem. 
 
 Secondly, it is difficult to follow the flow of control in \texttt{fmincg}. In order to reduce the chance of errors arising, I chose to initially follow the procedure very closely, hoping to optimise incrementally later. Certain expressions were substituted where operations had not yet been implemented in Accelerate (see~\ref{se:impl.limits}). Additionally, I could not model the extremely complex flow control perfectly, and the known issues and bugs are mentioned in~\ref{se:impl.limits}.
 
