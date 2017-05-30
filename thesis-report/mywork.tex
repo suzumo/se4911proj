@@ -85,7 +85,7 @@ The matrix \texttt{xs} represents $m$ training set data. After it has been loade
 
 This is implemented in Accelerate using a combination of \texttt{fill} and concatenation \texttt{A.++}. Accelerate's operations are not the same as Haskell Prelude's, even if some operation names coincide. Thus they are distinguished by a qualified import: \texttt{A}, \texttt{P} for Accelerate and Prelude correspondingly, for instance \texttt{A.++} and \texttt{P.++}. Other key array manipulation functions used throughout the program include \texttt{A.take, A.drop, A.map} and \texttt{A.zipWith}.
 
-In contrast to the the clarity of the underlying structure offered by Accelerate's syntax, MATLAB functions automatically apply multiplications of a scalar term to a matrix, by applying the operation of the scalar to each element of the matrix. Thus, if \texttt{a} is a scalar and \texttt{xs} is a matrix, it is possible to simply do \texttt{a} $\times$ \texttt{xs}. In Accelerate, this would be \texttt{A.map (*a) xs}. As a result, MATLAB code is deceptively compact --- it may not reveal the actual structure of the underlying operation just from a surface examination of the program syntax. 
+In contrast to the clarity of the underlying structure offered by Accelerate's syntax, MATLAB functions automatically apply multiplications of a scalar term to a matrix, by applying the operation of the scalar to each element of the matrix. Thus, if \texttt{a} is a scalar and \texttt{xs} is a matrix, it is possible to simply do \texttt{a} $\times$ \texttt{xs}. In Accelerate, this would be \texttt{A.map (*a) xs}. As a result, MATLAB code is deceptively compact --- it may not reveal the actual structure of the underlying operation just from a surface examination of the program syntax. 
 
 Other notable MATLAB difference is the starting index of matrices and arrays being $1$, not $0$.
 
@@ -126,7 +126,7 @@ Matrix multiplications was initially implemented using \texttt{mmult}, but to im
 \subsubsection{Function minimisation via conjugate gradient method, \texttt{fmincg}} \label{se:impl.fmincg}
 Generally, function minimisation by conjugate gradients is a quadratically convergent gradient method used to locate a local minimum when the function has several variables, or, is \textit{multivariate}~\cite{FleRee}. This function repeats \texttt{nnCostFunction}, a multivariate function, for certain number of iterations, and progressively tries to minimise the error in the weight matrices.
 
-In MATLAB, function minimisation by conjugate gradient is a function called \texttt{fminunc}, which states that given a starting point \texttt{x0} (can be a scalar, vector or a matrix), \texttt{x} is the the local minimum of unconstrained function \texttt{func}~\cite{Mat17}:
+In MATLAB, function minimisation by conjugate gradient is a function called \texttt{fminunc}, which states that given a starting point \texttt{x0} (can be a scalar, vector or a matrix), \texttt{x} is the local minimum of unconstrained function \texttt{func}~\cite{Mat17}:
 $$\texttt{x = fminunc(func, x0)}$$
 \texttt{fmincg} function is a modified version of \texttt{fminunc} and has the following MATLAB equation:
 $$\texttt{function [X, fX, i] = fmincg(f, X, options, P1, P2, P3, P4, P5)}$$
