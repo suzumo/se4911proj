@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.26)  30 MAY 2017 19:22
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.26)  30 MAY 2017 20:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -557,19 +557,23 @@ LaTeX Warning: Reference `se:impl.matlab' on page 33 undefined on input line 29
 
 LaTeX Warning: Float too large for page by 81.87877pt on input line 85.
 
-[33] [34] [35] [36] [37]) [38]
+[33] [34] [35] [36]
+
+LaTeX Warning: Citation `BC16' on page 37 undefined on input line 123.
+
+) [37]
 \openout2 = `conclusion.aux'.
 
  (./conclusion.tex
 Chapter 6.
-) [39
+) [38
 
 
 
 ] (./sample-thesis.bbl
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no ¡ in font cmr10!
- [40
+ [39
 
 
 
@@ -621,18 +625,21 @@ Underfull \hbox (badness 5064) in paragraph at lines 157--165
 , ac-cessed
  []
 
-[41]) [42] (./sample-thesis.aux (./abstract.aux) (./acknowledgements.aux)
+[40]) [41] (./sample-thesis.aux (./abstract.aux) (./acknowledgements.aux)
 (./abbreviations.aux) (./introduction.aux) (./background.aux) (./mywork.aux)
 (./results.aux) (./evaluation.aux) (./conclusion.aux))
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
  ) 
 Here is how much of TeX's memory you used:
- 5712 strings out of 493029
- 80493 string characters out of 6136234
+ 5713 strings out of 493029
+ 80499 string characters out of 6136234
  249844 words of memory out of 5000000
- 9067 multiletter control sequences out of 15000+600000
+ 9068 multiletter control sequences out of 15000+600000
  21414 words of font info for 61 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  38i,14n,45p,1328b,1555s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -650,10 +657,10 @@ sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/tex
 live/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-d
 ist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on sample-thesis.pdf (50 pages, 732791 bytes).
+Output written on sample-thesis.pdf (49 pages, 731432 bytes).
 PDF statistics:
- 272 PDF objects out of 1000 (max. 8388607)
- 187 compressed objects within 2 object streams
+ 269 PDF objects out of 1000 (max. 8388607)
+ 185 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 

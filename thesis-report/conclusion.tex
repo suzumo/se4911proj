@@ -1,7 +1,7 @@
 \chapter{Conclusion}\label{ch:conclusion}
 
-An implementation of a neural network in Accelerate may offer a convenient alternative to current CUDA or Python implementations in testing for the validity of hypotheses. 
+Accelerate was hypothesised to implement neural networks in a more convenient way to methods in existing programming languages, while retaining relative high performance and with added benefits of GPU harnessibility, type-safety, compile time optimisation and more.
 
-The aim of the project is to implement a ConvNet in Accelerate. ConvNet is similar to FFBP neural networks, and thus should be possible to build upon the implementation in~\cite{Eve16}. 
+I have constructed a simple two-layered neural network in Accelerate, using a MATLAB implementation as its base model. Although both languages are highly specialised for array and matrix computations, I found that this does not necessarily mean that their optimal implementations should also be similar. Thus, my current program could be improved further by adding uniquely-Accelerate optimisations. 
 
-However, further research and knowledge is necessary in order to achieve this goal.
+Even so, my work does promise us that Accelerate's powerful computational and architectural features does have the potential to create neural networks that can encompass all --- well-performing, easy-to-use and functional.
