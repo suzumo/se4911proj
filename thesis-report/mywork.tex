@@ -126,7 +126,7 @@ Matrix multiplications was initially implemented using \texttt{mmult}, but to im
 \subsubsection{Function minimisation via conjugate gradient method, \texttt{fmincg}} \label{se:impl.fmincg}
 Generally, function minimisation by conjugate gradients is a quadratically convergent gradient method used to locate a local minimum when the function has several variables, or, is \textit{multivariate}~\cite{FleRee}. This function repeats \texttt{nnCostFunction}, a multivariate function, for certain number of iterations, and progressively tries to minimise the error in the weight matrices.
 
-In MATLAB, function minisation by conjugate gradient is a function called \texttt{fminunc}, which states that given a starting point \texttt{x0} (can be a scalar, vector or a matrix), \texttt{x} is the the local minimum of unconstrained function \texttt{func}~\cite{Mat17}:
+In MATLAB, function minimisation by conjugate gradient is a function called \texttt{fminunc}, which states that given a starting point \texttt{x0} (can be a scalar, vector or a matrix), \texttt{x} is the the local minimum of unconstrained function \texttt{func}~\cite{Mat17}:
 $$\texttt{x = fminunc(func, x0)}$$
 \texttt{fmincg} function is a modified version of \texttt{fminunc} and has the following MATLAB equation:
 $$\texttt{function [X, fX, i] = fmincg(f, X, options, P1, P2, P3, P4, P5)}$$
