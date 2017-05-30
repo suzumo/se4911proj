@@ -1,29 +1,17 @@
 \chapter{Evaluation}\label{ch:eval}
 
-The intent of this thesis was to evaluate the Accelerate's suitability in: (1) creating a neural network; (2) that is sufficiently well-performing; (3) with good useability; and, (4) analyse the benefits and disadvantages of such implementation. 
+The intent of this thesis was to evaluate Accelerate's suitability in creating a neural network that is (1) sufficiently well-performing; (2) with good useability; and, (3) analyse the benefits and disadvantages of such implementation. I will go through each one in the sections below.
 
-Chapter ~\ref{ch:results} shows us that (1) and (2) should be possible. This implementation is more or less a straight translation of MATLAB code with minimal naturalisation to Accelerate. There is a number of issues with this:
+\section{Performance evaluation} \label{se:eval.performance}
 
-\begin{itemize}
-	\item
-\end{itemize}
+I believe that Chapter ~\ref{ch:results} training set 2 results indicate that a decently well-performing neural network should be possible.
 
-With further optimisation, it may be possible to have a faster and more efficient performance. 
+Current implementation has an issue with accuracy: according to~\cite{LeC98}, a two-layer fully connected neural network 300 hidden units for MNIST dataset should produce an error of approximately 4.7\%. According to the paper, LeCun uses a carefully tuned, SGD algorithm to train the neural network~\ref{se:previmplem}. My implementation, on the other hand, uses BGD with conjugate gradient method. Perhaps due to the bugs in \texttt{fmincg} or otherwise, my implementation has a high error rate of approximately 15.5\%, which is closer to the error rate of LeCun's classic linear classifier at 12\%. A linear classifier architecture is similar to a neural network without a hidden layer.
 
+In terms of speed, I have found a C++ neural network that tested on the MNIST dataset\cite{Wol17}, but with only 30 hidden layers. This reduces the number of first weight vector from $235500$ to $23550$ and second weight vector from $3010$ to $310$. This implementation also uses the faster SGD method following ~\cite{LeC98}. Althought the testing environment of ~\cite{Wol17} is unclear, the training period is said to be 82 seconds.
 
+With 8 cores, my Accelerate implementation runs at 122.3 seconds. This is despite the fact that this implementation is more or less a direct translation of the MATLAB code with minimal Accelerate naturalisation, and the list of unresolved issues (see~\ref{se:impl.limits}). With further optimisation and bug fixes, it may be possible to achieve a very reasonable performance and accuracy. 
 
-
-to create a \texttt{fmincg} or a simple neural network in native Accelerate.
-, and roughly corresponds to detectors that look for strokes and other patterns in the input~\cite{Ng12}
-
-\section{Discussion} \label{se:eval.discuss}
-
-First, the comparative training set prediction results from Accelerate and MATLAB using sample data (1) indicates that my Accelerate implementation does align with the MATLAB program and should be thus, fairly accurate (see \ref{se:res.performance}). The fluctuation in accuracy can be due to random initialisation of weight~\cite{Ng12}.
-
-Secondly, 
-
-
-Difficulties with developing with Accelerate -- debugging. Maths. Type checking.
 
 \section{Benefits of Accelerate implementation} \label{se:impl.benefits}
 
@@ -32,6 +20,12 @@ Acclerate has inherent benefits.
 For instance, even if the code is 'inefficient' in the sense that it has repeating parameters, by having 'sharing recovery', Accelerate will reduce the number of parameters to the bare minimum during the production of the ASTs.
 
 \section{Incomplete works} \label{se:eval.incomplete}
+
+This was the expected behaviour --> First, the comparative training set prediction results from Accelerate and MATLAB using sample data (1) indicates that my Accelerate implementation does align with the MATLAB program and should be thus, fairly accurate (see \ref{se:res.performance}).
+
+But what I got was --> even if prediction is accurate, it does not always apply to everything else
+
+Second: talk about difficulties with developing with Accelerate -- debugging. Maths. Type checking.
 
 I did not conduct testing the neural network with different activation functions as I was aiming to test the speed and load performance of my implementation and such activation functions should not have a drastic impact on the performance of the neural network.
 

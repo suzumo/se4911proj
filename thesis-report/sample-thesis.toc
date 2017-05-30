@@ -22,9 +22,9 @@
 \contentsline {section}{\numberline {4.2}Testing environment}{30}
 \contentsline {section}{\numberline {4.3}Performance results}{30}
 \contentsline {chapter}{\numberline {5}Evaluation}{33}
-\contentsline {section}{\numberline {5.1}Discussion}{34}
+\contentsline {section}{\numberline {5.1}Performance evaluation}{33}
 \contentsline {section}{\numberline {5.2}Benefits of Accelerate implementation}{34}
 \contentsline {section}{\numberline {5.3}Incomplete works}{34}
 \contentsline {section}{\numberline {5.4}Future works}{35}
-\contentsline {chapter}{\numberline {6}Conclusion}{36}
-\contentsline {chapter}{Bibliography}{37}
+\contentsline {chapter}{\numberline {6}Conclusion}{37}
+\contentsline {chapter}{Bibliography}{38}

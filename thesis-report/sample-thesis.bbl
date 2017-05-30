@@ -35,6 +35,12 @@ Y.~LeCun, Leon Bottou, Yoshua Bengio, and Patrick Haffiner.
 \newblock Gradient-based learning applied to document recognition.
 \newblock {\em Proceedings of the IEEE 1998}, 86, 1998.
 
+\bibitem[LBD{\etalchar{+}}89]{LeCBosDen89}
+Y.~LeCun, B.~Boser, J.~S. Denker, D.~Henderson, R.~E. Howard, W.~Hubbard, and
+  L.D. Jackel.
+\newblock Backpropagation applied to handwritten zip code recognition.
+\newblock {\em Neural Computation}, 1:541--551, 1 989.
+
 \bibitem[LCBnd]{LeCCorBur}
 Yann LeCun, Corinna Cortes, and Christopher~J.C. Burges.
 \newblock The mnist database of handwritten digits.
@@ -145,5 +151,15 @@ Unknown.
   en.wikipedia.org/\hspace{0cm}wiki/\hspace{0cm}\relax MATLAB, accessed
   14/05/2016, 2017.
 \newblock MATLAB, Wikipedia article.
+
+\bibitem[Wol17]{Wol17}
+Alan Wolfe.
+\newblock Neural network recipe: Recognize handwritten digits with 95%
+  accuracy.
+\newblock https://\hspace{0cm}\relax
+  blog.demofox.org/\hspace{0cm}2017/\hspace{0cm}03/\hspace{0cm}15/\hspace{0cm}\relax
+  neural-network-recipe-recognize-handwritten-digits-with-95-accuracy, accessed
+  25/05/2017, 2017.
+\newblock Blog post.
 
 \end{thebibliography}

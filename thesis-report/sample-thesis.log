@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.26)  30 MAY 2017 01:52
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.26)  30 MAY 2017 03:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -542,23 +542,16 @@ Package pdftex.def Info: training2.png used on input line 75.
 
  (./evaluation.tex
 Chapter 5.
-
-Underfull \vbox (badness 6944) has occurred while \output is active []
-
- [33
+[33
 
 
 
-]
-Underfull \vbox (badness 1072) has occurred while \output is active []
-
- [34])
-[35]
+] [34]) [35] [36]
 \openout2 = `conclusion.aux'.
 
  (./conclusion.tex
 Chapter 6.
-) [36
+) [37
 
 
 
@@ -566,69 +559,72 @@ Chapter 6.
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no ¡ in font cmr10!
 
-Underfull \hbox (badness 1168) in paragraph at lines 59--65
+Underfull \hbox (badness 1168) in paragraph at lines 65--71
 []\OT1/cmr/m/n/10.95 Trevor L. Mc-Donell.  Gpgpu pro-gram-ming in haskell with 
 ac-cel-er-
  []
 
-[37
+[38
 
 
 
 ]
-Underfull \hbox (badness 7740) in paragraph at lines 107--114
+Underfull \hbox (badness 7740) in paragraph at lines 113--120
 []\OT1/cmr/m/n/10.95 NVIDIA.  Cuda spot-light: Gpu-accelerated deep neu-ral net
 -
  []
 
 
-Underfull \hbox (badness 7308) in paragraph at lines 107--114
+Underfull \hbox (badness 7308) in paragraph at lines 113--120
 \OT1/cmr/m/n/10.95 works.  https:// de-vblogs.nvidia.com/ par-al-lelforall/ cud
 a-spotlight-gpu-
  []
 
 
-Underfull \hbox (badness 3536) in paragraph at lines 121--129
+Underfull \hbox (badness 3536) in paragraph at lines 127--135
 \OT1/cmr/m/n/10.95 hand writ-ten dig-its.  https:// au.mathworks.com/ file-ex-c
 hange/ 42770-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 121--129
+Underfull \hbox (badness 10000) in paragraph at lines 127--135
 \OT1/cmr/m/n/10.95 logistic-regression-with-regularization-used-to-classify-han
 d-written-digits,
  []
 
-) [38] (./sample-thesis.aux (./abstract.aux) (./acknowledgements.aux)
+) [39] (./sample-thesis.aux (./abstract.aux) (./acknowledgements.aux)
 (./abbreviations.aux) (./introduction.aux) (./background.aux) (./mywork.aux)
-(./results.aux) (./evaluation.aux) (./conclusion.aux)) ) 
+(./results.aux) (./evaluation.aux) (./conclusion.aux))
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
 Here is how much of TeX's memory you used:
- 5687 strings out of 493029
- 80200 string characters out of 6136234
+ 5689 strings out of 493029
+ 80224 string characters out of 6136234
  249844 words of memory out of 5000000
- 9039 multiletter control sequences out of 15000+600000
+ 9041 multiletter control sequences out of 15000+600000
  21414 words of font info for 61 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  38i,14n,45p,1123b,1551s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/tex
-mf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
-/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8
-.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb>
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/s
-hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-di
-st/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/typ
-e1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helve
-tic/uhvr8a.pfb>
-Output written on sample-thesis.pdf (46 pages, 718733 bytes).
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.
+pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></u
+sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-d
+ist/fonts/type1/urw/helvetic/uhvr8a.pfb>
+Output written on sample-thesis.pdf (47 pages, 720815 bytes).
 PDF statistics:
- 259 PDF objects out of 1000 (max. 8388607)
- 178 compressed objects within 2 object streams
+ 262 PDF objects out of 1000 (max. 8388607)
+ 180 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
