@@ -1,0 +1,648 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.26)  30 MAY 2017 21:26
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**sample-thesis.tex
+(./sample-thesis.tex
+LaTeX2e <2016/02/01>
+Babel <3.9q> and hyphenation patterns for 81 language(s) loaded.
+(./unswthesis.cls
+Document Class: unswthesis 2015/04/30 v2.0.1 Faculty of Engineering, University
+ of NSW Thesis Class
+(/usr/share/texlive/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
+\fancy@headwidth=\skip41
+\f@ncyO@elh=\skip42
+\f@ncyO@erh=\skip43
+\f@ncyO@olh=\skip44
+\f@ncyO@orh=\skip45
+\f@ncyO@elf=\skip46
+\f@ncyO@erf=\skip47
+\f@ncyO@olf=\skip48
+\f@ncyO@orf=\skip49
+)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2016/01/03 v1.0q Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/graphics.cfg
+File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: pdftex.def on input line 95.
+
+(/usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count79
+))
+(/usr/share/texlive/texmf-dist/tex/latex/units/units.sty
+Package: units 1998/08/04 v0.9b Typesetting units
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/units/nicefrac.sty
+Package: nicefrac 1998/08/04 v0.9b Nice fractions
+\L@UnitsRaiseDisplaystyle=\skip50
+\L@UnitsRaiseTextstyle=\skip51
+\L@UnitsRaiseScriptstyle=\skip52
+))
+(/usr/share/texlive/texmf-dist/tex/latex/base/book.cls
+Document Class: book 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/bk11.clo
+File: bk11.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count80
+\c@chapter=\count81
+\c@section=\count82
+\c@subsection=\count83
+\c@subsubsection=\count84
+\c@paragraph=\count85
+\c@subparagraph=\count86
+\c@figure=\count87
+\c@table=\count88
+\abovecaptionskip=\skip53
+\belowcaptionskip=\skip54
+\bibindent=\dimen102
+)
+(/usr/share/texlive/texmf-dist/tex/latex/sauerj/collect.sty
+Package: collect 2004/09/12 v0.9 collect the contents of an environment
+\CE@tmp@out=\write3
+)
+\CE@@@bstract@out=\write4
+
+(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2010/09/12 v5.6 Page Geometry
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in PDF mode is detected.
+)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifvtex.sty
+Package: ifvtex 2010/03/01 v1.5 Detect VTeX and its facilities (HO)
+Package ifvtex Info: VTeX not detected.
+)
+(/usr/share/texlive/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+\Gm@cnth=\count89
+\Gm@cntv=\count90
+\c@Gm@tempcnt=\count91
+\Gm@bindingoffset=\dimen103
+\Gm@wd@mp=\dimen104
+\Gm@odd@mp=\dimen105
+\Gm@even@mp=\dimen106
+\Gm@layoutwidth=\dimen107
+\Gm@layoutheight=\dimen108
+\Gm@layouthoffset=\dimen109
+\Gm@layoutvoffset=\dimen110
+\Gm@dimlist=\toks15
+)
+\botmargin=\skip55
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2016/03/03 v2.15a AMS math features
+\@mathmargin=\skip56
+
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01 AMS text
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks16
+\ex@=\dimen111
+))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen112
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 1999/12/14 v2.01 operator names
+)
+\inf@bad=\count92
+LaTeX Info: Redefining \frac on input line 199.
+\uproot@=\count93
+\leftroot@=\count94
+LaTeX Info: Redefining \overline on input line 297.
+\classnum@=\count95
+\DOTSCASE@=\count96
+LaTeX Info: Redefining \ldots on input line 394.
+LaTeX Info: Redefining \dots on input line 397.
+LaTeX Info: Redefining \cdots on input line 518.
+\Mathstrutbox@=\box26
+\strutbox@=\box27
+\big@size=\dimen113
+LaTeX Font Info:    Redeclaring font encoding OML on input line 630.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 631.
+\macc@depth=\count97
+\c@MaxMatrixCols=\count98
+\dotsspace@=\muskip10
+\c@parentequation=\count99
+\dspbrk@lvl=\count100
+\tag@help=\toks17
+\row@=\count101
+\column@=\count102
+\maxfields@=\count103
+\andhelp@=\toks18
+\eqnshift@=\dimen114
+\alignsep@=\dimen115
+\tagshift@=\dimen116
+\tagwidth@=\dimen117
+\totwidth@=\dimen118
+\lineht@=\dimen119
+\@envbody=\toks19
+\multlinegap=\skip57
+\multlinetaggap=\skip58
+\mathdisplay@stack=\toks20
+LaTeX Info: Redefining \[ on input line 2735.
+LaTeX Info: Redefining \] on input line 2736.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/mathtools/mathtools.sty
+Package: mathtools 2015/11/12 v1.18 mathematical typesetting tools
+
+(/usr/share/texlive/texmf-dist/tex/latex/tools/calc.sty
+Package: calc 2014/10/28 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count104
+\calc@Bcount=\count105
+\calc@Adimen=\dimen120
+\calc@Bdimen=\dimen121
+\calc@Askip=\skip59
+\calc@Bskip=\skip60
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count106
+\calc@Cskip=\skip61
+)
+(/usr/share/texlive/texmf-dist/tex/latex/mathtools/mhsetup.sty
+Package: mhsetup 2010/01/21 v1.2a programming setup (MH)
+)
+LaTeX Info: Thecontrolsequence`\('isalreadyrobust on input line 129.
+LaTeX Info: Thecontrolsequence`\)'isalreadyrobust on input line 129.
+LaTeX Info: Thecontrolsequence`\['isalreadyrobust on input line 129.
+LaTeX Info: Thecontrolsequence`\]'isalreadyrobust on input line 129.
+\g_MT_multlinerow_int=\count107
+\l_MT_multwidth_dim=\dimen122
+\origjot=\skip62
+\l_MT_shortvdotswithinadjustabove_dim=\dimen123
+\l_MT_shortvdotswithinadjustbelow_dim=\dimen124
+\l_MT_above_intertext_sep=\dimen125
+\l_MT_below_intertext_sep=\dimen126
+\l_MT_above_shortintertext_sep=\dimen127
+\l_MT_below_shortintertext_sep=\dimen128
+)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
+\Gin@req@height=\dimen129
+\Gin@req@width=\dimen130
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/listings.sty
+\lst@mode=\count108
+\lst@gtempboxa=\box28
+\lst@token=\toks21
+\lst@length=\count109
+\lst@currlwidth=\dimen131
+\lst@column=\count110
+\lst@pos=\count111
+\lst@lostspace=\dimen132
+\lst@width=\dimen133
+\lst@newlines=\count112
+\lst@lineno=\count113
+\lst@maxwidth=\dimen134
+
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
+\c@lstnumber=\count114
+\lst@skipnumbers=\count115
+\lst@framebox=\box29
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2015/06/04 1.6 listings configuration
+))
+Package: listings 2015/06/04 1.6 (Carsten Heinz)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/color.sty
+Package: color 2016/01/03 v1.1b Standard LaTeX Color (DPC)
+
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/color.cfg
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package color Info: Driver file: pdftex.def on input line 143.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2015/06/04 1.6 listings language file
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang2.sty
+File: lstlang2.sty 2015/06/04 1.6 listings language file
+)
+\@input{definitions.aux}
+\openout2 = `definitions.aux'.
+
+(./definitions.tex) (./sample-thesis.aux (./abstract.aux)
+(./acknowledgements.aux) (./abbreviations.aux) (./introduction.aux)
+(./background.aux) (./mywork.aux) (./results.aux) (./evaluation.aux)
+(./conclusion.aux))
+\openout1 = `sample-thesis.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+
+(/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count116
+\scratchdimen=\dimen135
+\scratchbox=\box30
+\nofMPsegments=\count117
+\nofMParguments=\count118
+\everyMPshowfont=\toks22
+\MPscratchCnt=\count119
+\MPscratchDim=\dimen136
+\MPnumerator=\count120
+\makeMPintoPDFobject=\count121
+\everyMPtoPDFconversion=\toks23
+) (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
+
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
+))
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+Package grfext Info: Graphics extension search list:
+(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 452.
+
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: <default>
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: twoside 
+* h-part:(L,W,R)=(71.70166pt, 418.25368pt, 107.55254pt)
+* v-part:(T,H,B)=(101.40665pt, 591.5302pt, 152.11pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=412.56497pt
+* \textheight=629.33034pt
+* \oddsidemargin=41.54103pt
+* \evensidemargin=-1.1381pt
+* \topmargin=-1.1381pt
+* \headheight=25.0pt
+* \headsep=20.0pt
+* \topskip=11.0pt
+* \footskip=42.67912pt
+* \marginparwidth=71.13188pt
+* \marginparsep=7.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidetrue
+* \@mparswitchtrue
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+\@tmpb@x=\box31
+\@titlewidth=\dimen137
+\c@lstlisting=\count122
+LaTeX Font Info:    Try loading font information for OT1+phv on input line 63.
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1phv.fd
+File: ot1phv.fd 2001/06/04 scalable font definitions for OT1/phv.
+)
+<crest.pdf, id=1, 147.27522pt x 154.20912pt>
+File: crest.pdf Graphic file (type pdf)
+ <use crest.pdf>
+Package pdftex.def Info: crest.pdf used on input line 63.
+(pdftex.def)             Requested size: 147.27486pt x 154.20872pt.
+LaTeX Font Info:    Calculating math sizes for size <14> on input line 63.
+ [1
+
+
+
+
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./crest.pdf>]
+\openout2 = `abstract.aux'.
+
+ (./abstract.tex) [2
+
+
+]
+\openout2 = `acknowledgements.aux'.
+
+
+(./acknowledgements.tex) [3
+
+
+
+]
+\openout2 = `abbreviations.aux'.
+
+ (./abbreviations.tex) [4
+
+
+
+] (./sample-thesis.toc
+[5
+
+
+])
+\tf@toc=\write5
+\openout5 = `sample-thesis.toc'.
+
+ [6] (./sample-thesis.lof)
+\tf@lof=\write6
+\openout6 = `sample-thesis.lof'.
+
+ [7
+
+] [8
+
+]
+\openout2 = `introduction.aux'.
+
+ (./introduction.tex
+Chapter 1.
+[1
+
+
+
+]) [2]
+\openout2 = `background.aux'.
+
+ (./background.tex
+Chapter 2.
+
+Underfull \vbox (badness 1132) has occurred while \output is active []
+
+ [3
+
+
+
+]
+<neuron_model.jpg, id=90, 661.47125pt x 377.41pt>
+File: neuron_model.jpg Graphic file (type jpg)
+ <use neuron_model.jpg>
+Package pdftex.def Info: neuron_model.jpg used on input line 24.
+(pdftex.def)             Requested size: 288.79422pt x 164.77094pt.
+
+<activation-functions.jpg, id=91, 967.615pt x 256.96pt>
+File: activation-functions.jpg Graphic file (type jpg)
+
+<use activation-functions.jpg>
+Package pdftex.def Info: activation-functions.jpg used on input line 40.
+(pdftex.def)             Requested size: 412.56497pt x 109.56139pt.
+ [4 <./neuron_model.jpg>]
+<neural_net2.jpeg, id=96, 793.96625pt x 389.455pt>
+File: neural_net2.jpeg Graphic file (type jpg)
+ <use neural_net2.jpeg>
+Package pdftex.def Info: neural_net2.jpeg used on input line 52.
+(pdftex.def)             Requested size: 288.79422pt x 141.65962pt.
+
+[5 <./activation-functions.jpg>] [6 <./neural_net2.jpeg>] [7] [8] [9]
+<accelerate-structure.jpg, id=113, 572.1375pt x 185.493pt>
+File: accelerate-structure.jpg Graphic file (type jpg)
+
+<use accelerate-structure.jpg>
+Package pdftex.def Info: accelerate-structure.jpg used on input line 118.
+(pdftex.def)             Requested size: 412.56497pt x 133.75864pt.
+ [10 <./accelerate-structure.jpg>]
+<accelerate-types.jpg, id=117, 319.1925pt x 202.7575pt>
+File: accelerate-types.jpg Graphic file (type jpg)
+
+<use accelerate-types.jpg>
+Package pdftex.def Info: accelerate-types.jpg used on input line 130.
+(pdftex.def)             Requested size: 206.28249pt x 131.03592pt.
+ [11 <./accelerate-types.jpg>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [12]
+[13] [14]) [15]
+\openout2 = `mywork.aux'.
+
+ (./mywork.tex
+Chapter 3.
+[16
+
+
+
+] [17]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [18]
+[19]
+LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10.95> not available
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 98.
+ [20] [21] [22] [23] [24] <realmin.png, id=163, 628.3475pt x 60.225pt>
+File: realmin.png Graphic file (type png)
+
+<use realmin.png>
+Package pdftex.def Info: realmin.png used on input line 184.
+(pdftex.def)             Requested size: 412.56497pt x 39.54276pt.
+)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [25 <./realmin.png>] [26]
+\openout2 = `results.aux'.
+
+ (./results.tex
+Chapter 4.
+[27
+
+
+
+]
+Overfull \hbox (13.46426pt too wide) in paragraph at lines 19--20
+\OT1/cmr/m/n/10.95 CPU (64-bit, 2.2GHz, 12GB RAM, hy-per-thread-ing en-abled) r
+un-ning GNU/Linux (Ubuntu
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 44--44
+[]\OT1/cmr/m/n/10.95 Accelerate
+ []
+
+
+Underfull \hbox (badness 6016) in paragraph at lines 44--44
+[]\OT1/cmr/m/n/10.95 Accelerate ac-cu-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 44--44
+[]\OT1/cmr/m/n/10.95 MATLAB ac-cu-
+ []
+
+[28] [29] <training1.png, id=181, 362.10281pt x 216.81pt>
+File: training1.png Graphic file (type png)
+ <use training1.png>
+Package pdftex.def Info: training1.png used on input line 75.
+(pdftex.def)             Requested size: 253.47023pt x 151.76596pt.
+
+<training2.png, id=182, 362.10281pt x 217.5628pt>
+File: training2.png Graphic file (type png)
+ <use training2.png>
+Package pdftex.def Info: training2.png used on input line 77.
+(pdftex.def)             Requested size: 253.47023pt x 152.29292pt.
+) [30 <./training1.png> <./training2.png>]
+\openout2 = `evaluation.aux'.
+
+ (./evaluation.tex
+Chapter 5.
+[31
+
+
+
+] [32] [33] [34] [35] [36] [37]) [38]
+\openout2 = `conclusion.aux'.
+
+ (./conclusion.tex
+Chapter 6.
+) [39
+
+
+
+] (./sample-thesis.bbl
+Missing character: There is no Ã in font cmr10!
+Missing character: There is no ¡ in font cmr10!
+ [40
+
+
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 88--96
+\OT1/cmr/m/n/10.95 suzu-mo/ seng4911/ blob/ mas-ter/ haskell/ src/ MHNN.hs, ac-
+cessed
+ []
+
+
+Underfull \hbox (badness 5245) in paragraph at lines 122--129
+[]\OT1/cmr/m/n/10.95 NVIDIA.  Cuda spot-light: Gpu-accelerated deep neu-ral net
+-
+ []
+
+
+Underfull \hbox (badness 1789) in paragraph at lines 122--129
+\OT1/cmr/m/n/10.95 works.  https:// de-vblogs.nvidia.com/ par-al-lelforall/ cud
+a-spotlight-gpu-
+ []
+
+
+Underfull \hbox (badness 2564) in paragraph at lines 136--144
+\OT1/cmr/m/n/10.95 sify hand writ-ten dig-its.  https:// au.mathworks.com/ file
+-ex-change/
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 136--144
+\OT1/cmr/m/n/10.95 42770-logistic-regression-with-regularization-used-to-classi
+fy-hand-
+ []
+
+
+Underfull \hbox (badness 1194) in paragraph at lines 157--165
+[]\OT1/cmr/m/n/10.95 Alan Wolfe.  Neu-ral net-work recipe: Rec-og-nize hand-wri
+t-ten dig-
+ []
+
+
+Underfull \hbox (badness 3333) in paragraph at lines 157--165
+\OT1/cmr/m/n/10.95 its with 95ac-cu-racy.  https:// blog.demofox.org/ 2017/ 03/
+ 15/ neural-
+ []
+
+
+Underfull \hbox (badness 5064) in paragraph at lines 157--165
+\OT1/cmr/m/n/10.95 network-recipe-recognize-handwritten-digits-with-95-accuracy
+, ac-cessed
+ []
+
+[41]) [42] (./sample-thesis.aux (./abstract.aux) (./acknowledgements.aux)
+(./abbreviations.aux) (./introduction.aux) (./background.aux) (./mywork.aux)
+(./results.aux) (./evaluation.aux) (./conclusion.aux)) ) 
+Here is how much of TeX's memory you used:
+ 5706 strings out of 493029
+ 80350 string characters out of 6136234
+ 249844 words of memory out of 5000000
+ 9061 multiletter control sequences out of 15000+600000
+ 21414 words of font info for 61 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 38i,14n,45p,1328b,1555s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texlive/tex
+mf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb>
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/s
+hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helve
+tic/uhvr8a.pfb>
+Output written on sample-thesis.pdf (50 pages, 733201 bytes).
+PDF statistics:
+ 272 PDF objects out of 1000 (max. 8388607)
+ 187 compressed objects within 2 object streams
+ 0 named destinations out of 1000 (max. 500000)
+ 46 words of extra memory for PDF output out of 10000 (max. 10000000)
+
