@@ -5,23 +5,16 @@ Neural networks are widely used for computer vision and one of the best methods 
 
 One issue with DNN is its compute-intensiveness. Training a neural network with massive numbers of features require a lot of computations. Unfortunately, the most efficient and economical approach to testing the validity of many hypotheses is repeated trial-and-error~\cite{Ng12}.
 
-For the above reason, neural networks implemented with GPU-accelerated computing are common, as such arrangements are generally faster than with a CPU cluster. The main languages for GPU programming are Compute Unified Device Architecture (CUDA) or Open Computing Language (OpenCL). Both are very low-level languages based on C/C++. 
+For the above reason, neural networks are commonly engineered to make use of multicore parallelism, on both CPUs and GPUs. GPUs offer thousands of cores, and as such GPU-accelerated neural networks are generally faster than neural networks on a CPU cluster. The main languages for GPU programming are the Compute Unified Device Architecture (CUDA) from NVIDIA and the Open Computing Language (OpenCL). Both are very low-level languages based on C/C++. 
 
-On the other hand, Accelerate is a embedded domain-specific language (EDSL) created for GPU programming inside Haskell, with higher level semantics and cleaner syntax, while still offering competitive performance. 
+On the other hand, Accelerate is a embedded domain-specific language (EDSL) created for high-performance GPU and CPU programming inside Haskell, with higher level semantics and cleaner syntax, while still offering competitive performance. 
 
 Thus, the motivations for this thesis is to explore the feasibility of implementing a neural network in a more on-the-fly, user-friendly approach using Accelerate. If successful, it may enable us test neural network hypotheses in a more convenient manner. 
 
-As an initial prototype, a feed-forward back-propagation (FFBP) neural network implementation has recently been made~\cite{Eve16}. 
+As an initial prototype, a feed-forward back-propagation (FFBP) neural network implementation has recently been made~\cite{Eve16}, but it suffers from very poor accuracy. My project is to construct a network with competitive accuracy and performance to existing mature network implementations. 
 
-%% FIX FROM THIS POINT ONWARDS: 
+The following section, Chapter~\ref{ch:background} outlines the background relating to this topic, from a general overview of neural networks and the mathematics behind FFBP algorithm to an overview of the Accelerate language and the previous implementation using Accelerate.
 
-This project aims to build upon that work and create a convolutional neural network (ConvNet), which is often specialised for image recognition problems.
-
-It is crucial that the performance of the implementation is fairly competitive to existing high-level language implementations of neural networks, such as Python. Thus ways to enhancing the performance will also be explored once the basic implementation is finished.
-
-
-The following section, Chapter~\ref{ch:background} outlines the background relating to this topic, from a general overview of neural networks, the mathematics behind FFBP algorithm, an overview of the Accelerate language to previous implementation using Accelerate.
-
-Chapter~\ref{ch:impl} introduces my thesis proposal and predicts some issues as well areas that need further development.
+Chapter~\ref{ch:impl} introduces my implementation, discusses some issues in encoding the algorithm in Accelerate's combinator language, and identifies areas that need further development. Chapter~\ref{ch:results} discusses the testing and analysis of my network implementation, and Chapter~\ref{ch:eval} compares and contrasts my implementation with other mature neural network implementations in terms of accuracy, speed, and scalability.
 
 Finally, Chapter~\ref{ch:conclusion} summarises the contents of this report.
