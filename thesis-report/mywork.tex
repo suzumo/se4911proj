@@ -5,29 +5,17 @@
 
 \section{Using a MATLAB-based neural network as reference} \label{se:impl.matlab.nn}
 
-\liam{You should start off by mentioning and citing the specific Matlab implementation you're referring to, if you don't do so in your introduction.}
-There are several motivations for choosing this particular implementation of a neural network in MATLAB as a starting point. Firstly, the MATLAB implementation clearly shows the mathematical structure of a neural network, succinctly expressing the matrix multiplication and vectorisation operations out of which a neural network is built. It was projected that, seeing as high level matrix operations can also be easily expressed in Accelerate, this implementation would be reasonably simple to adapt, and the closest-in-spirit to an Accelerate implementation.
+MATLAB, or Matrix Laboratory, is a highly doman-specific programming language, specialised to conduct numerical calculations and analysis. It was created in the 1970s, and is an imperative procedural language with a wide array of built in linear algebra operations. It is widely used among the industry and academia, particularly in science, engineering and economics.
+
+I have used the neural network MATLAB program in Andrew Ng's Machine Learning course in Coursera as the basis of my Accelerate program~\cite{Ng12}. There are several motivations for choosing this particular implementation. 
+
+Firstly, the MATLAB implementation clearly shows the mathematical structure of a neural network, succinctly expressing the matrix multiplication and vectorisation operations out of which a neural network is built. It was projected that, seeing as high level matrix operations can also be easily expressed in Accelerate, this implementation would be reasonably simple to adapt, and perhaps the close-in-spirit to an Accelerate implementation.
 
 Secondly, the MATLAB implementation also included a data set with expected answers to which I can compare my own implementations. Thus, I could be assured that my implementation in Accelerate was accurate enough to be reliable, particularly in the light of the difficulty of debugging Accelerate programs. Passing this accuracy test will indicate that my small network is reliable enough to be built upon in future machine learning developments.
 
 Thirdly, the codebase on which I am basing my implementation is from Coursera, an online course service, specifically the Machine Learning course made by Andrew Ng of Stanford University. This course has drawn wide praise for its material and presumed to be reviewed by many in the same field. The structure of the course is reliable in terms of correctness and efficiency, and implemented already in a manner that is idiomatic for the Machine Learning community. Hence, I projected that the MATLAB implementation would be optimised for the best performance.
 
-Lastly, in terms of familiarity, I was more conversed with MATLAB than with other neural network implementations, such as Python, C++, or Haskell, (PUT REFERENCES TO THESE IMPLEMENTATIONS) and as such I could avoid needlessly increasing the time to start the project by choosing a language I was already comfortable using and an implementation I had already studied. While researching other implementations, I found that it took more time to understand these as I had to additionally learn the language in enough detail to understand the code being written, and the implementations differed in many details from the versions with which I was familiar.
-
-TO CHECK::::: Can C++ or Python versions use multiple threads/GPU?
-
-\subsection{Key differences from Accelerate} \label{se:impl.matlab.background}
-%% or divide this up into implementation section
-
-MATLAB, or Matrix Laboratory, is a highly doman-specific programming language, specialised to conduct numerical calculations and analysis. It was created in the 1970s, and is an imperative procedural language with a wide array of built in linear algebra operations. It is widely used among the industry and academia, particularly in science, engineering and economics.
-
-MATLAB is also dynamically typed, meaning that the types may change during runtime. Futhermore, it is described as a weakly typed programming language, in that types are implicitly converted whenever 
-a mismatch occurs.
-
-MATLAB functions automatically apply multiplications of a scalar term to a matrix, by applying the operation of the scalar to each element of the matrix. Thus, if \texttt{a} is a scalar and \texttt{xs} is a matrix, it is possible to simply do \texttt{a} $\times$ \texttt{xs}. In Accelerate, this would be \texttt{A.map (*a) xs}. As a result, MATLAB code is deceptively compact --- it may not reveal the actual structure of the underlying operation just from a surface examination of the program syntax. 
-
-Other notable differences from other languages include the starting index of matrices and arrays being $1$, not $0$.
-\liam{This next sentence about dispatching doesn't make sense to me. Also, you don't use the OO features of Matlab so perhaps just don't mention it at all} Also, MATLAB method dispatching does not strictly adhere to the method signature, but selects the appropriate method by first matching the arguments in a class precedence and then by left-most priority~\cite{Mat17}. %MATLAB does not support overloading functions of the same name using different signature of the same name.
+Lastly, in terms of familiarity, I was more conversed with MATLAB than with other neural network implementations, such as Python (see~\ref{se:previmplem}), C++~\cite{Wol17}, or Haskell's \texttt{hnn} and as such I could avoid needlessly increasing the time to start the project by choosing a language I was already comfortable using and an implementation I had already studied. While researching other implementations, I found that it took more time to understand these as I had to additionally learn the language in enough detail to understand the code being written, and the implementations differed in many details from the versions with which I was familiar.
 
 \section{Accelerate Implementation} \label{se:impl.acc}
 
@@ -99,6 +87,10 @@ The matrix \texttt{xs} represents $m$ training set data. After it has been loade
 
 This is implemented in Accelerate using a combination of \texttt{fill} and concatenation \texttt{A.++}. Accelerate's operations are not the same as Haskell Prelude's, even if some operation names coincide. Thus they are distinguished by a qualified import: \texttt{A}, \texttt{P} for Accelerate and Prelude correspondingly, for instance \texttt{A.++} and \texttt{P.++}. Other key array manipulation functions used throughout the program include \texttt{A.take, A.drop, A.map} and \texttt{A.zipWith}.
 
+In contrast to the the clarity of the underlying structure offered by Accelerate's syntax, MATLAB functions automatically apply multiplications of a scalar term to a matrix, by applying the operation of the scalar to each element of the matrix. Thus, if \texttt{a} is a scalar and \texttt{xs} is a matrix, it is possible to simply do \texttt{a} $\times$ \texttt{xs}. In Accelerate, this would be \texttt{A.map (*a) xs}. As a result, MATLAB code is deceptively compact --- it may not reveal the actual structure of the underlying operation just from a surface examination of the program syntax. 
+
+Other notable MATLAB difference is the starting index of matrices and arrays being $1$, not $0$.
+
 The effectiveness of the random initialisation of weight vectors will influence the accuracy of the neural network. Initial values should be in the range $[-\epsilon_{init}, \epsilon_{init}]$~\cite{Ng12}. One popular choice of $\epsilon_{init}$ is,
 \[ \epsilon_{init} = \sqrt{\frac{6}{L_{in} + L_{out}}} \]
 where $L_{in}$ is number of units in the preceding layer, and $L_{out}$ is the number of units in the subsequent layer of the weight vector-in-question. 
@@ -131,10 +123,10 @@ Using \texttt{reshape} can be initially cumbersome, because it must be supplied 
 $$\texttt{fill (lift (Z:.m:.n)) 1 :: Acc (Matrix Float)}$$
 Thus, I found operations involving shape parameters quite tricky at times due to the necessity of explicit typing.
 
-Matrix multiplications was initially implemented using \texttt{mmult}, but to improve performance on the CPU LLVM backend, the foreign function interface of Accelerate \liam{cite rob here} was used to call the matrix multiplication function from the \texttt{hmatrix} package, which has a better performance. 
+Matrix multiplications was initially implemented using \texttt{mmult}, but to improve performance on the CPU LLVM backend, the foreign function interface of Accelerate ~\cite{Eve16} was used to call the matrix multiplication function from the \texttt{hmatrix} package, which has a better performance. 
 
 \subsubsection{Function minimisation via conjugate gradient method, \texttt{fmincg}} \label{se:impl.fmincg}
- Generally, function minimisation by conjugate gradients is a quadratically convergent gradient method used to locate a local minimum when the function has several variables, or, is \textit{multivariate}~\cite{FleRee}. This function repeats \texttt{nnCostFunction}, a multivariate function, for certain number of iterations, and progressively tries to minimise the error in the weight matrices.
+Generally, function minimisation by conjugate gradients is a quadratically convergent gradient method used to locate a local minimum when the function has several variables, or, is \textit{multivariate}~\cite{FleRee}. This function repeats \texttt{nnCostFunction}, a multivariate function, for certain number of iterations, and progressively tries to minimise the error in the weight matrices.
 
 In MATLAB, function minisation by conjugate gradient is a function called \texttt{fminunc}, which states that given a starting point \texttt{x0} (can be a scalar, vector or a matrix), \texttt{x} is the the local minimum of unconstrained function \texttt{func}~\cite{Mat17}:
 $$\texttt{x = fminunc(func, x0)}$$
@@ -184,7 +176,7 @@ This combinator \texttt{awhile} requires variables that change during the loop a
 
 There are several issues with my Accelerate implementation. One, it does not have the robust failure handling, allowing it withstand incorrect inputs analogously to the MATLAB programs. For instance, I have already mentioned in \ref{se:impl.fmincg} that the function supplied to \texttt{fmincg} must have a clear minimum. 
 
-Also, there are cases in \texttt{fmincg} where some variables need to checked for \texttt{isinf}, \texttt{isreal} or \texttt{isnan}, that is, be checked for an infinity, a real number, or 'not-a-number' floating-point properities, correspondingly. As these functions are not yet available in Accelerate, I substituted them for expressions which I believe will cover those particular situations. For instance, \texttt{isreal} check may arise when a determinate may be less than zero; \texttt{isnan} may arise when a divisor is zero. I was not able to devise a check for \texttt{isinf}, however, so the implementation may not cover all the range of inputs and remain fault-free.
+Also, there are cases in \texttt{fmincg} where some variables need to checked for \texttt{isinf}, \texttt{isreal} or \texttt{isnan}, that is, be checked for an infinity, a real number, or 'not-a-number' floating-point properities, respectively. As these functions are not yet available in Accelerate, I substituted them for expressions which I believe will cover those particular situations. For instance, \texttt{isreal} check may arise when a determinate may be less than zero; \texttt{isnan} may arise when a divisor is zero. I was not able to devise a check for \texttt{isinf}, however, so the implementation may not cover all the range of inputs and remain fault-free.
 
 Secondly, MATLAB's \texttt{double} is by default a double-precision data type, and requires 64 bits~\cite{Mat17}. Yet, after testing it on the sample data, importing the values in Accelerate as \texttt{Double}s produces a result further away from the MATLAB result than when I pass them to Accelerate as \texttt{Float}s. Not only that, the accuracy of the Accelerate neural network predictions after training decreased with the same training set when the data was passed as a \texttt{Double}. 
 
@@ -196,7 +188,7 @@ The source of the inaccuracy may be due to \texttt{fmincg}. There is one line th
 	\label{fig:realmin}
 \end{figure}
 
-Lastly, some of the optimisations in \texttt{fmincg} has been ignored, namely: (1) the innermost and middle loop iterations, thus the loop counter \texttt{M} is set to 1; and, (2) the handling of a failure case. The reason for (2) has already been discussed in \ref{se:impl.fmincg}. For (1), testing has shown that the iterations other than exactly once for the sections in question produces erroneous results, and the reasons for this is unfortunately still unknown at the time of writing. In addition, although setting \texttt{M=1} seems to closely align my program's results to MATLAB's results in the first training set, my neural network was unable to yield as high accuracy rate as in ~\cite{LeC98} for the second training set, deviating by almost 10 per cent (see Chapter~\ref{ch:results}).
+Lastly, some of the optimisations in \texttt{fmincg} has been ignored, namely: (1) the innermost and middle loop iterations, thus the loop counter \texttt{M} is set to 1; and, (2) the handling of a failure case. The reason for (2) has already been discussed in \ref{se:impl.fmincg}. For (1), testing has shown that the iterations other than exactly once for the sections in question produces erroneous results, and the reasons for this is unfortunately still unknown at the time of writing. In addition, although setting \texttt{M=1} seems to closely align my program's results to MATLAB's results in the first training set, my neural network was unable to yield as high accuracy rate as in ~\cite{LeC98} for the second training set, deviating by almost 10 per cent (see Chapter~\ref{ch:results}, ~\ref{ch:eval}).
 
 \section{Other works}
 I have also implemented a logistic regression cost function, which is akin to a neural network without any hidden layers. This can be accessed at ~\cite{McDJeo}. This function produces analogous results to the equivalent MATLAB implementation.

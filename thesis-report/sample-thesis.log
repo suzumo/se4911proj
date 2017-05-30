@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.26)  30 MAY 2017 03:59
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.26)  30 MAY 2017 12:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -461,57 +461,60 @@ Package pdftex.def Info: neural_net2.jpeg used on input line 54.
 File: accelerate-structure.jpg Graphic file (type jpg)
 
 <use accelerate-structure.jpg>
-Package pdftex.def Info: accelerate-structure.jpg used on input line 126.
+Package pdftex.def Info: accelerate-structure.jpg used on input line 120.
 (pdftex.def)             Requested size: 412.56497pt x 133.75864pt.
  [10 <./accelerate-structure.jpg>]
 <accelerate-types.jpg, id=117, 319.1925pt x 202.7575pt>
 File: accelerate-types.jpg Graphic file (type jpg)
 
 <use accelerate-types.jpg>
-Package pdftex.def Info: accelerate-types.jpg used on input line 138.
+Package pdftex.def Info: accelerate-types.jpg used on input line 132.
 (pdftex.def)             Requested size: 206.28249pt x 131.03592pt.
- [11 <./accelerate-types.jpg>] [12]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 203.
+ [11 <./accelerate-types.jpg>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
-(/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
-File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
-)
-LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 203.
- [13] [14] [15]
-[16]) [17]
+ [12]
+[13] [14]) [15] [16]
 \openout2 = `mywork.aux'.
 
  (./mywork.tex
 Chapter 3.
-[18
+[17
 
 
 
-] [19] [20] [21]
+] [18]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [19]
+[20]
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 105.
- [22]
-Underfull \vbox (badness 1931) has occurred while \output is active []
-
- [23]
-[24] [25] [26] <realmin.png, id=169, 628.3475pt x 60.225pt>
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 100.
+ [21] [22] [23] [24] [25] <realmin.png, id=166, 628.3475pt x 60.225pt>
 File: realmin.png Graphic file (type png)
- <use realmin.png>
-Package pdftex.def Info: realmin.png used on input line 194.
+
+<use realmin.png>
+Package pdftex.def Info: realmin.png used on input line 186.
 (pdftex.def)             Requested size: 412.56497pt x 39.54276pt.
 )
-[27 <./realmin.png>] [28]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [26 <./realmin.png>] [27]
 \openout2 = `results.aux'.
 
  (./results.tex
 Chapter 4.
-[29
+[28
 
 
 
 ]
+Overfull \hbox (13.46426pt too wide) in paragraph at lines 19--20
+\OT1/cmr/m/n/10.95 CPU (64-bit, 2.2GHz, 12GB RAM, hy-per-thread-ing en-abled) r
+un-ning GNU/Linux (Ubuntu
+ []
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 44--44
 []\OT1/cmr/m/n/10.95 Accelerate
  []
@@ -526,27 +529,35 @@ Underfull \hbox (badness 10000) in paragraph at lines 44--44
 []\OT1/cmr/m/n/10.95 MATLAB ac-cu-
  []
 
-[30] [31] <training1.png, id=187, 362.10281pt x 216.81pt>
+[29] [30] <training1.png, id=184, 362.10281pt x 216.81pt>
 File: training1.png Graphic file (type png)
  <use training1.png>
-Package pdftex.def Info: training1.png used on input line 75.
-(pdftex.def)             Requested size: 181.05095pt x 108.40472pt.
+Package pdftex.def Info: training1.png used on input line 73.
+(pdftex.def)             Requested size: 253.47023pt x 151.76596pt.
 
-<training2.png, id=188, 362.10281pt x 217.5628pt>
+<training2.png, id=185, 362.10281pt x 217.5628pt>
 File: training2.png Graphic file (type png)
  <use training2.png>
 Package pdftex.def Info: training2.png used on input line 75.
-(pdftex.def)             Requested size: 181.05095pt x 108.78113pt.
-) [32 <./training1.png> <./training2.png>]
+(pdftex.def)             Requested size: 253.47023pt x 152.29292pt.
+) [31 <./training1.png> <./training2.png>]
 \openout2 = `evaluation.aux'.
 
  (./evaluation.tex
 Chapter 5.
-[33
+[32
 
 
 
-] [34]) [35] [36]
+] [33]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 44.
+ (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 44.
+ [34]
+[35]) [36]
 \openout2 = `conclusion.aux'.
 
  (./conclusion.tex
@@ -600,13 +611,13 @@ LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
  ) 
 Here is how much of TeX's memory you used:
- 5689 strings out of 493029
- 80224 string characters out of 6136234
- 249844 words of memory out of 5000000
- 9041 multiletter control sequences out of 15000+600000
+ 5688 strings out of 493029
+ 80189 string characters out of 6136234
+ 248844 words of memory out of 5000000
+ 9040 multiletter control sequences out of 15000+600000
  21414 words of font info for 61 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,14n,45p,1123b,1551s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,14n,45p,1328b,1555s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist
@@ -621,7 +632,7 @@ sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/tex
 live/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-d
 ist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on sample-thesis.pdf (47 pages, 720815 bytes).
+Output written on sample-thesis.pdf (47 pages, 722904 bytes).
 PDF statistics:
  262 PDF objects out of 1000 (max. 8388607)
  180 compressed objects within 2 object streams

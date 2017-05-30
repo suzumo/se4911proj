@@ -48,7 +48,7 @@ A unit's output can be expressed as $g(\boldsymbol{x} \cdot \boldsymbol{\theta} 
 
 As previously mentioned, the general architecture of a neural network can be described as distinct layers of these units, which are connected to units in its adjacent layers. The most common layer type is \textit{fully-connected}, which means that each unit in a layer is connected to every unit in the adjacent layer~\cite{Nor14}. 
 
-The \textit{input layer} receives input values corresponding to the number of features\footnote{For instance, in a $200 \times 200$ pixel image recognition problem, there may be $40,000$ features corresponding to each individual pixel's RGB values.} in the neural network. The last, or \textit{output layer} usually corresponds to different classes in a multi-classification problem, or some real-valued target in a regression problem~\cite{Kar16}. The layers in between input and output layers are called \textit{hidden layers}; a neural network is classified as DNN if it contains more than one hidden layer. Increasing the size and numbers of hidden layers also increases the \textit{capacity} of the neural network~\cite{Kar16}; that is, the space of its representable functions. However, this may undesirably result in \textit{overfitting}\footnote{Overfitting refers to modeling the learning algorithm to excessively fit to the training samples. It thereby increases the risk of including unnecessary noise in the data, resulting in more inaccurate model.}.
+The \textit{input layer} receives input values corresponding to the number of features\footnote{For instance, in a $200 \times 200$ pixel image recognition problem, there may be $40,000$ features corresponding to each individual pixel's RGB values.} in the neural network. The last, or \textit{output layer} usually corresponds to different classes in a multi-classification problem, or some real-valued target in a regression problem~\cite{Kar16}. The layers in between input and output layers are called \textit{hidden layers}; a neural network is classified as DNN if it contains more than one hidden layer. Increasing the size and numbers of hidden layers also increases the \textit{capacity} of the neural network~\cite{Kar16}; that is, the space of its representable functions. However, this may undesirably result in \textit{overfitting}\footnote{Overfitting refers to modeling the learning algorithm to excessively fit to the training samples. It thereby increases the risk of including unnecessary noise in the data, resulting in more inaccurate model.}. In the implementation (see Chapter~\ref{ch:impl}), there is a $\lambda$ or \texttt{lambda} parameter that adjusts the degree of overfitting to the training data set, which is set at the user's discretion.
 
 \begin{figure}
   \centerline{\includegraphics[width=0.7\linewidth]{neural_net2.jpeg}}
@@ -58,13 +58,7 @@ The \textit{input layer} receives input values corresponding to the number of fe
 
 There are numerous neural network classifications depending on their architecture; the design relevant to this thesis is \textit{supervised}\footnote{As in ``supervised learning", a concept in machine learning where a set of training examples is paired up with a set of corresponding desired output values. A supervised neural network thus adjusts its links' weights to get the correct output values during its training phase.} FFBP neural network. Its training process and mathematical representation are briefly outlined in \ref{sec:training}.
 
-Finally,~\cite{Nor14} summarises the attractiveness of neural networks as follows:
-\begin{enumerate}
-\item Its capacity to support parallel computation.
-\item Its fault tolerant nature against novel inputs.
-\item \textit{Graceful degradation}, which means a gradual performance drop-offs in worsening conditions.
-\item The usage of inductive learning algorithms to train the networks.
-\end{enumerate}
+Finally,~\cite{Nor14} summarises the attractiveness of neural networks as follows: (1) its capacity to support parallel computation; (2) its fault tolerant nature against novel inputs; (3) \textit{Graceful degradation}, which means a gradual performance drop-offs in worsening conditions; and, (4) The usage of inductive learning algorithms to train the networks.
 
 \section{Feed-forward back-propagation learning algorithm}\label{sec:training}
 
@@ -106,7 +100,7 @@ This, too, can be simplified using vectorised implementation as,
 \end{equation}
 Back-propagation ends for $s$ when the errors from the output layer is propagated to the first hidden layer.
 
-The FFBP learning algorithm is then repeated for all the training samples. $\Delta^{(j)}$ accumulates all the errors in the training set during this process. Once the process is finished, the final values are averaged out by the size of the training set, a \textit{regularisation term} is added, and finally the weights are updated. A regularisation term is a value that is added in gradient descent algorithm in machine learning, to prohibit features that are vastly different in its range of input values from one another from distorting the results~\cite{Ng12}. This entire process is also known as a form of \textit{batch gradient descent} (BGD) learning algorithm in machine learning~\cite{Ng12}.
+The FFBP learning algorithm is then repeated for all the training samples. $\Delta^{(j)}$ accumulates all the errors in the training set during this process. Once the process is finished, the final values are averaged out by the size of the training set, a \textit{regularisation term} is added, and finally the weights are updated. A regularisation term is a value that is added in gradient descent algorithm in machine learning, to prohibit features that are vastly different in its range of input values from one another from distorting the results~\cite{Ng12}. This entire process is also known as a form of \textit{batch gradient descent} (BGD) learning algorithm in machine learning~\cite{Ng12} and is the method chosen to implement my Accelerate neural network (see Chapter~\ref{ch:impl}.
 
 There are other advanced optimization methods that can improve the performance of neural networks, but these have yet to be explored at the time of this report. As with other machine learning algorithms, the performance may also be improved with either altering various parameters, such as regularisation parameter $\lambda$ and the learning rate parameter $\alpha$, altering the number of features, gaining more training examples, adding polynomial features, or any combination of these~\cite{Ng12}. However, \textit{diagnostic analysis} is often the fastest and most economically sound method to determine which set of features is effective~\cite{Ng12}. Diagnostic analysis is a form of trial-and-error testing of features sets, or \textit{hypotheses}, with a small set of training examples to assess its performance and thus its suitability.
 
@@ -150,10 +144,9 @@ To do an actual Accelerate computation on the GPU, there are two options~\cite{M
 \item Create arrays within the Haskell world. Then, using \texttt{use}, inject the array \texttt{Array a} into the Accelerate world as \texttt{Acc (Array a)}. Then, use \texttt{run}.
 \item Create arrays within the Accelerate world. There are various methods, such as using \texttt{generate} and \texttt{fill}. Then, use \texttt{run}.
 \end{enumerate}
-\texttt{run} executes the Accelerate computation and copies the final values back into Haskell after execution. In \texttt{Acc a}, \texttt{Acc} is an Accelerate data structure representing a computation in the Accelerate world, that yields a value of type \texttt{a} (more specifically, an array) \textit{once it executes}~\cite{McD13, Mar13}. 
+\texttt{run} executes the Accelerate computation and copies the final values back into Haskell after execution. In \texttt{Acc a}, \texttt{Acc} is an Accelerate data structure representing a computation in the Accelerate world, that yields a value of type \texttt{a} (more specifically, an array) \textit{once it is executed by a backend}~\cite{McD13, Mar13}. 
 
 Now, as the first method may require the array data to be copied from computer's main memory into the GPU's memory, the second method is generally more efficient~\cite{Mar13}. All the aforementioned functions are outlined in Fig. \ref{fig:acc-functions}.
-
 \begin{figure}
   \begin{lstlisting}
     -- build an array in Haskell world
@@ -176,54 +169,19 @@ Now, as the first method may require the array data to be copied from computer's
   \label{fig:acc-functions}
 \end{figure}
 
+Since Accelerate has its own backend compiler, it must be set before any code can be \texttt{run}. There can be a number of backends to execute Accelerate computations: (1) \texttt{Data.Array.Accelerate.Intepreter}, the slowest performing, simple Haskell interpreter; (2) \texttt{accelerate-llvm-native}, which supports parallel execution on multicore CPUs; and, (3) \texttt{accelerate-llvm-ptx}, which supports parallel execution on CUDA-capable NVIDIA GPUs. \texttt{accelerate-cuda} is deprecated in favour of (3).
+
 Further details about the Accelerate language is continued in \ref{se:previmplem}.
-
-\subsection{Advantages of Accelerate}\label{se:acc-adv}
-
-There are several advantages to using Accelerate. First, it results in much simpler source programs as programs are written in Haskell syntax; Accelerate code is very similar to an ordinary Haskell code~\cite{Mar13}. For instance, Fig. \ref{fig:dotp} shows a dot product function comparison in Haskell and in Accelerate by~\cite{McD13}. There are minimal syntactic difference; for example, in the input and output types (Haskell's version takes and gives Haskell arrays while Accelerate's \texttt{dotp} deals with only Accelerate arrays), and in that Haskell's \texttt{foldl} is a left-to-right traversal, whereas Accelerate's \texttt{fold} is neither left nor right as it occurs in parallel~\cite{McD13}.
-
-\begin{figure}
-  \begin{lstlisting}
-    -- dot product in Haskell
-    dotp :: [Float] -> [Float] -> Float
-    dotp xs ys = foldl (+) 0 (zipWith (*) xs ys)
-           
-    -- dot product in Accelerate
-    dotp :: Acc (Vector Float) -> Acc (Vector Float) -> Acc (Scalar Float)
-    dotp xs ys = fold (+) 0 (zipWith (*) xs ys)
-  \end{lstlisting}
-  \caption{Haskell and Accelerate versions for dot product~\cite{McD13}.}
-  \label{fig:dotp}
-\end{figure}
-
-Second, as Accelerate is embedded in Haskell, it can benefit from inheriting Haskell's functional language characteristics. For instance, Haskell as a pure language is advantageous for parallel computations as it will prohibit side effects that can disrupt other threads; and, GPUs particularly require an extremely tight control flow due to massive numbers of threads that are generated. Another Haskell characteristic is having a more powerful type system, which could enforce a stronger checking for certain properties -- thereby catching more errors -- at compile time. An example of this is the use of types \texttt{Acc} and \texttt{Exp}, which separates array from scalar computations and prevents many cases of nested data parallelism, which is unsupported in Accelerate.
-
-Finally, Accelerate is a dynamic code generator~\cite{ChaKelLee11} and as such it can,
-\begin{itemize}
-\item Optimise a program at the time of code generation simultaneously by obtaining information about the hardware capabilities.
-\item Customise the generated program to the input data at the time of code generation.
-\item Allow host programs to ``generate embedded programs on-the-fly".
-\end{itemize}
-
-On the other hand, the disadvantages of using Accelerate over CUDA are the extra overheads, which may originate at runtime (such as runtime code generation) and/or at execution time (such as kernel loading and data transfer)~\cite{ChaKelLee11}. 
-
-Some of the overheads however, such as dynamic kernel compilation overheads, may not be so problematic in heavily data- and compute-intensive programs, because the proportion to the total time taken by the program may become insignificant~\cite{ChaKelLee11}; and, neural networks certainly fit in such a category of programs. Accelerate also uses a number of other techniques to mitigate the overheads, such as fusion, sharing recovery, caching and memoisation of compiled GPU kernels~\cite{ChaKelLee11}.
-
-In terms of performance, Accelerate can be competitive with CUDA depending on the nature of the data input and the program~\cite{McDChaKel13}. 
 
 \section{Previous Implementations in Accelerate} \label{se:previmplem}
 
-A neural network in Accelerate is a fairly new concept and as such, there is only one known work in~\cite{Eve16}. In it, Everest (2016) implements a FFBP neural network with a \textit{stochastic gradient descent} (SGD) learning algorithm. This section briefly covers the details of this implementation.
+A neural network in Accelerate is a fairly new concept and as such, there is only one known work in~\cite{Eve16}. In it, Everest (2016) implements a FFBP neural network with a \textit{stochastic gradient descent} (SGD) learning algorithm, based on a Python implementation~\cite{Nie16}. This section briefly covers the details of this implementation.
 
-SGD algorithm is a modification of BGD algorithm, shown in \ref{sec:training}. Rather than adjusting the neural network parameters after going through the entire training set, SGD updates the parameters immediately after doing the FFBP algorithm for a single training example, which is picked at random~\cite{Ng12}. As such, SGD is computationally less expensive than the BGD, and allows the training algorithms to scale better to much larger training sets~\cite{Ng12}. ~\cite{LeCBosDen89} also claims that SGD trains the neural network faster. The disadvantages of SGD are that it is less accurate than BGD, and that it may take longer to reach the local/global minima.
+SGD algorithm is a modification of BGD algorithm, shown in \ref{sec:training}. Rather than adjusting the neural network parameters after going through the entire training set, SGD updates the parameters immediately after doing the FFBP algorithm for a single training example, which is picked at random~\cite{Ng12}. SGD can also be modified to select certain small batches of training sample at a time~\cite{LeC98}. 
 
-The activation function is the sigmoid function. This function is mathematically convenient, because its gradient, $\sigma'(x)$, is easy to calculate:
-$$\sigma'(x) = \sigma(x) \cdot (1 - \sigma(x))$$
-The sigmoid function suffers from the following two disadvantages and is now mostly unused~\cite{Kar16}:
-\begin{enumerate}
-\item When the unit's activation \textit{saturates} at either tail of 0 or 1, the gradient of the sigmoid function nears zero (refer to the sigmoid function graph in Fig. \ref{fig:activation-graphs}). Zero gradients effectively `kill' any signal flows through the neuron in forward- and back-propagation. Thus saturated neurons results in a ``network [that] will barely learn"~\cite{Kar16}. Accordingly, extra care must be taken not to initialise the weights with a large value.
-\item The range of the sigmoid function is not centered around zero. Hence if the inputs are always positive, it could introduce an undesirable \textit{zig-zagging dynamics} in the gradient updates for weights, as the gradient on the weights will be either all positive or all negative during back-propagation. However, this is a minor inconvenience as its impact is automatically mitigated in a BGD by the time the weights are updated.
-\end{enumerate}
+As such, SGD is computationally less expensive than the BGD, and allows the training algorithms to scale better to much larger training sets~\cite{Ng12}. ~\cite{LeCBosDen89} also claims that SGD trains the neural network faster. The disadvantages of SGD are that it is said to be "less accurate" than BGD as it may take longer to reach the local/global minima, however, it is still the more popular choice due to less strain it puts on the system. Also, SGD is suitable to the work in~\cite{Eve16}, because it deals with processing data streaming.
+
+There are six key Accelerate functions that were used and their names and operations are listed in Fig. \ref{fig:acc-functions2}. These functions were also used in my own implementation (see Chapter\~ref{ch:impl}). In particular, the functions \texttt{lift} and \texttt{unlift} are used to inject and extract a value into and out of \texttt{Exp}\footnote{\texttt{Exp} is another Accelerate data structure, that is similar to \texttt{Acc} (refer to \ref{se:accelerate}), but instead of an array, it represents an embedded \textit{scalar} computation~\cite{ChaKelLee11}.}, respectively, and are thus essential in interpreting the indices of arrays in Accelerate~\cite{Mar13}.
 
 \begin{figure}
   \begin{lstlisting}
@@ -256,11 +214,7 @@ The sigmoid function suffers from the following two disadvantages and is now mos
   \label{fig:acc-functions2}
 \end{figure}
 
-The third interesting observation is how Accelerate was utilised in this implementation. First, there are six key Accelerate functions that were used and their names and operations are listed in Fig. \ref{fig:acc-functions2}. 
-
-\texttt{Exp} is another Accelerate data structure, that is similar to \texttt{Acc} (refer to \ref{se:accelerate}), but instead of an array, it represents an embedded \textit{scalar} computation~\cite{ChaKelLee11}. Functions \texttt{lift} and \texttt{unlift} are used to inject and extract a value into and out of \texttt{Exp}, respectively, and are thus essential in interpreting the indices of arrays in Accelerate~\cite{Mar13}. 
-
-Two support functions were also created to assist forward- and back-propagation processes -- \texttt{mvm} and \texttt{cross} (see Fig. \ref{fig:acc-functions3}).
+In~\citep{Eve16}, two support functions were also created to assist forward- and back-propagation processes -- \texttt{mvm} and \texttt{cross} (see Fig. \ref{fig:acc-functions3}).
 \begin{figure}
 \begin{lstlisting}
   -- matrix vector multiplication function
@@ -296,4 +250,4 @@ The actual FFBP algorithm is in the function \texttt{backprop}. In \texttt{backp
   \label{fig:acc-functions4}
 \end{figure}
 
-At the time of this report, Everest (2016) has reported some performance issues with this implementation, but has yet to determine the cause. He noted that the implementation was running at a slower speed than an equivalent neural network that was implemented with Theano. Theano is a Python library that is optimised for multi-dimensional array computations.
+At the time of this report, ~\citep{Eve16} has reported some performance issues with this implementation with the success rate of digit prediction at appropriximately 50\%. The cause is yet unknown, but may possibly be due to the nature of data streaming. This implementation also purportedly running at a slower speed than an equivalent Theano implementation. Theano is a Python library that is optimised for multi-dimensional array computations, and can be optimised to use GPU for computations.

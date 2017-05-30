@@ -13,11 +13,58 @@ In terms of speed, I have found a C++ neural network that tested on the MNIST da
 With 8 cores, my Accelerate implementation runs at 122.3 seconds. This is despite the fact that this implementation is more or less a direct translation of the MATLAB code with minimal Accelerate naturalisation, and the list of unresolved issues (see~\ref{se:impl.limits}). With further optimisation and bug fixes, it may be possible to achieve a very reasonable performance and accuracy. 
 
 
+~\cite{Eve16} uses sigmoid function. This function is mathematically convenient, because its gradient, $\sigma'(x)$, is easy to calculate:
+$$\sigma'(x) = \sigma(x) \cdot (1 - \sigma(x))$$
+The sigmoid function suffers from the following two disadvantages and is now mostly unused~\cite{Kar16}:
+\begin{enumerate}
+\item When the unit's activation \textit{saturates} at either tail of 0 or 1, the gradient of the sigmoid function nears zero (refer to the sigmoid function graph in Fig. \ref{fig:activation-graphs}). Zero gradients effectively `kill' any signal flows through the neuron in forward- and back-propagation. Thus saturated neurons results in a ``network [that] will barely learn"~\cite{Kar16}. Accordingly, extra care must be taken not to initialise the weights with a large value.
+\item The range of the sigmoid function is not centered around zero. Hence if the inputs are always positive, it could introduce an undesirable \textit{zig-zagging dynamics} in the gradient updates for weights, as the gradient on the weights will be either all positive or all negative during back-propagation. However, this is a minor inconvenience as its impact is automatically mitigated in a BGD by the time the weights are updated.
+\end{enumerate}
+
+
+
 \section{Benefits of Accelerate implementation} \label{se:impl.benefits}
 
 Acclerate has inherent benefits.
 
+MATLAB is dynamically typed, meaning that the types may change during runtime. Futhermore, it is described as a weakly typed programming language, in that types are implicitly converted whenever a mismatch occurs.
+
 For instance, even if the code is 'inefficient' in the sense that it has repeating parameters, by having 'sharing recovery', Accelerate will reduce the number of parameters to the bare minimum during the production of the ASTs.
+
+There are several advantages to using Accelerate. First, it results in much simpler source programs as programs are written in Haskell syntax; Accelerate code is very similar to an ordinary Haskell code~\cite{Mar13}. For instance, Fig. \ref{fig:dotp} shows a dot product function comparison in Haskell and in Accelerate by~\cite{McD13}. There are minimal syntactic difference; for example, in the input and output types (Haskell's version takes and gives Haskell arrays while Accelerate's \texttt{dotp} deals with only Accelerate arrays), and in that Haskell's \texttt{foldl} is a left-to-right traversal, whereas Accelerate's \texttt{fold} is neither left nor right as it occurs in parallel~\cite{McD13}.
+
+\begin{figure}
+  \begin{lstlisting}
+    -- dot product in Haskell
+    dotp :: [Float] -> [Float] -> Float
+    dotp xs ys = foldl (+) 0 (zipWith (*) xs ys)
+           
+    -- dot product in Accelerate
+    dotp :: Acc (Vector Float) -> Acc (Vector Float) -> Acc (Scalar Float)
+    dotp xs ys = fold (+) 0 (zipWith (*) xs ys)
+  \end{lstlisting}
+  \caption{Haskell and Accelerate versions for dot product~\cite{McD13}.}
+  \label{fig:dotp}
+\end{figure}
+
+Second, as Accelerate is embedded in Haskell, it can benefit from inheriting Haskell's functional language characteristics. For instance, Haskell as a pure language is advantageous for parallel computations as it will prohibit side effects that can disrupt other threads; and, GPUs particularly require an extremely tight control flow due to massive numbers of threads that are generated. Another Haskell characteristic is having a more powerful type system, which could enforce a stronger checking for certain properties -- thereby catching more errors -- at compile time. An example of this is the use of types \texttt{Acc} and \texttt{Exp}, which separates array from scalar computations and prevents many cases of nested data parallelism, which is unsupported in Accelerate.
+
+Finally, Accelerate is a dynamic code generator~\cite{ChaKelLee11} and as such it can,
+\begin{itemize}
+\item Optimise a program at the time of code generation simultaneously by obtaining information about the hardware capabilities.
+\item Customise the generated program to the input data at the time of code generation.
+\item Allow host programs to ``generate embedded programs on-the-fly".
+\end{itemize}
+
+On the other hand, the disadvantages of using Accelerate over CUDA are the extra overheads, which may originate at runtime (such as runtime code generation) and/or at execution time (such as kernel loading and data transfer)~\cite{ChaKelLee11}. 
+
+Some of the overheads however, such as dynamic kernel compilation overheads, may not be so problematic in heavily data- and compute-intensive programs, because the proportion to the total time taken by the program may become insignificant~\cite{ChaKelLee11}; and, neural networks certainly fit in such a category of programs. Accelerate also uses a number of other techniques to mitigate the overheads, such as fusion, sharing recovery, caching and memoisation of compiled GPU kernels~\cite{ChaKelLee11}.
+
+In terms of performance, Accelerate can be competitive with CUDA depending on the nature of the data input and the program~\cite{McDChaKel13}. 
+
+
+
+
 
 \section{Incomplete works} \label{se:eval.incomplete}
 

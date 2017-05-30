@@ -6,17 +6,17 @@
 \contentsline {figure}{\numberline {2.4}{\ignorespaces Structure overview of \texttt {Data.Array.Accelerate}.\nobreakspace {}\cite {ChaKelLee11}}}{10}
 \contentsline {figure}{\numberline {2.5}{\ignorespaces Types of array shapes and indices\nobreakspace {}\cite {ChaKelLee11}.}}{11}
 \contentsline {figure}{\numberline {2.6}{\ignorespaces Some Accelerate functions\nobreakspace {}\cite {Mar13}.}}{12}
-\contentsline {figure}{\numberline {2.7}{\ignorespaces Haskell and Accelerate versions for dot product\nobreakspace {}\cite {McD13}.}}{13}
-\contentsline {figure}{\numberline {2.8}{\ignorespaces Key Accelerate functions used in\nobreakspace {}\cite {Eve16}.}}{16}
-\contentsline {figure}{\numberline {2.9}{\ignorespaces Support functions for forward- and back-propagation used in\nobreakspace {}\cite {Eve16}.}}{16}
-\contentsline {figure}{\numberline {2.10}{\ignorespaces Accelerate and Haskell code are mixed in\nobreakspace {}\cite {Eve16}.}}{17}
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Key Accelerate functions used in\nobreakspace {}\cite {Eve16}.}}{14}
+\contentsline {figure}{\numberline {2.8}{\ignorespaces Support functions for forward- and back-propagation used in\nobreakspace {}\cite {Eve16}.}}{15}
+\contentsline {figure}{\numberline {2.9}{\ignorespaces Accelerate and Haskell code are mixed in\nobreakspace {}\cite {Eve16}.}}{15}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Changing the number of hidden layers in \texttt {nnCostFunction}}}{21}
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Reshaping vectors into matrices in Accelerate.}}{23}
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Function minimise conjugate gradient function.}}{25}
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Assisting Accelerate with predefining types of unused variables in \texttt {unlift}.}}{26}
-\contentsline {figure}{\numberline {3.5}{\ignorespaces MATLAB's \texttt {double} is actually a \texttt {float}? What it means for \texttt {realmin}.}}{27}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Changing the number of hidden layers in \texttt {nnCostFunction}}}{19}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Reshaping vectors into matrices in Accelerate.}}{22}
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Function minimise conjugate gradient function.}}{24}
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Assisting Accelerate by specifying types of unused variables in \texttt {unlift}.}}{25}
+\contentsline {figure}{\numberline {3.5}{\ignorespaces MATLAB's \texttt {double} is actually a \texttt {float}? What it means for \texttt {realmin}.}}{26}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Graphs of training set 1 (left) and 2 (right) benchmarks.}}{32}
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Graphs of training set 1 (top) and 2 (bottom) benchmarks.}}{31}
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Haskell and Accelerate versions for dot product\nobreakspace {}\cite {McD13}.}}{34}
 \addvspace {10\p@ }
