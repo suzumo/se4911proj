@@ -5,7 +5,7 @@ There are two data sets that I have tested the implementation with: (1) handwrit
 
 Set (1) consists of $5000$ training examples of $20 \times 20$ pixel greyscale images of digits, each pixel represented by a floating point number that indicates the greyscale intensity at that location. The input layer will thus have 400 neurons. In this example, the hidden layer has 25 neurons and the output layer has 10 neurons. The size of weight vector between input and hidden layers is $401 \times 25 = 10025$ and the size of the weight vector between hidden and output layers is $26 \times 10 = 260$. 
 
-The output neuron with the highest activation value will be the digit that the sample will be classifed under. For instance, if the neuron `4' of the output vector, \texttt{ys[3]} had the highest value, then the sample will be classified as digit `4'.
+The output neuron with the highest activation value will be the digit that the sample will be classified under. For instance, if the neuron `4' of the output vector, \texttt{ys[3]} had the highest value, then the sample will be classified as digit `4'.
 
 This data set was mostly used during the development to assess the accuracy of the implementation, as I could easily compare the values produced by my program with the values from the MATLAB program. In ~\ref{se:res.performance} I evaluated the comparative performance of Accelerate and MATLAB, up to 2 cores.
 

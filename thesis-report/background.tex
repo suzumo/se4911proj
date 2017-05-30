@@ -167,7 +167,7 @@ Now, as the first method may require the array data to be copied from computer's
   \label{fig:acc-functions}
 \end{figure}
 
-Since Accelerate has its own backend compiler, it must be set before any code can be \texttt{run}. There can be a number of backends to execute Accelerate computations: (1) \texttt{Data.Array.Accelerate.Intepreter}, the slowest performing, simple Haskell interpreter; (2) \texttt{accelerate-llvm-native}, which supports parallel execution on multicore CPUs; and, (3) \texttt{accelerate-llvm-ptx}, which supports parallel execution on CUDA-capable NVIDIA GPUs. \texttt{accelerate-cuda} is deprecated in favour of (3).
+Since Accelerate has its own backend compiler, it must be set before any code can be \texttt{run}. There can be a number of backends to execute Accelerate computations: (1) \texttt{Data.Array.Accelerate.Interpreter}, the slowest performing, simple Haskell interpreter; (2) \texttt{accelerate-llvm-native}, which supports parallel execution on multicore CPUs; and, (3) \texttt{accelerate-llvm-ptx}, which supports parallel execution on CUDA-capable NVIDIA GPUs. \texttt{accelerate-cuda} is deprecated in favour of (3).
 
 Further details about the Accelerate language is continued in \ref{se:previmplem}.
 
@@ -248,4 +248,4 @@ The actual FFBP algorithm is in the function \texttt{backprop}. In \texttt{backp
   \label{fig:acc-functions4}
 \end{figure}
 
-At the time of this report, ~\cite{Eve16} has reported some performance issues with this implementation with the success rate of digit prediction at appropriximately 50\%. The cause is yet unknown, but may possibly be due to the nature of data streaming. This implementation also purportedly running at a slower speed than an equivalent Theano implementation. Theano is a Python library that is optimised for multi-dimensional array computations, and can be optimised to use GPU for computations.
+At the time of this report, ~\cite{Eve16} has reported some performance issues with this implementation with the success rate of digit prediction at approximately 50\%. The cause is yet unknown, but may possibly be due to the nature of data streaming. This implementation also purportedly running at a slower speed than an equivalent Theano implementation. Theano is a Python library that is optimised for multi-dimensional array computations, and can be optimised to use GPU for computations.

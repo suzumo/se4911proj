@@ -1,20 +1,20 @@
 \chapter{Evaluation}\label{ch:eval}
 
-The intent of this thesis was to create a neural network in Accelerate that is (1) sufficiently well-performing; (2) with good useability; and, (3) analyse the benefits and disadvantages of such implementation. I will go through each one in the sections below.
+The intent of this thesis was to create a neural network in Accelerate that is (1) sufficiently well-performing; (2) with good usability; and, (3) analyse the benefits and disadvantages of such implementation. I will go through each one in the sections below.
 
 \section{Performance evaluation} \label{se:eval.performance}
 
-In terms of performance, namely correctness, scaleability and relative speed, my implementation did not perform well as expected (see Chapter~\ref{ch:results}).
+In terms of performance, namely correctness, scalability and relative speed, my implementation did not perform well as expected (see Chapter~\ref{ch:results}).
 
 Although accuracy was on-par with MATLAB on training set (1), it had lower accuracy than other implementations, including MATLAB, on the second training set. According to~\cite{LeC98}, a two-layer fully connected neural network 300 hidden units for MNIST dataset should produce an error of approximately 4.7\%. Albeit the fact that LeCun (1998) uses a carefully tuned, SGD algorithm method named \textit{Stochastic Diagonal Levenberg-Marquardt}\footnote{This is a complex method, but amongst other techniques, LeCun (1998) calculates an individual learning rate for each weight before parsing the training set --- which is applied to the network around 20 times --- in a randomised order of \textit{patterns}, or the sorting of training samples in a properly randomised sequence.} to train his neural network, one should expect my Accelerate implementation to mirror the accuracy of MATLAB's performance as it did for training set (1). However,\ref{tb:acc.vs.cores} indicates that it is approximately 7.2\% less accurate than that of MATLAB. This seems to signify that the unresolved bugs and issues as previously mentioned in \ref{se:impl.limits} is a significant dampener on the accuracy of my implementation.
 
 Also worth noting is that the MATLAB implementation has a higher error rate of 8.3\% compared to LeCun's SGD neural network at 4.7\%. This seems to imply that BGD with conjugate gradient method may not be as effective as SGD (or perhaps, for this particular data set). 
 
-Interstingly, my program with an error rate of 15.5\% is closer the error rate reported by a native Haskell neural network implementation called \texttt{neural}~\cite{Bru16}. Upon testing with MNIST training set, \textbf{neural} produced an error rate of approximately 17\% after 50 iterations, taking 983.9 seconds with 8 cores. This program reports it can ultimately reach an accuracy of 90.05\% after 450 iterations. 
+Interestingly, my program with an error rate of 15.5\% is closer the error rate reported by a native Haskell neural network implementation called \texttt{neural}~\cite{Bru16}. Upon testing with MNIST training set, \texttt{neural} produced an error rate of approximately 17\% after 50 iterations, taking 983.9 seconds with 8 cores. This program reports it can ultimately reach an accuracy of 90.05\% after 450 iterations. 
 
 %Sadly, both of our accuracy rate is worse than the performance of LeCun's classic linear classifier\footnote{A linear classifier architecture is similar to a neural network without a hidden layer.} at 12\%.
 
-In terms of scaleability, my implementation linearly increases the time taken compared to size of input with constant number of cores similar to MATLAB, and reaches a plateau rapidly upon adding more (see ~\ref{fig:traininggraphs}). We believe this may be due to the rolling and unrolling of weight vectors during \texttt{fmincg} operation as mentioned in \ref{se:impl.fmincg}. The amount of work involved in copying the large matrices probably adds a significant overhead, reducing the benefit of having multicores.
+In terms of scalability, my implementation linearly increases the time taken compared to size of input with constant number of cores similar to MATLAB, and reaches a plateau rapidly upon adding more (see ~\ref{fig:traininggraphs}). We believe this may be due to the rolling and unrolling of weight vectors during \texttt{fmincg} operation as mentioned in \ref{se:impl.fmincg}. The amount of work involved in copying the large matrices probably adds a significant overhead, reducing the benefit of having multicores.
 
 Such redundant work is also likely a factor in negatively affecting the speed, particularly for smaller data sets. For instance, the MATLAB program seems to perform much faster with the smaller training set (1) (see ~\ref{fig:traininggraphs}). With MNIST training set, however, my Accelerate program does perform more competitively --- but, further testing is required. 
 
@@ -24,9 +24,9 @@ Yet, on a positive note, my Accelerate neural network finishes training at 122.3
 
 \section{Usability and Accelerate} \label{se:eval.usability}
 
-It is fairly reasonable to say that the ease and convenience of a programming language can affect a programmer's work. One of the main reasons in starting this thesis was to gauge the the ease of creating a neural network using Accelerate.
+It is fairly reasonable to say that the ease and convenience of a programming language can affect a programmer's work. One of the main reasons in starting this thesis was to gauge the ease of creating a neural network using Accelerate.
 
-Firstly, Accelerate has a convenient syntax that Haskell-users will find easy to use. Although MATLAB may seem more convenient than Accelerate at times, especially in operations that requires array or matrix manipulations, MATLAB is also ambiguous and loose in its language, and meanings can get lost without more effort being invested by the reader (see ~\ref{se:impl.matlab.nn}). In contrast, Accelerate allows programmers to know exactly what is occuring with its syntax, accompanied by many high performing libraries for array computations that are easy-to-use.
+Firstly, Accelerate has a convenient syntax that Haskell-users will find easy to use. Although MATLAB may seem more convenient than Accelerate at times, especially in operations that requires array or matrix manipulations, MATLAB is also ambiguous and loose in its language, and meanings can get lost without more effort being invested by the reader (see ~\ref{se:impl.matlab.nn}). In contrast, Accelerate is explicit and unambiguous in its syntax, with clear dynamic semantics and a static type system to catch errors. It also has a growing collection of high performance libraries for array computations that are easy-to-use.
 
 Secondly, Accelerate is compact and succinct, but perhaps not as abbreviated as in MATLAB to become obscure to its users. Neither is Accelerate as verbose as C++, which can become cumbersome to read and write as seen in ~\ref{fig:eval.syntax.predict}.
 
@@ -97,7 +97,7 @@ Finally, Accelerate is a dynamic code generator and as such it can, (1) optimise
 
 On the other hand, the disadvantage of using Accelerate is the extra overheads, which may originate at runtime (such as runtime code generation) and/or at execution time (such as kernel loading and data transfer)~\cite{ChaKelLee11}. Some of the overheads however, such as dynamic kernel compilation overheads, may not be so problematic in heavily data- and compute-intensive programs, because the proportion to the total time taken by the program may become insignificant~\cite{ChaKelLee11}; and, neural networks certainly fit in such a category of programs. 
 
-Indeed, even with the small data sets in this implementation, the results in Chapter \ref{ch:results} seem to support this: for training set (1) the overhead was probably disproportionately big, making Accelerate implementaion perform much worse compared to MATLAB's; however, Accelerate performed better than MATLAB for training set (2).
+Indeed, even with the small data sets in this implementation, the results in Chapter \ref{ch:results} seem to support this: for the small training set (1) the overhead outweighed the parallelism advantages, making the Accelerate implementation perform more poorly compared to MATLAB; however, Accelerate performed better than MATLAB for the larger training set (2).
 
 \section{Incomplete works} \label{se:eval.incomplete}
 
