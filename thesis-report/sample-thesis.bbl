@@ -79,11 +79,10 @@ Trevor~L. McDonell.
   gpgpu-programming-in-haskell-with-accelerate, accessed 01/04/2016, 2013.
 \newblock YOW! Lambda Jam 2013 Workshop.
 
-\bibitem[MCKL13]{McDChaKel13}
-Trevor McDonell, Manuel M.~T. Chakravarty, Gabriele Keller, and Ben Lippmeier.
-\newblock Optimising purely functional gpu programs.
-\newblock {\em ACM SIGPLAN International Conference on Functional Programming},
-  2013.
+\bibitem[MCGN15]{McDChaGro}
+Trevor McDonell, Manuel M.~T. Chakravarty, Vinod Grover, and Ryan~R. Newton.
+\newblock Type-safe runtime code generation: Accelerate to llvm.
+\newblock {\em Proceedings of the 2015 ACM SIGPLAN Symposium on Haskell}, 2015.
 
 \bibitem[MJ17]{McDJeo}
 Trevor McDonnell and Ji~Yong Jeong.

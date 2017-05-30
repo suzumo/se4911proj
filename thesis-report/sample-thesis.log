@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.26)  30 MAY 2017 18:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.26)  30 MAY 2017 19:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -551,13 +551,13 @@ Chapter 5.
 
 ] [32]
 
+LaTeX Warning: Reference `se:impl.matlab' on page 33 undefined on input line 29
+.
+
+
 LaTeX Warning: Float too large for page by 81.87877pt on input line 85.
 
-[33] [34]
-
-LaTeX Warning: Citation `McDChaGro' on page 35 undefined on input line 101.
-
-[35] [36] [37]) [38]
+[33] [34] [35] [36] [37]) [38]
 \openout2 = `conclusion.aux'.
 
  (./conclusion.tex
@@ -574,49 +574,49 @@ Missing character: There is no ¡ in font cmr10!
 
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 89--97
+Underfull \hbox (badness 10000) in paragraph at lines 88--96
 \OT1/cmr/m/n/10.95 suzu-mo/ seng4911/ blob/ mas-ter/ haskell/ src/ MHNN.hs, ac-
 cessed
  []
 
 
-Underfull \hbox (badness 5245) in paragraph at lines 123--130
+Underfull \hbox (badness 5245) in paragraph at lines 122--129
 []\OT1/cmr/m/n/10.95 NVIDIA.  Cuda spot-light: Gpu-accelerated deep neu-ral net
 -
  []
 
 
-Underfull \hbox (badness 1789) in paragraph at lines 123--130
+Underfull \hbox (badness 1789) in paragraph at lines 122--129
 \OT1/cmr/m/n/10.95 works.  https:// de-vblogs.nvidia.com/ par-al-lelforall/ cud
 a-spotlight-gpu-
  []
 
 
-Underfull \hbox (badness 2564) in paragraph at lines 137--145
+Underfull \hbox (badness 2564) in paragraph at lines 136--144
 \OT1/cmr/m/n/10.95 sify hand writ-ten dig-its.  https:// au.mathworks.com/ file
 -ex-change/
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 137--145
+Underfull \hbox (badness 10000) in paragraph at lines 136--144
 \OT1/cmr/m/n/10.95 42770-logistic-regression-with-regularization-used-to-classi
 fy-hand-
  []
 
 
-Underfull \hbox (badness 1194) in paragraph at lines 158--166
+Underfull \hbox (badness 1194) in paragraph at lines 157--165
 []\OT1/cmr/m/n/10.95 Alan Wolfe.  Neu-ral net-work recipe: Rec-og-nize hand-wri
 t-ten dig-
  []
 
 
-Underfull \hbox (badness 3333) in paragraph at lines 158--166
+Underfull \hbox (badness 3333) in paragraph at lines 157--165
 \OT1/cmr/m/n/10.95 its with 95ac-cu-racy.  https:// blog.demofox.org/ 2017/ 03/
  15/ neural-
  []
 
 
-Underfull \hbox (badness 5064) in paragraph at lines 158--166
+Underfull \hbox (badness 5064) in paragraph at lines 157--165
 \OT1/cmr/m/n/10.95 network-recipe-recognize-handwritten-digits-with-95-accuracy
 , ac-cessed
  []
@@ -627,15 +627,12 @@ Underfull \hbox (badness 5064) in paragraph at lines 158--166
 
 LaTeX Warning: There were undefined references.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
  ) 
 Here is how much of TeX's memory you used:
- 5713 strings out of 493029
- 80500 string characters out of 6136234
+ 5712 strings out of 493029
+ 80493 string characters out of 6136234
  249844 words of memory out of 5000000
- 9068 multiletter control sequences out of 15000+600000
+ 9067 multiletter control sequences out of 15000+600000
  21414 words of font info for 61 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  38i,14n,45p,1328b,1555s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -653,7 +650,7 @@ sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/tex
 live/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-d
 ist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on sample-thesis.pdf (50 pages, 732214 bytes).
+Output written on sample-thesis.pdf (50 pages, 732791 bytes).
 PDF statistics:
  272 PDF objects out of 1000 (max. 8388607)
  187 compressed objects within 2 object streams

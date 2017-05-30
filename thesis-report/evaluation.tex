@@ -26,9 +26,9 @@ Yet, on a positive note, my Accelerate neural network finishes training at 122.3
 
 It is fairly reasonable to say that the ease and convenience of a programming language can affect a programmer's work. One of the main reasons in starting this thesis was to gauge the the ease of creating a neural network using Accelerate.
 
-Firstly, Accelerate has a convenient syntax that Haskell-users will find easy to use. Although MATLAB may seem more convenient than Accelerate at times, especially in operations that requires array or matrix manipulations, MATLAB is also ambiguous and loose in its language, and meaning can get lost without more effort given by the reader (such as in scalar matrix multiplication). In contrast, Accelerate allows programmers to know exactly what is occuring with its grammar and also has many high performing libraries for array computations that are easy-to-use.
+Firstly, Accelerate has a convenient syntax that Haskell-users will find easy to use. Although MATLAB may seem more convenient than Accelerate at times, especially in operations that requires array or matrix manipulations, MATLAB is also ambiguous and loose in its language, and meanings can get lost without more effort being invested by the reader (see ~\ref{se:impl.matlab}). In contrast, Accelerate allows programmers to know exactly what is occuring with its syntax, accompanied by many high performing libraries for array computations that are easy-to-use.
 
-Secondly, Accelerate is succinct, but perhaps not as abbreviated as in MATLAB to become too obscure to its readers. Neither is Accelerate as verbose as C++, which can become cumbersome to read and write as seen in \ref{fig:eval.syntax.predict}.
+Secondly, Accelerate is compact and succinct, but perhaps not as abbreviated as in MATLAB to become obscure to its users. Neither is Accelerate as verbose as C++, which can become cumbersome to read and write as seen in \ref{fig:eval.syntax.predict}.
 
 \begin{figure}
   \begin{lstlisting}
@@ -96,52 +96,28 @@ There are several advantages to using Accelerate. First, it results in much simp
 
 Second, as Accelerate is embedded in Haskell, it can benefit from inheriting Haskell's functional language characteristics. For instance, Haskell as a pure language is advantageous for parallel computations as it will prohibit side effects that can disrupt other threads.
 
-Another Haskell characteristic is having a more powerful type system, which could enforce a stronger checking for certain properties --- thereby catching more errors --- at compile time. In comparison, languages like MATLAB is dynamically typed, meaning that the types may change during runtime. Futhermore, as a weakly typed programming language, its types can be implicitly converted whenever a mismatch occurs, making its program unpredictable and unreliable.
+Another Haskell characteristic is having a more powerful type system, which could enforce a stronger checking for certain properties --- thereby catching more errors --- at compile time. In comparison, languages like MATLAB are dynamically typed, meaning that the types may change during runtime. Futhermore, as a weakly typed programming language, its types can be implicitly converted whenever a mismatch occurs, making its program unpredictable and unreliable.
 
-Thirdly, Accelerate uses a number of optimisation techniques to mitigate the overheads, such as array fusion and sharing recovery\cite{ChaKelLee11}. For instance, my implementation was very inefficient in the sense that it has generated repeating multiple copies of same variables due to many \texttt{while} loops. Accelerate will optimise the code to reduce the number of parameters to the bare minimum required during the production of the ASTs in compile time. It will also 'fuse' sequences of \textit{producer} operations, and \textit{producer/consumer} operations that creates needless intermediate arrays, overall resulting in a much cleaner, efficient program~\cite{McDChaGro}.
+Thirdly, Accelerate uses a number of optimisation techniques to mitigate the overheads, such as array fusion and sharing recovery\cite{ChaKelLee11}. For instance, my implementation was very inefficient in the sense that it would have generated multiple copies of same variables due to many \texttt{while} loops in a non-optimising compiler. Accelerate will optimise the code to reduce the number of parameters to the bare minimum required during the production of the ASTs in compile time. It will also 'fuse' sequences of \textit{producer/producer} operations and fuse \textit{producer/consumer} operations to eliminate intermediate arrays --- overall, resulting in a much cleaner, efficient program~\cite{McDChaGro}.
 
 Finally, Accelerate is a dynamic code generator and as such it can, (1) optimise a program at the time of code generation simultaneously by obtaining information about the hardware capabilities; (2) customise the generated program to the input data at the time of code generation; and (3) allow host programs to ``generate embedded programs on-the-fly"~\cite{ChaKelLee11}.
 
 On the other hand, the disadvantage of using Accelerate is the extra overheads, which may originate at runtime (such as runtime code generation) and/or at execution time (such as kernel loading and data transfer)~\cite{ChaKelLee11}. Some of the overheads however, such as dynamic kernel compilation overheads, may not be so problematic in heavily data- and compute-intensive programs, because the proportion to the total time taken by the program may become insignificant~\cite{ChaKelLee11}; and, neural networks certainly fit in such a category of programs. 
 
-Indeed, even with the small data sets in this implementation, the results in \ref{ch:results} seem to support this: for training set (1) the overhead was probably disproportionately big, making Accelerate implementaion perform much worse compared to MATLAB's; however, Accelerate performed better than MATLAB for training set (2).
+Indeed, even with the small data sets in this implementation, the results in Chapter \ref{ch:results} seem to support this: for training set (1) the overhead was probably disproportionately big, making Accelerate implementaion perform much worse compared to MATLAB's; however, Accelerate performed better than MATLAB for training set (2).
 
 \section{Incomplete works} \label{se:eval.incomplete}
 
-~\cite{Eve16} uses sigmoid function. This function is mathematically convenient, because its gradient, $\sigma'(x)$, is easy to calculate:
+As stated in ~\ref{se:impl.limits}, there are a number of issues that requires further work in my current implementation. First is resolving the unexpected behaviour in the inner and middle loops when \texttt{M} variable is not set at 1. Secondly, the rolling and unrolling of weight matrices should be optimised or eliminated, in order to reduce overhead. 
+
+I would also test the accuracy of the predictions by trying a different activation functions. I have used the sigmoid function in this implementation, initially in order to confirm that my development is in alignment with MATLAB's and also because it is mathematically convenient, because its gradient, $\sigma'(x)$, is easy to calculate:
 $$\sigma'(x) = \sigma(x) \cdot (1 - \sigma(x))$$
-The sigmoid function suffers from the following two disadvantages and is now mostly unused~\cite{Kar16}:
+However, sigmoid function is not widely used these days, due to these two disadvantages~\cite{Kar16}:
 \begin{enumerate}
 \item When the unit's activation \textit{saturates} at either tail of 0 or 1, the gradient of the sigmoid function nears zero (refer to the sigmoid function graph in Fig. \ref{fig:activation-graphs}). Zero gradients effectively `kill' any signal flows through the neuron in forward- and back-propagation. Thus saturated neurons results in a ``network [that] will barely learn"~\cite{Kar16}. Accordingly, extra care must be taken not to initialise the weights with a large value.
 \item The range of the sigmoid function is not centered around zero. Hence if the inputs are always positive, it could introduce an undesirable \textit{zig-zagging dynamics} in the gradient updates for weights, as the gradient on the weights will be either all positive or all negative during back-propagation. However, this is a minor inconvenience as its impact is automatically mitigated in a BGD by the time the weights are updated.
 \end{enumerate}
 
+It would be also interesting to implement a SGD neural network to test for its relative performance.
 
-I believe that Chapter ~\ref{ch:results} training set 2 results indicate that a decently well-performing neural network should be possible.
-
-
-This was the expected behaviour --> First, the comparative training set prediction results from Accelerate and MATLAB using sample data (1) indicates that my Accelerate implementation does align with the MATLAB program and should be thus, fairly accurate (see \ref{se:res.performance}).
-
-But what I got was --> even if prediction is accurate, it does not always apply to everything else
-
-Second: talk about difficulties with developing with Accelerate -- debugging. Maths. Type checking.
-
-I did not conduct testing the neural network with different activation functions as I was aiming to test the speed and load performance of my implementation and such activation functions should not have a drastic impact on the performance of the neural network.
-
--- a full comparative analysis of other languages' implementation difficulty, performance, GPU harnessibility
-
-\section{Future works} \label{se:eval.future}
-
-
-
--- from thesis A about creating testing data
-
-Another problem that I may encounter using such pre-made repositories is that there may be insufficient training samples in the provided data set to train my neural network. In machine learning, a concept called \textit{artificial data synthesis} may resolve this dilemma~\cite{Ng12}. 
-
-Artificial data synthesis comprises of the following two methods to create \textit{synthetic data}: 
-\begin{enumerate}
-\item Create new \textit{labeled} samples by superimposing original sample with a suitable replacement. For example, an original image of an alphabet can be edited to a new sample by overlaying the existing letter with a new font type of the same letter.
-\item Amplify the data set by introducing \textit{smart} distortion to original sample. For instance, edit an original image of an alphabet into multiple versions by introducing various wave-like distortions.
-\end{enumerate}
-
-Artificial data synthesis is generally more efficient than obtaining raw data and labeling them manually. In the second method, the distortion must be non-trivial and the resulting sample must lie within a naturally occurring variance -- it must be reasonably found in the real world~\cite{Ng12}.
+Finally, after optimising the current implementation, there are many complicated neural network architectures that could be built by using this simple neural network as preliminary building blocks. For instance, convolutional neural networks, or \textit{convNets}, are one of the most reliable and efficient performers in image recognition problems. ConvNets work by processing only portions of the input image, which are tiled in subsequent layers in such a way that the input regions overlap and is deemed to obtain a better representation of the original image at a fraction of the computational cost ~\cite{BC16}. Each of the tiles are a small simple neural network!
