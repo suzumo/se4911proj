@@ -11,49 +11,47 @@ A level-1 auxiliary file: results.aux
 A level-1 auxiliary file: evaluation.aux
 A level-1 auxiliary file: conclusion.aux
 The style file: alpha.bst
-A level-1 auxiliary file: appendix1.aux
 Database file #1: pubs.bib
-Warning--empty note in Eve16
 Warning--empty booktitle in GurFor13
-You've used 18 entries,
+You've used 24 entries,
             2543 wiz_defined-function locations,
-            687 strings with 7912 characters,
-and the built_in function-call counts, 5930 in all, are:
-= -- 587
-> -- 244
+            730 strings with 9530 characters,
+and the built_in function-call counts, 8440 in all, are:
+= -- 836
+> -- 414
 < -- 13
-+ -- 77
-- -- 76
-* -- 343
-:= -- 992
-add.period$ -- 61
-call.type$ -- 18
-change.case$ -- 100
-chr.to.int$ -- 18
-cite$ -- 20
-duplicate$ -- 244
-empty$ -- 461
-format.name$ -- 105
-if$ -- 1212
++ -- 140
+- -- 138
+* -- 523
+:= -- 1431
+add.period$ -- 82
+call.type$ -- 24
+change.case$ -- 146
+chr.to.int$ -- 24
+cite$ -- 25
+duplicate$ -- 315
+empty$ -- 614
+format.name$ -- 172
+if$ -- 1706
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 14
-newline$ -- 101
-num.names$ -- 54
-pop$ -- 131
+missing$ -- 17
+newline$ -- 134
+num.names$ -- 72
+pop$ -- 176
 preamble$ -- 1
-purify$ -- 120
+purify$ -- 172
 quote$ -- 0
-skip$ -- 204
+skip$ -- 274
 stack$ -- 0
-substring$ -- 240
-swap$ -- 26
+substring$ -- 333
+swap$ -- 32
 text.length$ -- 13
 text.prefix$ -- 12
 top$ -- 0
-type$ -- 128
-warning$ -- 2
-while$ -- 51
-width$ -- 21
-write$ -- 240
-(There were 2 warnings)
+type$ -- 176
+warning$ -- 1
+while$ -- 73
+width$ -- 28
+write$ -- 322
+(There was 1 warning)

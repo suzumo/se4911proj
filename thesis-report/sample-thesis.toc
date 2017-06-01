@@ -4,35 +4,25 @@
 \contentsline {section}{\numberline {2.2}Feed-forward back-propagation learning algorithm}{6}
 \contentsline {section}{\numberline {2.3}GPU-accelerated programming and neural networks}{9}
 \contentsline {section}{\numberline {2.4}Accelerate}{10}
-\contentsline {subsection}{\numberline {2.4.1}Advantages of Accelerate}{12}
-\contentsline {section}{\numberline {2.5}Previous Implementations in Accelerate}{14}
-\contentsline {section}{\numberline {2.6}Measuring performance}{17}
-\contentsline {chapter}{\numberline {3}Implementation}{19}
-\contentsline {section}{\numberline {3.1}Matlab implementation of neural network}{19}
-\contentsline {subsection}{\numberline {3.1.1}Peculiarities of Matlab}{20}
-\contentsline {section}{\numberline {3.2}Accelerate Implementation}{21}
-\contentsline {subsection}{\numberline {3.2.1}Neural network structure}{21}
-\contentsline {subsection}{\numberline {3.2.2}Program structure}{22}
-\contentsline {subsection}{\numberline {3.2.3}Initialisation}{22}
-\contentsline {subsection}{\numberline {3.2.4}Neural network cost function}{23}
-\contentsline {subsection}{\numberline {3.2.5}Function minimise nonlinear conjugate gradient function}{24}
-\contentsline {section}{\numberline {3.3}Limitations of this implementation}{27}
-\contentsline {chapter}{\numberline {4}Results}{29}
-\contentsline {section}{\numberline {4.1}Performance results}{29}
-\contentsline {section}{\numberline {4.2}Others etc}{29}
-\contentsline {chapter}{\numberline {5}Evaluation}{30}
-\contentsline {section}{\numberline {5.1}Discussion}{30}
-\contentsline {section}{\numberline {5.2}Benefits of Accelerate implementation}{30}
-\contentsline {section}{\numberline {5.3}Incomplete works}{31}
-\contentsline {section}{\numberline {5.4}Future works}{31}
-\contentsline {chapter}{\numberline {6}Conclusion}{32}
-\contentsline {chapter}{Bibliography}{33}
-\contentsline {chapter}{Appendix 1}{35}
-\contentsline {section}{\numberline {A.1}Options}{35}
-\contentsline {section}{\numberline {A.2}Margins}{35}
-\contentsline {section}{\numberline {A.3}Page Headers}{36}
-\contentsline {subsection}{\numberline {A.3.1}Undergraduate Theses}{36}
-\contentsline {subsection}{\numberline {A.3.2}Higher Degree Research Theses}{36}
-\contentsline {section}{\numberline {A.4}Page Footers}{36}
-\contentsline {section}{\numberline {A.5}Double Spacing}{37}
-\contentsline {section}{\numberline {A.6}Files}{37}
+\contentsline {section}{\numberline {2.5}Previous Implementations in Accelerate}{13}
+\contentsline {chapter}{\numberline {3}Implementation}{16}
+\contentsline {section}{\numberline {3.1}Using a MATLAB-based neural network as reference}{16}
+\contentsline {section}{\numberline {3.2}Accelerate Implementation}{17}
+\contentsline {subsection}{\numberline {3.2.1}Neural network structure}{17}
+\contentsline {subsection}{\numberline {3.2.2}Program structure}{19}
+\contentsline {subsubsection}{Initialisation}{19}
+\contentsline {subsubsection}{Neural network cost function, \texttt {nnCostFunction}}{21}
+\contentsline {subsubsection}{Function minimisation via conjugate gradient method, \texttt {fmincg}}{22}
+\contentsline {section}{\numberline {3.3}Known bugs}{25}
+\contentsline {section}{\numberline {3.4}Other works}{26}
+\contentsline {chapter}{\numberline {4}Testing and Results}{27}
+\contentsline {section}{\numberline {4.1}Test Data}{27}
+\contentsline {section}{\numberline {4.2}Testing environment}{28}
+\contentsline {section}{\numberline {4.3}Performance results}{29}
+\contentsline {chapter}{\numberline {5}Evaluation}{31}
+\contentsline {section}{\numberline {5.1}Performance evaluation}{31}
+\contentsline {section}{\numberline {5.2}Usability and Accelerate}{33}
+\contentsline {section}{\numberline {5.3}Advantages of an Accelerate implementation}{35}
+\contentsline {section}{\numberline {5.4}Incomplete works}{36}
+\contentsline {chapter}{\numberline {6}Conclusion}{38}
+\contentsline {chapter}{Bibliography}{39}

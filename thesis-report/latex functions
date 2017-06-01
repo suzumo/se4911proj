@@ -1,0 +1,47 @@
+MAKING MATHEMATICAL STUFF
+
+\[ \text{output} = 
+   \begin{cases}
+     0	& \quad \text{if } \boldsymbol{x} \cdot \boldsymbol{\theta} + b \leq 0\\
+     1	& \quad \text{otherwise }
+   \end{cases}
+\]
+
+
+WRITING CODE
+
+\begin{figure}
+  \begin{lstlisting}
+    -- dot product in Haskell
+    dotp :: [Float] -> [Float] -> Float
+    dotp xs ys = foldl (+) 0 (zipWith (*) xs ys)
+           
+    -- dot product in Accelerate
+    dotp :: Acc (Vector Float) -> Acc (Vector Float) -> Acc (Scalar Float)
+    dotp xs ys = fold (+) 0 (zipWith (*) xs ys)
+  \end{lstlisting}
+  \caption{Haskell and Accelerate versions for dot product~\cite{McD13}.}
+  \label{fig:dotp}
+\end{figure}
+
+
+
+
+
+
+
+
+
+~\ref{fig:nnCostFunction.matlab}, ~\ref{fig:nnCostFunction.acc}
+
+\begin{figure}
+	\centerline{\includegraphics[width=\linewidth]{nnCostFunction-matlab.png}}
+	\caption{Neural network cost function in MATLAB.}
+	\label{fig:nnCostFunction.matlab}
+\end{figure}
+
+\begin{figure}
+	\centerline{\includegraphics[width=\linewidth]{nnCostFunction-acc.png}}
+	\caption{Neural network cost function in Accelerate.}
+	\label{fig:nnCostFunction.acc}
+\end{figure}
