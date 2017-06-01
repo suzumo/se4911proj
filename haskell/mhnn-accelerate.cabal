@@ -60,10 +60,19 @@ executable mhnn-accelerate
   hs-source-dirs:       src
 
   -- .hs or .lhs file containing the Main module.
-  main-is:              MHNN.hs
+  main-is:              Main.hs
 
   -- Modules included in this executable, other than Main.
   other-modules:
+      -- The core neural network functions
+      MHNN
+
+      -- File loaders
+      Data.Load.CSV
+      Data.Load.TXT
+      Data.Load.MINST
+
+      -- For matrix multiply
       Data.Array.Accelerate.Numeric.LinearAlgebra
       Data.Array.Accelerate.Numeric.LinearAlgebra.Type
 
@@ -71,10 +80,17 @@ executable mhnn-accelerate
   build-depends:
         base                        >= 4.8 && < 4.10
       , accelerate                  == 1.0.*
+      , accelerate-io               == 1.0.*
+      , binary                      >= 0.7
+      , bytestring                  >= 0.9
+      , bytestring-lexing           >= 0.5
+      , cassava                     >= 0.4
       , criterion                   >= 1.0
       , deepseq
       , lens-accelerate             >= 0.1
       , mwc-random-accelerate       >= 0.1
+      , time                        >= 1.5
+      , vector                      >= 0.9
 
   if flag(llvm-cpu)
     CPP-options:        -DACCELERATE_LLVM_NATIVE_BACKEND
@@ -96,7 +112,14 @@ executable mhnn-accelerate
   -- Base language which the package is written in.
   default-language:     Haskell2010
 
-  ghc-options:          -Wall -O2 -threaded -rtsopts
+  ghc-options:
+      -Wall
+      -O2
+      -threaded
+      -rtsopts
+      -with-rtsopts=-n4M
+      -with-rtsopts=-A128M
+      -with-rtsopts=-N
 
 -- vim: nospell
 
